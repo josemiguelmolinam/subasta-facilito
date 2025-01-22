@@ -16,13 +16,13 @@ const CheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Manejar cambios en el formulario
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   // Manejar envío del formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -79,7 +79,7 @@ const CheckoutPage = () => {
             value={formData.address}
             onChange={handleInputChange}
             className="w-full p-3 border rounded-md"
-            rows="3"
+            rows={3}
             required
           ></textarea>
         </div>

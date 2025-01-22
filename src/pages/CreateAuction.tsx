@@ -48,6 +48,7 @@ const CreateAuction = () => {
         sellerId: "user123",
         categoryId: category,
         status: "active",
+        totalBids: 0, // Agregamos totalBids inicializado en 0
       });
 
       toast({
