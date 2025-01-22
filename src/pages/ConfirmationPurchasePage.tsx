@@ -4,9 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { formatCurrency } from "@/lib/utils/currency";
 import { useState } from "react";
 import { Truck, ShieldCheck, Package, Ruler, Scale, MapPin } from "lucide-react";
+import { PageLoader } from "@/components/ui/loader";
 
 const ConfirmPurchasePage = () => {
-  const { id } = useParams(); // Obtenemos el ID del artículo desde la URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   // Mock: Información del artículo (en un caso real, se obtendría de una API)
@@ -19,8 +20,10 @@ const ConfirmPurchasePage = () => {
     imageUrl: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
   };
 
-  const [weight, setWeight] = useState(0.5); // Peso inicial en kilogramos
-  const [dimensions, setDimensions] = useState({ length: 10, width: 10, height: 10 }); // Dimensiones iniciales en cm
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [weight, setWeight] = useState(0.5);
+  const [dimensions, setDimensions] = useState({ length: 10, width: 10, height: 10 });
+  const [address, setAddress] = useState("");
 
   // Opciones de envío dinámicas en función del peso y dimensiones
   const shippingOptions = [
@@ -36,20 +39,30 @@ const ConfirmPurchasePage = () => {
     };
   });
 
-  const [selectedShipping, setSelectedShipping] = useState(shippingOptions[0]);
-  const [address, setAddress] = useState("Calle Ejemplo 123, Ciudad, País");
-
-  // Calcula el costo total basado en el costo de envío seleccionado
-  const totalPrice = auction.buyNowPrice + selectedShipping.cost;
-
   // Función para proceder al Checkout
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!address) {
       alert("Por favor, ingrese una dirección de envío válida.");
       return;
     }
-    navigate(`/checkout/${id}`);
+    
+    setIsProcessing(true);
+    
+    try {
+      // Simular proceso de confirmación
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Redirigir a la página de éxito
+      navigate('/order-success');
+    } catch (error) {
+      console.error('Error al procesar la compra:', error);
+      setIsProcessing(false);
+    }
   };
+
+  if (isProcessing) {
+    return <PageLoader />;
+  }
 
   return (
     <MainLayout>
@@ -147,8 +160,6 @@ const ConfirmPurchasePage = () => {
                     <input
                       type="radio"
                       name="shipping"
-                      checked={selectedShipping.id === option.id}
-                      onChange={() => setSelectedShipping(option)}
                       className="mt-2"
                     />
                   </div>
@@ -171,58 +182,20 @@ const ConfirmPurchasePage = () => {
             ></textarea>
           </div>
 
-          {/* Contenedor: Suscripción Premium */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-auction-dark mb-4 flex items-center">
-              <ShieldCheck className="w-6 h-6 text-green-500 mr-2" /> Suscripción Premium
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Con nuestra suscripción Premium, disfruta de descuentos en envíos y acceso a seguros
-              para proteger tus compras.
-            </p>
-            <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600">
-              <li>10% de descuento en todos los métodos de envío.</li>
-              <li>Protección completa contra daños durante el envío.</li>
-              <li>Acceso a promociones exclusivas.</li>
-            </ul>
-            <Button
-              onClick={() => alert("Suscripción Premium activada.")}
-              className="mt-4 bg-green-500 hover:bg-green-600 text-white"
-            >
-              Activar Premium
-            </Button>
-          </div>
-
-          {/* Resumen de costos */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-auction-dark mb-4">Resumen de Compra</h2>
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-600">Precio del artículo:</span>
-              <span className="font-medium text-auction-primary">{formatCurrency(auction.buyNowPrice)}</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-600">Costo de envío:</span>
-              <span className="font-medium text-auction-primary">{formatCurrency(selectedShipping.cost)}</span>
-            </div>
-            <div className="flex justify-between font-bold text-lg">
-              <span className="text-auction-dark">Total:</span>
-              <span className="text-auction-primary">{formatCurrency(totalPrice)}</span>
-            </div>
-          </div>
-
           {/* Botones de acción */}
           <div className="flex justify-between items-center">
             <Button
-              type="button"
-              onClick={() => navigate('/payment')}
+              onClick={handleConfirm}
               className="bg-auction-primary hover:bg-auction-secondary w-full sm:w-auto"
+              disabled={isProcessing}
             >
               Confirmar y Proceder al Pago
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate(-1)} // Regresar a la página anterior
+              onClick={() => navigate(-1)}
               className="w-full sm:w-auto ml-4"
+              disabled={isProcessing}
             >
               Cancelar
             </Button>

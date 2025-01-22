@@ -27,9 +27,9 @@ import AuctionDetail from './pages/AuctionDetail';
 import CreateAuction from './pages/CreateAuction';
 import ExploreAuctions from './pages/ExploreAuctions';
 import CheckoutPage from './pages/CheckoutPage';
-import ConfirmPurchasePage from './pages/ConfirmationPurchasePage'; 
+import ConfirmPurchasePage from './pages/ConfirmationPurchasePage';
+import OrderSuccessPage from './pages/OrderSuccessPage';
 
-// Configuración del cliente de React Query
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -47,11 +47,9 @@ const App = () => (
           <CartProvider>
             <WishlistProvider>
               <TooltipProvider>
-                {/* Notificaciones y Tooltips */}
                 <Toaster />
                 <Sonner />
 
-                {/* Rutas de la aplicación */}
                 <Routes>
                   <Route path='/' element={<Index />} />
                   <Route path='/register' element={<Register />} />
@@ -67,12 +65,12 @@ const App = () => (
                   <Route path='/cart' element={<Cart />} />
                   <Route path='/product/:id' element={<ProductCard />} />
                   <Route path='/payment' element={<Payment />} />
-
                   <Route path='/auction/:id' element={<AuctionDetail />} />
                   <Route path='/auctions/explore' element={<ExploreAuctions />} />
                   <Route path='/auctions/create' element={<CreateAuction />} />
                   <Route path='/checkout/:id' element={<CheckoutPage />} />
                   <Route path='/confirm-purchase/:id' element={<ConfirmPurchasePage />} />
+                  <Route path='/order-success' element={<OrderSuccessPage />} />
                 </Routes>
               </TooltipProvider>
             </WishlistProvider>
