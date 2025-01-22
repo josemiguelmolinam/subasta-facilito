@@ -18,7 +18,7 @@ const Payment = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setIsProcessing(true);
 
     try {
       // Simular procesamiento de pago
