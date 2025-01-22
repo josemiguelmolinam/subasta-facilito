@@ -8,9 +8,11 @@ import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { CreditCard, Paypal, Building, Wallet } from 'lucide-react';
+import { CreditCard, BanknoteIcon, Building, Wallet } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { formatCurrency } from '@/lib/utils/currency';
+
+// ... keep existing code (state and handlers)
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ const Payment = () => {
             <div className="flex items-center space-x-2 border p-4 rounded-lg">
               <RadioGroupItem value="paypal" id="paypal" />
               <Label htmlFor="paypal" className="flex items-center gap-2">
-                <Paypal className="h-4 w-4" />
+                <BanknoteIcon className="h-4 w-4" />
                 PayPal
               </Label>
             </div>
