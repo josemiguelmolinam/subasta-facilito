@@ -17,6 +17,9 @@ export default defineConfig({
         secure: false,
       },
     },
+    allowedHosts: [
+      "473096b1-8352-4670-8eb6-b9842bfa813f.lovableproject.com"
+    ]
   },
   plugins: [react()],
   resolve: {
