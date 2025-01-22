@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AuctionProvider } from '@/contexts/AuctionContext';
-import { CartProvider } from '@/contexts/CartContext';
+import { CartProvider } from '@/contexts/CartProvider';
 import { WishlistProvider } from '@/contexts/WishlistContext';
 
 // Pages
@@ -40,8 +40,8 @@ const queryClient = new QueryClient({
 });
 
 const App = () => (
-  <BrowserRouter>
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
       <AuthProvider>
         <AuctionProvider>
           <CartProvider>
@@ -49,7 +49,6 @@ const App = () => (
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
-
                 <Routes>
                   <Route path='/' element={<Index />} />
                   <Route path='/register' element={<Register />} />
@@ -77,8 +76,8 @@ const App = () => (
           </CartProvider>
         </AuctionProvider>
       </AuthProvider>
-    </QueryClientProvider>
-  </BrowserRouter>
+    </BrowserRouter>
+  </QueryClientProvider>
 );
 
 export default App;
