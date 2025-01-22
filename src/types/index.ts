@@ -6,6 +6,12 @@ export interface User {
   avatar?: string;
 }
 
+export interface Seller {
+  name: string;
+  rating: number;
+  totalSales: number;
+}
+
 export interface Auction {
   id: string;
   title: string;
@@ -19,14 +25,12 @@ export interface Auction {
   categoryId: string;
   status: 'active' | 'ended' | 'cancelled';
   createdAt: Date;
-  seller?: {
-    name: string;
-    rating: number;
-  };
+  seller?: Seller;
   specifications?: {
     condition: string;
     brand: string;
     model: string;
     [key: string]: string;
   };
+  totalBids: number;
 }
