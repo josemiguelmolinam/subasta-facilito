@@ -18,7 +18,7 @@ const Payment = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsProcessing(true);
+    setIsSubmitting(true);
 
     try {
       // Simular procesamiento de pago
@@ -48,7 +48,7 @@ const Payment = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8 mt-16">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-auction-dark mb-8">Información de Pago</h1>
 
