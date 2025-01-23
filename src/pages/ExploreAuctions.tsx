@@ -21,6 +21,7 @@ import { formatCurrency } from "@/lib/utils/currency";
 import { calculateTimeLeft, formatTimeLeft } from "@/lib/utils/countdown";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "@/components/ProductCard";
+import { Auction } from "@/types";
 
 const mockAuctions: Auction[] = [
   {
@@ -308,3 +309,4 @@ const ExploreAuctions = () => {
 };
 
 export default ExploreAuctions;
+
