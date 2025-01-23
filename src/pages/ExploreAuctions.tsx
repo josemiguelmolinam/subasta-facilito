@@ -20,8 +20,9 @@ import { CATEGORIES, PRICE_RANGES } from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils/currency";
 import { calculateTimeLeft, formatTimeLeft } from "@/lib/utils/countdown";
 import { cn } from "@/lib/utils";
-import { ProductCard } from "@/components/ProductCard";
+import { Auction } from "@/types";
 
+// Mock data - Replace with real API call
 const mockAuctions: Auction[] = [
   {
     id: "1",
@@ -139,16 +140,24 @@ const ExploreAuctions = () => {
   const [onlyBuyNow, setOnlyBuyNow] = useState(false);
   const [onlyWithPhotos, setOnlyWithPhotos] = useState(false);
   const [endingSoon, setEndingSoon] = useState(false);
-  const [onlyFavorites, setOnlyFavorites] = useState(false);
   const { addItem, isInWishlist } = useWishlist();
   const navigate = useNavigate();
+
+  const handleWishlist = (e: React.MouseEvent, auction: Auction) => {
+    e.stopPropagation();
+    addItem(auction);
+  };
+
+  const navigateToAuction = (auctionId: string) => {
+    navigate(`/auction/${auctionId}`);
+  };
 
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-8 mt-16">
-        <div className="flex gap-8">
-          {/* Sidebar Filters - Fixed */}
-          <div className="w-80 flex-shrink-0">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Sidebar Filters */}
+          <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24 space-y-6">
               <div className="flex items-center gap-2 mb-6">
                 <Search className="w-5 h-5 text-auction-primary" />
@@ -213,21 +222,41 @@ const ExploreAuctions = () => {
 
                 <Separator className="my-4" />
 
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="favorites"
-                      checked={onlyFavorites}
-                      onCheckedChange={(checked) => setOnlyFavorites(checked as boolean)}
-                    />
-                    <label
-                      htmlFor="favorites"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Solo favoritos
-                    </label>
-                  </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">Estado</Label>
+                  <Select value={condition} onValueChange={setCondition}>
+                    <SelectTrigger className="w-full bg-gray-50">
+                      <SelectValue placeholder="Seleccionar estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="new">Nuevo</SelectItem>
+                      <SelectItem value="like-new">Como nuevo</SelectItem>
+                      <SelectItem value="good">Buen estado</SelectItem>
+                      <SelectItem value="used">Usado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">Ordenar por</Label>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-full bg-gray-50">
+                      <SelectValue placeholder="Ordenar por" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="recent">Más recientes</SelectItem>
+                      <SelectItem value="ending-soon">Terminan pronto</SelectItem>
+                      <SelectItem value="price-asc">Precio más bajo</SelectItem>
+                      <SelectItem value="price-desc">Precio más alto</SelectItem>
+                      <SelectItem value="bids">Más pujas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator className="my-4" />
+
+                <div className="space-y-4">
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="buy-now"
@@ -239,6 +268,20 @@ const ExploreAuctions = () => {
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                       Solo Cómpralo Ya
+                    </label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="with-photos"
+                      checked={onlyWithPhotos}
+                      onCheckedChange={(checked) => setOnlyWithPhotos(checked as boolean)}
+                    />
+                    <label
+                      htmlFor="with-photos"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Con fotos
                     </label>
                   </div>
 
@@ -260,43 +303,106 @@ const ExploreAuctions = () => {
                 <Separator className="my-4" />
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Ordenar por</Label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full bg-gray-50">
-                      <SelectValue placeholder="Ordenar por" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="recent">Más recientes</SelectItem>
-                      <SelectItem value="ending-soon">Terminan pronto</SelectItem>
-                      <SelectItem value="price-asc">Precio más bajo</SelectItem>
-                      <SelectItem value="price-desc">Precio más alto</SelectItem>
-                      <SelectItem value="bids">Más pujas</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label className="text-sm font-medium text-gray-700">Mínimo de pujas</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={minBids}
+                    onChange={(e) => setMinBids(Number(e.target.value))}
+                    className="w-full bg-gray-50"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Auction Grid */}
-          <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {/* Auction Grid - Enhanced for desktop */}
+          <div className="lg:col-span-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {auctions.map((auction) => {
                 const timeLeft = calculateTimeLeft(auction.endDate);
                 const formattedTime = formatTimeLeft(timeLeft);
-                const isEnding = timeLeft.hours === 0 && timeLeft.minutes < 10;
+                const isEnding = timeLeft.minutes < 10 && timeLeft.hours === 0 && timeLeft.days === 0;
 
                 return (
-                  <ProductCard
+                  <div
                     key={auction.id}
-                    title={auction.title}
-                    currentBid={auction.currentBid}
-                    buyNowPrice={auction.buyNowPrice}
-                    timeLeft={formattedTime}
-                    imageUrl={auction.imageUrl}
-                    totalBids={auction.totalBids}
-                    isEnding={isEnding}
-                  />
+                    onClick={() => navigateToAuction(auction.id)}
+                    className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl">
+                      {/* Image and Wishlist */}
+                      <div className="relative aspect-square">
+                        <img
+                          src={auction.imageUrl}
+                          alt={auction.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <button
+                          onClick={(e) => handleWishlist(e, auction)}
+                          className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-300 hover:scale-110"
+                        >
+                          <Heart
+                            className={cn(
+                              "w-5 h-5 transition-colors",
+                              isInWishlist(auction.id)
+                                ? "fill-[#D946EF] text-[#D946EF]"
+                                : "text-gray-600"
+                            )}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4 space-y-4">
+                        <h3 className="font-semibold text-lg text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors">
+                          {auction.title}
+                        </h3>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Timer
+                              className={cn(
+                                "w-4 h-4",
+                                isEnding ? "text-red-500 animate-pulse" : "text-gray-600"
+                              )}
+                            />
+                            <span
+                              className={cn(
+                                "text-sm font-medium",
+                                isEnding ? "text-red-500" : "text-gray-600"
+                              )}
+                            >
+                              {formattedTime}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Gavel className="w-4 h-4 text-auction-secondary" />
+                            <span className="text-sm text-auction-secondary font-medium">{auction.totalBids} pujas</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Puja actual</span>
+                            <span className="text-lg font-bold text-auction-primary">
+                              {formatCurrency(auction.currentBid)}
+                            </span>
+                          </div>
+
+                          {auction.buyNowPrice && (
+                            <div className="pt-2 border-t border-gray-100">
+                              <div className="text-center group-hover:scale-105 transition-transform">
+                                <span className="text-sm text-red-500 font-medium bg-red-50 px-3 py-1 rounded-full">
+                                  ¡Cómpralo ya por {formatCurrency(auction.buyNowPrice)}!
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
