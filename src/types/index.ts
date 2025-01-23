@@ -23,7 +23,7 @@ export interface Auction {
   endDate: Date;
   sellerId: string;
   categoryId: string;
-  status: 'active' | 'ended' | 'cancelled';
+  status: 'active' | 'ended' | 'cancelled' | 'featured';
   createdAt: Date;
   seller?: Seller;
   specifications?: {
@@ -33,4 +33,5 @@ export interface Auction {
     [key: string]: string;
   };
   totalBids: number;
+  shippingCost?: number;
 }

@@ -156,9 +156,8 @@ const ExploreAuctions = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Sidebar Filters - Moved to the left */}
-          <div className="lg:col-span-1 lg:-ml-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24 space-y-6 border border-gray-100">
+          {/* Sidebar Filters - Left aligned */}
+          <div className="lg:col-span-1 -ml-4">
               <div className="flex items-center gap-2 mb-6">
                 <Tag className="w-5 h-5 text-auction-primary" />
                 <h2 className="text-xl font-semibold text-auction-dark">
@@ -318,12 +317,12 @@ const ExploreAuctions = () => {
 
           {/* Auction Grid - Enhanced */}
           <div className="lg:col-span-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {auctions.map((auction) => {
                 const timeLeft = calculateTimeLeft(auction.endDate);
                 const formattedTime = formatTimeLeft(timeLeft);
                 const isEnding = timeLeft.minutes < 10 && timeLeft.hours === 0 && timeLeft.days === 0;
-                const isNew = new Date().getTime() - new Date(auction.createdAt).getTime() < 1000 * 60 * 60 * 24; // 24 hours
+                const isNew = new Date().getTime() - new Date(auction.createdAt).getTime() < 1000 * 60 * 60 * 24;
 
                 return (
                   <div
@@ -332,7 +331,7 @@ const ExploreAuctions = () => {
                     className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
                   >
                     <div className="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100">
-                      {/* Image container with New badge and Wishlist */}
+                      {/* Image container with badges */}
                       <div className="relative aspect-square">
                         <img
                           src={auction.imageUrl}
@@ -345,19 +344,23 @@ const ExploreAuctions = () => {
                           >
                             Nuevo
                           </Badge>
-                        ) : auction.status === "featured" && (
+                        ) : auction.status === 'featured' && (
                           <Badge
                             className="absolute top-3 left-3 bg-auction-primary text-white border-0 px-3 py-1"
                           >
                             Destacado
                           </Badge>
                         )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4 space-y-3 relative">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleWishlist(e, auction);
                           }}
-                          className="absolute top-0 right-0 p-3 bg-white/90 hover:bg-white rounded-bl-xl shadow-md transition-all duration-300 hover:scale-110"
+                          className="absolute -top-8 right-2 p-2 bg-white/90 hover:bg-white rounded-full shadow-md transition-all duration-300 hover:scale-110"
                         >
                           <Heart
                             className={cn(
@@ -368,10 +371,7 @@ const ExploreAuctions = () => {
                             )}
                           />
                         </button>
-                      </div>
 
-                      {/* Content */}
-                      <div className="p-4 space-y-3">
                         <h3 className="font-semibold text-lg text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors">
                           {auction.title}
                         </h3>
