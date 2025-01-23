@@ -21,7 +21,6 @@ import { formatCurrency } from "@/lib/utils/currency";
 import { calculateTimeLeft, formatTimeLeft } from "@/lib/utils/countdown";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "@/components/ProductCard";
-import { Auction } from "@/types";
 
 const mockAuctions: Auction[] = [
   {
@@ -146,11 +145,11 @@ const ExploreAuctions = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 mt-16">
         <div className="flex gap-8">
-          {/* Barra de búsqueda y filtros */}
+          {/* Sidebar Filters - Fixed */}
           <div className="w-80 flex-shrink-0">
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
+            <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24 space-y-6">
               <div className="flex items-center gap-2 mb-6">
                 <Search className="w-5 h-5 text-auction-primary" />
                 <h2 className="text-xl font-semibold text-auction-dark">
@@ -167,7 +166,7 @@ const ExploreAuctions = () => {
                       placeholder="Buscar subastas..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-50/50 border-gray-200 rounded-lg focus:ring-auction-primary/20"
+                      className="pl-10 bg-gray-50 border-gray-200"
                     />
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   </div>
@@ -178,7 +177,7 @@ const ExploreAuctions = () => {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Categoría</Label>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
+                    <SelectTrigger className="w-full bg-gray-50">
                       <SelectValue placeholder="Todas las categorías" />
                     </SelectTrigger>
                     <SelectContent>
@@ -220,7 +219,6 @@ const ExploreAuctions = () => {
                       id="favorites"
                       checked={onlyFavorites}
                       onCheckedChange={(checked) => setOnlyFavorites(checked as boolean)}
-                      className="border-gray-300 text-auction-primary focus:ring-auction-primary/20"
                     />
                     <label
                       htmlFor="favorites"
@@ -235,7 +233,6 @@ const ExploreAuctions = () => {
                       id="buy-now"
                       checked={onlyBuyNow}
                       onCheckedChange={(checked) => setOnlyBuyNow(checked as boolean)}
-                      className="border-gray-300 text-auction-primary focus:ring-auction-primary/20"
                     />
                     <label
                       htmlFor="buy-now"
@@ -250,7 +247,6 @@ const ExploreAuctions = () => {
                       id="ending-soon"
                       checked={endingSoon}
                       onCheckedChange={(checked) => setEndingSoon(checked as boolean)}
-                      className="border-gray-300 text-auction-primary focus:ring-auction-primary/20"
                     />
                     <label
                       htmlFor="ending-soon"
@@ -266,7 +262,7 @@ const ExploreAuctions = () => {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Ordenar por</Label>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
+                    <SelectTrigger className="w-full bg-gray-50">
                       <SelectValue placeholder="Ordenar por" />
                     </SelectTrigger>
                     <SelectContent>
@@ -282,9 +278,9 @@ const ExploreAuctions = () => {
             </div>
           </div>
 
-          {/* Grid de subastas */}
+          {/* Auction Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
               {auctions.map((auction) => {
                 const timeLeft = calculateTimeLeft(auction.endDate);
                 const formattedTime = formatTimeLeft(timeLeft);
