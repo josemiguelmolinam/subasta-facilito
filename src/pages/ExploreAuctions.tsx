@@ -13,7 +13,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Heart, Timer, Gavel, Star, Search } from "lucide-react";
+import { Heart, Timer, Gavel, Star, Search, Tag, Eye, Clock } from "lucide-react";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useNavigate } from "react-router-dom";
 import { CATEGORIES, PRICE_RANGES } from "@/lib/constants";
@@ -21,6 +21,8 @@ import { formatCurrency } from "@/lib/utils/currency";
 import { calculateTimeLeft, formatTimeLeft } from "@/lib/utils/countdown";
 import { cn } from "@/lib/utils";
 import { Auction } from "@/types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 // Mock data - Replace with real API call
 const mockAuctions: Auction[] = [
@@ -156,11 +158,11 @@ const ExploreAuctions = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Sidebar Filters */}
+          {/* Sidebar Filters - Enhanced */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24 space-y-6">
+            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24 space-y-6 border border-gray-100">
               <div className="flex items-center gap-2 mb-6">
-                <Search className="w-5 h-5 text-auction-primary" />
+                <Tag className="w-5 h-5 text-auction-primary" />
                 <h2 className="text-xl font-semibold text-auction-dark">
                   Filtros
                 </h2>
@@ -175,7 +177,7 @@ const ExploreAuctions = () => {
                       placeholder="Buscar subastas..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-50 border-gray-200"
+                      className="pl-10 bg-gray-50/50 border-gray-200 rounded-lg"
                     />
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   </div>
@@ -186,7 +188,7 @@ const ExploreAuctions = () => {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Categoría</Label>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full bg-gray-50">
+                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
                       <SelectValue placeholder="Todas las categorías" />
                     </SelectTrigger>
                     <SelectContent>
@@ -225,7 +227,7 @@ const ExploreAuctions = () => {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Estado</Label>
                   <Select value={condition} onValueChange={setCondition}>
-                    <SelectTrigger className="w-full bg-gray-50">
+                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
                       <SelectValue placeholder="Seleccionar estado" />
                     </SelectTrigger>
                     <SelectContent>
@@ -241,7 +243,7 @@ const ExploreAuctions = () => {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Ordenar por</Label>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full bg-gray-50">
+                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
                       <SelectValue placeholder="Ordenar por" />
                     </SelectTrigger>
                     <SelectContent>
@@ -309,16 +311,16 @@ const ExploreAuctions = () => {
                     min="0"
                     value={minBids}
                     onChange={(e) => setMinBids(Number(e.target.value))}
-                    className="w-full bg-gray-50"
+                    className="w-full bg-gray-50/50 rounded-lg border-gray-200"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Auction Grid - Enhanced for desktop */}
+          {/* Auction Grid - Enhanced */}
           <div className="lg:col-span-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {auctions.map((auction) => {
                 const timeLeft = calculateTimeLeft(auction.endDate);
                 const formattedTime = formatTimeLeft(timeLeft);
@@ -330,7 +332,7 @@ const ExploreAuctions = () => {
                     onClick={() => navigateToAuction(auction.id)}
                     className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
                   >
-                    <div className="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl">
+                    <div className="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100">
                       {/* Image and Wishlist */}
                       <div className="relative aspect-square">
                         <img
@@ -351,40 +353,44 @@ const ExploreAuctions = () => {
                             )}
                           />
                         </button>
+                        {auction.totalBids > 0 && (
+                          <Badge
+                            className="absolute bottom-3 left-3 bg-white/90 text-auction-primary border-auction-primary"
+                          >
+                            <Gavel className="w-3 h-3 mr-1" />
+                            {auction.totalBids} pujas
+                          </Badge>
+                        )}
                       </div>
 
                       {/* Content */}
                       <div className="p-4 space-y-4">
-                        <h3 className="font-semibold text-lg text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors">
-                          {auction.title}
-                        </h3>
+                        <div className="space-y-2">
+                          <h3 className="font-semibold text-lg text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors">
+                            {auction.title}
+                          </h3>
 
-                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Timer
+                            <Clock
                               className={cn(
                                 "w-4 h-4",
-                                isEnding ? "text-red-500 animate-pulse" : "text-gray-600"
+                                isEnding ? "text-red-500 animate-pulse" : "text-gray-500"
                               )}
                             />
                             <span
                               className={cn(
                                 "text-sm font-medium",
-                                isEnding ? "text-red-500" : "text-gray-600"
+                                isEnding ? "text-red-500" : "text-gray-500"
                               )}
                             >
                               {formattedTime}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Gavel className="w-4 h-4 text-auction-secondary" />
-                            <span className="text-sm text-auction-secondary font-medium">{auction.totalBids} pujas</span>
-                          </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Puja actual</span>
+                            <span className="text-sm text-gray-500">Puja actual</span>
                             <span className="text-lg font-bold text-auction-primary">
                               {formatCurrency(auction.currentBid)}
                             </span>
@@ -392,12 +398,31 @@ const ExploreAuctions = () => {
 
                           {auction.buyNowPrice && (
                             <div className="pt-2 border-t border-gray-100">
-                              <div className="text-center group-hover:scale-105 transition-transform">
-                                <span className="text-sm text-red-500 font-medium bg-red-50 px-3 py-1 rounded-full">
-                                  ¡Cómpralo ya por {formatCurrency(auction.buyNowPrice)}!
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-500">Cómpralo ya</span>
+                                <span className="text-base font-semibold text-[#00BA88]">
+                                  {formatCurrency(auction.buyNowPrice)}
                                 </span>
                               </div>
                             </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 pt-2">
+                          <Button 
+                            variant="outline"
+                            className="w-full hover:bg-auction-soft hover:text-auction-primary transition-colors group/btn"
+                          >
+                            <Gavel className="w-4 h-4 mr-1 group-hover/btn:animate-bounce" />
+                            Pujar
+                          </Button>
+                          {auction.buyNowPrice && (
+                            <Button 
+                              className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-colors group/btn"
+                            >
+                              <Eye className="w-4 h-4 mr-1 group-hover/btn:animate-pulse" />
+                              Ver más
+                            </Button>
                           )}
                         </div>
                       </div>
