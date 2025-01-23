@@ -42,7 +42,7 @@ const mockAuctions: Auction[] = [
       brand: "Apple",
       model: "iPhone 15 Pro Max"
     },
-    totalBids: 15  // Added this
+    totalBids: 15
   },
   {
     id: "2",
@@ -57,7 +57,7 @@ const mockAuctions: Auction[] = [
     categoryId: "electronics",
     status: "active",
     createdAt: new Date(),
-    totalBids: 10  // Added this
+    totalBids: 10
   },
   {
     id: "3",
@@ -72,7 +72,7 @@ const mockAuctions: Auction[] = [
     categoryId: "electronics",
     status: "active",
     createdAt: new Date(),
-    totalBids: 5  // Added this
+    totalBids: 5
   },
   {
     id: "4",
@@ -87,7 +87,7 @@ const mockAuctions: Auction[] = [
     categoryId: "electronics",
     status: "active",
     createdAt: new Date(),
-    totalBids: 8  // Added this
+    totalBids: 8
   },
   {
     id: "5",
@@ -102,15 +102,14 @@ const mockAuctions: Auction[] = [
     categoryId: "electronics",
     status: "active",
     createdAt: new Date(),
-    totalBids: 12  // Added this
+    totalBids: 12
   },
 ];
 
-// Generar 25 productos más automáticamente
 for (let i = 6; i <= 30; i++) {
-  const randomHours = Math.floor(Math.random() * 72); // Random hours up to 3 days
-  const randomPrice = Math.floor(Math.random() * 2000) + 500; // Random price between 500 and 2500
-  const randomBids = Math.floor(Math.random() * 50); // Random number of bids
+  const randomHours = Math.floor(Math.random() * 72);
+  const randomPrice = Math.floor(Math.random() * 2000) + 500;
+  const randomBids = Math.floor(Math.random() * 50);
   
   mockAuctions.push({
     id: i.toString(),
@@ -125,7 +124,7 @@ for (let i = 6; i <= 30; i++) {
     categoryId: "electronics",
     status: "active",
     createdAt: new Date(),
-    totalBids: randomBids  // Added this
+    totalBids: randomBids
   });
 }
 
@@ -156,166 +155,163 @@ const ExploreAuctions = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Sidebar Filters - Left aligned */}
           <div className="lg:col-span-1 -ml-4">
-              <div className="flex items-center gap-2 mb-6">
-                <Tag className="w-5 h-5 text-auction-primary" />
-                <h2 className="text-xl font-semibold text-auction-dark">
-                  Filtros
-                </h2>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Búsqueda</Label>
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      placeholder="Buscar subastas..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-50/50 border-gray-200 rounded-lg"
-                    />
-                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  </div>
-                </div>
-
-                <Separator className="my-4" />
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Categoría</Label>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
-                      <SelectValue placeholder="Todas las categorías" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas las categorías</SelectItem>
-                      {CATEGORIES.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-4">
-                  <Label className="text-sm font-medium text-gray-700">
-                    Rango de precio
-                  </Label>
-                  <div className="pt-2">
-                    <Slider
-                      defaultValue={[0, 5000]}
-                      max={5000}
-                      step={100}
-                      value={priceRange}
-                      onValueChange={(value) => setPriceRange(value as [number, number])}
-                      className="mb-4"
-                    />
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>{formatCurrency(priceRange[0])}</span>
-                      <span>{formatCurrency(priceRange[1])}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator className="my-4" />
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Estado</Label>
-                  <Select value={condition} onValueChange={setCondition}>
-                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
-                      <SelectValue placeholder="Seleccionar estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="new">Nuevo</SelectItem>
-                      <SelectItem value="like-new">Como nuevo</SelectItem>
-                      <SelectItem value="good">Buen estado</SelectItem>
-                      <SelectItem value="used">Usado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Ordenar por</Label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
-                      <SelectValue placeholder="Ordenar por" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="recent">Más recientes</SelectItem>
-                      <SelectItem value="ending-soon">Terminan pronto</SelectItem>
-                      <SelectItem value="price-asc">Precio más bajo</SelectItem>
-                      <SelectItem value="price-desc">Precio más alto</SelectItem>
-                      <SelectItem value="bids">Más pujas</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Separator className="my-4" />
-
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="buy-now"
-                      checked={onlyBuyNow}
-                      onCheckedChange={(checked) => setOnlyBuyNow(checked as boolean)}
-                    />
-                    <label
-                      htmlFor="buy-now"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Solo Cómpralo Ya
-                    </label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="with-photos"
-                      checked={onlyWithPhotos}
-                      onCheckedChange={(checked) => setOnlyWithPhotos(checked as boolean)}
-                    />
-                    <label
-                      htmlFor="with-photos"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Con fotos
-                    </label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="ending-soon"
-                      checked={endingSoon}
-                      onCheckedChange={(checked) => setEndingSoon(checked as boolean)}
-                    />
-                    <label
-                      htmlFor="ending-soon"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Terminan pronto
-                    </label>
-                  </div>
-                </div>
-
-                <Separator className="my-4" />
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Mínimo de pujas</Label>
+            <div className="flex items-center gap-2 mb-6">
+              <Tag className="w-5 h-5 text-auction-primary" />
+              <h2 className="text-xl font-semibold text-auction-dark">
+                Filtros
+              </h2>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">Búsqueda</Label>
+                <div className="relative">
                   <Input
-                    type="number"
-                    min="0"
-                    value={minBids}
-                    onChange={(e) => setMinBids(Number(e.target.value))}
-                    className="w-full bg-gray-50/50 rounded-lg border-gray-200"
+                    type="text"
+                    placeholder="Buscar subastas..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-gray-50/50 border-gray-200 rounded-lg"
                   />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">Categoría</Label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
+                    <SelectValue placeholder="Todas las categorías" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas las categorías</SelectItem>
+                    {CATEGORIES.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-4">
+                <Label className="text-sm font-medium text-gray-700">
+                  Rango de precio
+                </Label>
+                <div className="pt-2">
+                  <Slider
+                    defaultValue={[0, 5000]}
+                    max={5000}
+                    step={100}
+                    value={priceRange}
+                    onValueChange={(value) => setPriceRange(value as [number, number])}
+                    className="mb-4"
+                  />
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>{formatCurrency(priceRange[0])}</span>
+                    <span>{formatCurrency(priceRange[1])}</span>
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">Estado</Label>
+                <Select value={condition} onValueChange={setCondition}>
+                  <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
+                    <SelectValue placeholder="Seleccionar estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="new">Nuevo</SelectItem>
+                    <SelectItem value="like-new">Como nuevo</SelectItem>
+                    <SelectItem value="good">Buen estado</SelectItem>
+                    <SelectItem value="used">Usado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">Ordenar por</Label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full bg-gray-50/50 rounded-lg border-gray-200">
+                    <SelectValue placeholder="Ordenar por" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recent">Más recientes</SelectItem>
+                    <SelectItem value="ending-soon">Terminan pronto</SelectItem>
+                    <SelectItem value="price-asc">Precio más bajo</SelectItem>
+                    <SelectItem value="price-desc">Precio más alto</SelectItem>
+                    <SelectItem value="bids">Más pujas</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="buy-now"
+                    checked={onlyBuyNow}
+                    onCheckedChange={(checked) => setOnlyBuyNow(checked as boolean)}
+                  />
+                  <label
+                    htmlFor="buy-now"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Solo Cómpralo Ya
+                  </label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="with-photos"
+                    checked={onlyWithPhotos}
+                    onCheckedChange={(checked) => setOnlyWithPhotos(checked as boolean)}
+                  />
+                  <label
+                    htmlFor="with-photos"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Con fotos
+                  </label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="ending-soon"
+                    checked={endingSoon}
+                    onCheckedChange={(checked) => setEndingSoon(checked as boolean)}
+                  />
+                  <label
+                    htmlFor="ending-soon"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Terminan pronto
+                  </label>
+                </div>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">Mínimo de pujas</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={minBids}
+                  onChange={(e) => setMinBids(Number(e.target.value))}
+                  className="w-full bg-gray-50/50 rounded-lg border-gray-200"
+                />
               </div>
             </div>
           </div>
 
-          {/* Auction Grid - Enhanced */}
           <div className="lg:col-span-4">
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {auctions.map((auction) => {
@@ -331,7 +327,6 @@ const ExploreAuctions = () => {
                     className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
                   >
                     <div className="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100">
-                      {/* Image container with badges */}
                       <div className="relative aspect-square">
                         <img
                           src={auction.imageUrl}
@@ -353,7 +348,6 @@ const ExploreAuctions = () => {
                         )}
                       </div>
 
-                      {/* Content */}
                       <div className="p-4 space-y-3 relative">
                         <button
                           onClick={(e) => {
