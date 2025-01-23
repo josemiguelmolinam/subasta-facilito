@@ -13,7 +13,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Heart, Timer, Gavel, Star, Search, Tag, Eye, Clock } from "lucide-react";
+import { Heart, Timer, Gavel, Star, Search, Tag, Truck, Clock } from "lucide-react";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useNavigate } from "react-router-dom";
 import { CATEGORIES, PRICE_RANGES } from "@/lib/constants";
@@ -22,9 +22,7 @@ import { calculateTimeLeft, formatTimeLeft } from "@/lib/utils/countdown";
 import { cn } from "@/lib/utils";
 import { Auction } from "@/types";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
-// Mock data - Replace with real API call
 const mockAuctions: Auction[] = [
   {
     id: "1",
@@ -158,8 +156,8 @@ const ExploreAuctions = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Sidebar Filters - Enhanced */}
-          <div className="lg:col-span-1">
+          {/* Sidebar Filters - Moved to the left */}
+          <div className="lg:col-span-1 lg:-ml-8">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24 space-y-6 border border-gray-100">
               <div className="flex items-center gap-2 mb-6">
                 <Tag className="w-5 h-5 text-auction-primary" />
@@ -325,6 +323,7 @@ const ExploreAuctions = () => {
                 const timeLeft = calculateTimeLeft(auction.endDate);
                 const formattedTime = formatTimeLeft(timeLeft);
                 const isEnding = timeLeft.minutes < 10 && timeLeft.hours === 0 && timeLeft.days === 0;
+                const isNew = new Date().getTime() - new Date(auction.createdAt).getTime() < 1000 * 60 * 60 * 24; // 24 hours
 
                 return (
                   <div
@@ -333,16 +332,32 @@ const ExploreAuctions = () => {
                     className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
                   >
                     <div className="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100">
-                      {/* Image and Wishlist */}
+                      {/* Image container with New badge and Wishlist */}
                       <div className="relative aspect-square">
                         <img
                           src={auction.imageUrl}
                           alt={auction.title}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
+                        {isNew ? (
+                          <Badge
+                            className="absolute top-3 left-3 bg-[#D946EF] text-white border-0 px-3 py-1"
+                          >
+                            Nuevo
+                          </Badge>
+                        ) : auction.status === "featured" && (
+                          <Badge
+                            className="absolute top-3 left-3 bg-auction-primary text-white border-0 px-3 py-1"
+                          >
+                            Destacado
+                          </Badge>
+                        )}
                         <button
-                          onClick={(e) => handleWishlist(e, auction)}
-                          className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-300 hover:scale-110"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleWishlist(e, auction);
+                          }}
+                          className="absolute top-0 right-0 p-3 bg-white/90 hover:bg-white rounded-bl-xl shadow-md transition-all duration-300 hover:scale-110"
                         >
                           <Heart
                             className={cn(
@@ -353,23 +368,15 @@ const ExploreAuctions = () => {
                             )}
                           />
                         </button>
-                        {auction.totalBids > 0 && (
-                          <Badge
-                            className="absolute bottom-3 left-3 bg-white/90 text-auction-primary border-auction-primary"
-                          >
-                            <Gavel className="w-3 h-3 mr-1" />
-                            {auction.totalBids} pujas
-                          </Badge>
-                        )}
                       </div>
 
                       {/* Content */}
-                      <div className="p-4 space-y-4">
-                        <div className="space-y-2">
-                          <h3 className="font-semibold text-lg text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors">
-                            {auction.title}
-                          </h3>
+                      <div className="p-4 space-y-3">
+                        <h3 className="font-semibold text-lg text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors">
+                          {auction.title}
+                        </h3>
 
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Clock
                               className={cn(
@@ -386,9 +393,16 @@ const ExploreAuctions = () => {
                               {formattedTime}
                             </span>
                           </div>
+                          
+                          <Badge
+                            className="bg-auction-soft text-auction-primary border-auction-primary/20"
+                          >
+                            <Gavel className="w-3 h-3 mr-1" />
+                            {auction.totalBids} pujas
+                          </Badge>
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="text-sm text-gray-500">Puja actual</span>
                             <span className="text-lg font-bold text-auction-primary">
@@ -397,33 +411,23 @@ const ExploreAuctions = () => {
                           </div>
 
                           {auction.buyNowPrice && (
-                            <div className="pt-2 border-t border-gray-100">
-                              <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-500">Cómpralo ya</span>
-                                <span className="text-base font-semibold text-[#00BA88]">
-                                  {formatCurrency(auction.buyNowPrice)}
-                                </span>
-                              </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-[#D946EF]">Cómpralo ya</span>
+                              <span className="text-base font-semibold text-black">
+                                {formatCurrency(auction.buyNowPrice)}
+                              </span>
                             </div>
                           )}
-                        </div>
 
-                        <div className="grid grid-cols-2 gap-2 pt-2">
-                          <Button 
-                            variant="outline"
-                            className="w-full hover:bg-auction-soft hover:text-auction-primary transition-colors group/btn"
-                          >
-                            <Gavel className="w-4 h-4 mr-1 group-hover/btn:animate-bounce" />
-                            Pujar
-                          </Button>
-                          {auction.buyNowPrice && (
-                            <Button 
-                              className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-colors group/btn"
-                            >
-                              <Eye className="w-4 h-4 mr-1 group-hover/btn:animate-pulse" />
-                              Ver más
-                            </Button>
-                          )}
+                          <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500">
+                              <Truck className="w-4 h-4" />
+                              <span className="text-sm">Envío</span>
+                            </div>
+                            <span className="text-sm font-medium text-gray-700">
+                              {auction.shippingCost === 0 ? "Gratis" : formatCurrency(auction.shippingCost || 4.99)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
