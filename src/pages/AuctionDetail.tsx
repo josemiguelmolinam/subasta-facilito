@@ -13,7 +13,6 @@ import {
   Hammer,
   ShoppingCart,
   Truck,
-  MessageCircle,
   Clock
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,6 +24,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Map from "@/components/Map";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 const AuctionDetail = () => {
   const { id } = useParams();
@@ -119,7 +119,7 @@ const AuctionDetail = () => {
             </Carousel>
 
             <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={auction.seller.avatar} />
                   <AvatarFallback>{auction.seller.name[0]}</AvatarFallback>
@@ -137,9 +137,9 @@ const AuctionDetail = () => {
 
               {auction.seller.verified && (
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2 text-gray-900">
+                  <div className="flex items-center space-x-2">
                     <ShieldCheck className="w-5 h-5 text-green-600" />
-                    <span className="font-medium">Vendedor verificado</span>
+                    <span className="font-medium text-gray-900">Vendedor verificado</span>
                   </div>
                   <p className="text-sm text-gray-500">
                     Miembro desde {auction.seller.memberSince}
@@ -149,7 +149,7 @@ const AuctionDetail = () => {
 
               <Button 
                 variant="outline" 
-                className="w-full"
+                className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all duration-300"
                 onClick={() => console.log("Open chat")}
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
@@ -158,33 +158,47 @@ const AuctionDetail = () => {
 
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4" />
+                  <MapPin className="w-4 h-4 text-auction-primary" />
                   <span>{auction.location.address}</span>
                 </div>
                 <Map location={auction.location.coordinates} address={auction.location.address} />
               </div>
             </div>
 
-            {/* Opciones de envío */}
-            <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
-              <h4 className="font-medium text-lg">Opciones de envío</h4>
-              {auction.shippingOptions.map((option, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="flex items-center space-x-3">
-                    <Truck className="w-5 h-5 text-auction-secondary" />
-                    <div>
-                      <p className="font-medium">{option.carrier}</p>
-                      <p className="text-sm text-gray-600">{option.time}</p>
+            {/* Opciones de envío como desplegable */}
+            <div className="bg-white rounded-xl p-6 shadow-md">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="shipping">
+                  <AccordionTrigger className="text-lg font-medium">
+                    Opciones de envío
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-4">
+                      {[
+                        { carrier: "Correos Express", price: 4.99, time: "24-48 horas" },
+                        { carrier: "DHL", price: 9.99, time: "24 horas" },
+                        { carrier: "GLS", price: 7.99, time: "48-72 horas" }
+                      ].map((option, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <Truck className="w-5 h-5 text-auction-secondary" />
+                            <div>
+                              <p className="font-medium">{option.carrier}</p>
+                              <p className="text-sm text-gray-600">{option.time}</p>
+                            </div>
+                          </div>
+                          <span className="font-medium text-auction-primary">
+                            {formatCurrency(option.price)}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                  <span className="font-medium">
-                    {formatCurrency(option.price)}
-                  </span>
-                </div>
-              ))}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
 
@@ -206,14 +220,14 @@ const AuctionDetail = () => {
                   <div className="text-3xl font-bold text-auction-primary">
                     {formatCurrency(auction.currentBid)}
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <div className="flex items-center space-x-2 text-sm text-auction-secondary">
                     <Hammer className="w-4 h-4" />
                     <span>{auction.totalBids} pujas</span>
                   </div>
                 </div>
                 <div className="text-right space-y-1">
                   <span className="text-sm text-gray-600">Tiempo restante</span>
-                  <div className="text-xl font-semibold text-auction-secondary flex items-center justify-end space-x-2">
+                  <div className="text-xl font-semibold text-auction-tertiary flex items-center justify-end space-x-2">
                     <Clock className="w-5 h-5" />
                     <span>{timeLeft}</span>
                   </div>
@@ -225,16 +239,15 @@ const AuctionDetail = () => {
                   size="lg"
                   className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all group"
                 >
-                  <Hammer className="w-5 h-5 mr-2 transition-transform group-hover:rotate-12" />
-                  Hacer puja
+                  <Hammer className="w-6 h-6 mr-2 transition-transform group-hover:rotate-12" />
+                  Pujar
                 </Button>
                 
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="w-full hover:bg-auction-soft hover:text-auction-primary transition-colors font-display text-lg"
+                  className="w-full bg-white text-auction-primary border-2 border-auction-primary hover:bg-red-100 hover:border-red-300 transition-all duration-300 font-display text-lg group"
                 >
-                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  <ShoppingCart className="w-5 h-5 mr-2 transition-transform group-hover:translate-x-1" />
                   ¡Cómpralo ya!
                 </Button>
               </div>
