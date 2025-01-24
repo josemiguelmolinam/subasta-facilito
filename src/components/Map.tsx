@@ -1,64 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface MapProps {
-  location: { lat: number; lng: number };
+  location: {
+    lat: number;
+    lng: number;
+  };
   address: string;
 }
 
-const Map = ({ location, address }: MapProps) => {
+const Map: React.FC<MapProps> = ({ location, address }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!mapContainer.current || !location) {
-      console.log('Map container or location not available');
+    if (!mapContainer.current) {
+      console.log('Map container not found');
       return;
     }
 
-    // Clean up existing instances before creating new ones
-    if (map.current) {
-      console.log('Map already initialized, cleaning up...');
-      if (marker.current) {
-        marker.current.remove();
-      }
-      map.current.remove();
-    }
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbHMxYzBtYnQwMGR1MmpxcDh5Z3Jld2tzIn0.PJrwU3QQZRiJZn8yNK_W_g';
-    
     try {
-      console.log('Initializing map with coordinates:', location);
-      
-      const mapInstance = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [location.lng, location.lat],
-        zoom: 14
-      });
-
-      const markerInstance = new mapboxgl.Marker()
-        .setLngLat([location.lng, location.lat]);
-
-      mapInstance.on('load', () => {
-        console.log('Map loaded successfully');
-        markerInstance.addTo(mapInstance);
-      });
-
-      // Only set refs after successful initialization
-      map.current = mapInstance;
-      marker.current = markerInstance;
-
-    } catch (error) {
-      console.error('Error initializing map:', error);
-    }
-
-    return () => {
-      console.log('Cleaning up map instance');
+      // Clean up existing instances
       if (marker.current) {
         marker.current.remove();
         marker.current = null;
@@ -67,33 +31,57 @@ const Map = ({ location, address }: MapProps) => {
         map.current.remove();
         map.current = null;
       }
-    };
-  }, [location]);
 
-  useEffect(() => {
-    if (isOpen && map.current) {
-      console.log('Dialog opened, resizing map');
-      setTimeout(() => {
-        map.current?.resize();
-      }, 100);
+      // Initialize map
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGVhcnRleHQifQ.dGVlYXJ0ZXh0'; // Replace with your token
+      
+      const newMap = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [location.lng, location.lat],
+        zoom: 14,
+      });
+
+      // Add navigation control
+      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Add marker
+      const newMarker = new mapboxgl.Marker()
+        .setLngLat([location.lng, location.lat])
+        .addTo(newMap);
+
+      // Store references
+      map.current = newMap;
+      marker.current = newMarker;
+
+      console.log('Map initialized successfully');
+
+    } catch (error) {
+      console.error('Error initializing map:', error);
     }
-  }, [isOpen]);
+
+    // Cleanup function
+    return () => {
+      console.log('Cleaning up map component');
+      try {
+        if (marker.current) {
+          marker.current.remove();
+          marker.current = null;
+        }
+        if (map.current) {
+          map.current.remove();
+          map.current = null;
+        }
+      } catch (error) {
+        console.error('Error during cleanup:', error);
+      }
+    };
+  }, [location.lat, location.lng]);
 
   return (
-    <>
-      <div 
-        className="h-40 rounded-lg overflow-hidden cursor-pointer"
-        onClick={() => setIsOpen(true)}
-      >
-        <div ref={mapContainer} className="w-full h-full" />
-      </div>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-3xl h-[80vh]">
-          <div ref={mapContainer} className="w-full h-full rounded-lg" />
-        </DialogContent>
-      </Dialog>
-    </>
+    <div className="w-full h-64 rounded-lg overflow-hidden">
+      <div ref={mapContainer} className="w-full h-full" />
+    </div>
   );
 };
 
