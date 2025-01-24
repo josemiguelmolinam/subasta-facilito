@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 
 interface MapProps {
   location: {
@@ -14,10 +16,12 @@ const Map: React.FC<MapProps> = ({ location, address }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
+  const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [showTokenInput, setShowTokenInput] = useState(true);
 
-  useEffect(() => {
-    if (!mapContainer.current) {
-      console.log('Map container not found');
+  const initializeMap = () => {
+    if (!mapContainer.current || !mapboxToken) {
+      console.log('Map container or token not available');
       return;
     }
 
@@ -32,33 +36,40 @@ const Map: React.FC<MapProps> = ({ location, address }) => {
         map.current = null;
       }
 
-      // Initialize map only if container exists and map hasn't been created
-      if (!map.current) {
-        mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGVhcnRleHQifQ.dGVlYXJ0ZXh0'; // Replace with your token
-        
-        const newMap = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/light-v11',
-          center: [location.lng, location.lat],
-          zoom: 14,
-        });
+      // Set the access token
+      mapboxgl.accessToken = mapboxToken;
 
-        // Add navigation control
-        newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      // Create new map instance
+      const newMap = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [location.lng, location.lat],
+        zoom: 14,
+      });
 
-        // Create marker
-        const newMarker = new mapboxgl.Marker()
-          .setLngLat([location.lng, location.lat])
-          .addTo(newMap);
+      // Add navigation control
+      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-        // Store references
-        map.current = newMap;
-        marker.current = newMarker;
+      // Create marker
+      const newMarker = new mapboxgl.Marker()
+        .setLngLat([location.lng, location.lat])
+        .addTo(newMap);
 
-        console.log('Map initialized successfully');
-      }
+      // Store references
+      map.current = newMap;
+      marker.current = newMarker;
+      setShowTokenInput(false);
+
+      console.log('Map initialized successfully');
     } catch (error) {
       console.error('Error initializing map:', error);
+      setShowTokenInput(true);
+    }
+  };
+
+  useEffect(() => {
+    if (mapboxToken) {
+      initializeMap();
     }
 
     // Cleanup function
@@ -77,7 +88,35 @@ const Map: React.FC<MapProps> = ({ location, address }) => {
         console.error('Error during cleanup:', error);
       }
     };
-  }, [location.lat, location.lng]);
+  }, [location.lat, location.lng, mapboxToken]);
+
+  if (showTokenInput) {
+    return (
+      <div className="space-y-4 p-4 border rounded-lg">
+        <p className="text-sm text-gray-600">
+          Please enter your Mapbox public token. You can find it at{' '}
+          <a 
+            href="https://www.mapbox.com/account/access-tokens" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:text-blue-600"
+          >
+            mapbox.com
+          </a>
+        </p>
+        <Input
+          type="text"
+          value={mapboxToken}
+          onChange={(e) => setMapboxToken(e.target.value)}
+          placeholder="Enter your Mapbox public token"
+          className="w-full"
+        />
+        <Button onClick={initializeMap} className="w-full">
+          Initialize Map
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-64 rounded-lg overflow-hidden">
