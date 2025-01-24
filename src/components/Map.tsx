@@ -32,30 +32,31 @@ const Map: React.FC<MapProps> = ({ location, address }) => {
         map.current = null;
       }
 
-      // Initialize map
-      mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGVhcnRleHQifQ.dGVlYXJ0ZXh0'; // Replace with your token
-      
-      const newMap = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [location.lng, location.lat],
-        zoom: 14,
-      });
+      // Initialize map only if container exists and map hasn't been created
+      if (!map.current) {
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGVhcnRleHQifQ.dGVlYXJ0ZXh0'; // Replace with your token
+        
+        const newMap = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/light-v11',
+          center: [location.lng, location.lat],
+          zoom: 14,
+        });
 
-      // Add navigation control
-      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        // Add navigation control
+        newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-      // Add marker
-      const newMarker = new mapboxgl.Marker()
-        .setLngLat([location.lng, location.lat])
-        .addTo(newMap);
+        // Create marker
+        const newMarker = new mapboxgl.Marker()
+          .setLngLat([location.lng, location.lat])
+          .addTo(newMap);
 
-      // Store references
-      map.current = newMap;
-      marker.current = newMarker;
+        // Store references
+        map.current = newMap;
+        marker.current = newMarker;
 
-      console.log('Map initialized successfully');
-
+        console.log('Map initialized successfully');
+      }
     } catch (error) {
       console.error('Error initializing map:', error);
     }
