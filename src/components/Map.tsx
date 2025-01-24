@@ -11,11 +11,11 @@ interface MapProps {
 const Map = ({ location, address }: MapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const marker = useRef<mapboxgl.Marker | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [mapInitialized, setMapInitialized] = useState(false);
 
   useEffect(() => {
-    if (!mapContainer.current || mapInitialized) return;
+    if (!mapContainer.current || !location) return;
 
     // Replace this with your actual Mapbox token
     mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbHMxYzBtYnQwMGR1MmpxcDh5Z3Jld2tzIn0.PJrwU3QQZRiJZn8yNK_W_g';
@@ -23,6 +23,7 @@ const Map = ({ location, address }: MapProps) => {
     try {
       console.log('Initializing map with coordinates:', location);
       
+      // Create new map instance
       const newMap = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
@@ -30,32 +31,45 @@ const Map = ({ location, address }: MapProps) => {
         zoom: 14
       });
 
+      // Create marker
+      const newMarker = new mapboxgl.Marker()
+        .setLngLat([location.lng, location.lat]);
+
       newMap.on('load', () => {
         console.log('Map loaded successfully');
-        new mapboxgl.Marker()
-          .setLngLat([location.lng, location.lat])
-          .addTo(newMap);
+        if (newMarker) {
+          newMarker.addTo(newMap);
+        }
       });
 
+      // Store references
       map.current = newMap;
-      setMapInitialized(true);
+      marker.current = newMarker;
 
     } catch (error) {
       console.error('Error initializing map:', error);
     }
 
+    // Cleanup function
     return () => {
+      console.log('Cleaning up map instance');
+      if (marker.current) {
+        marker.current.remove();
+        marker.current = null;
+      }
       if (map.current) {
-        console.log('Cleaning up map');
         map.current.remove();
+        map.current = null;
       }
     };
-  }, [location, mapInitialized]);
+  }, [location]);
 
-  // Reinitialize map when dialog opens
+  // Handle map resize when dialog opens
   useEffect(() => {
     if (isOpen && map.current) {
-      map.current.resize();
+      setTimeout(() => {
+        map.current?.resize();
+      }, 100);
     }
   }, [isOpen]);
 
