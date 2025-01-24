@@ -20,6 +20,7 @@ const Map = ({ location, address }: MapProps) => {
       return;
     }
 
+    // Clean up existing instances before creating new ones
     if (map.current) {
       console.log('Map already initialized, cleaning up...');
       if (marker.current) {
@@ -33,22 +34,24 @@ const Map = ({ location, address }: MapProps) => {
     try {
       console.log('Initializing map with coordinates:', location);
       
-      map.current = new mapboxgl.Map({
+      const mapInstance = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
         center: [location.lng, location.lat],
         zoom: 14
       });
 
-      marker.current = new mapboxgl.Marker()
+      const markerInstance = new mapboxgl.Marker()
         .setLngLat([location.lng, location.lat]);
 
-      map.current.on('load', () => {
+      mapInstance.on('load', () => {
         console.log('Map loaded successfully');
-        if (marker.current && map.current) {
-          marker.current.addTo(map.current);
-        }
+        markerInstance.addTo(mapInstance);
       });
+
+      // Only set refs after successful initialization
+      map.current = mapInstance;
+      marker.current = markerInstance;
 
     } catch (error) {
       console.error('Error initializing map:', error);
