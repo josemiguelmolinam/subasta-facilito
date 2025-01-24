@@ -15,42 +15,45 @@ const Map = ({ location, address }: MapProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!mapContainer.current || !location) return;
+    if (!mapContainer.current || !location) {
+      console.log('Map container or location not available');
+      return;
+    }
 
-    // Replace this with your actual Mapbox token
+    if (map.current) {
+      console.log('Map already initialized, cleaning up...');
+      if (marker.current) {
+        marker.current.remove();
+      }
+      map.current.remove();
+    }
+
     mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbHMxYzBtYnQwMGR1MmpxcDh5Z3Jld2tzIn0.PJrwU3QQZRiJZn8yNK_W_g';
     
     try {
       console.log('Initializing map with coordinates:', location);
       
-      // Create new map instance
-      const newMap = new mapboxgl.Map({
+      map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
         center: [location.lng, location.lat],
         zoom: 14
       });
 
-      // Create marker
-      const newMarker = new mapboxgl.Marker()
+      marker.current = new mapboxgl.Marker()
         .setLngLat([location.lng, location.lat]);
 
-      newMap.on('load', () => {
+      map.current.on('load', () => {
         console.log('Map loaded successfully');
-        if (newMarker) {
-          newMarker.addTo(newMap);
+        if (marker.current && map.current) {
+          marker.current.addTo(map.current);
         }
       });
-
-      // Store references
-      map.current = newMap;
-      marker.current = newMarker;
 
     } catch (error) {
       console.error('Error initializing map:', error);
     }
 
-    // Cleanup function
     return () => {
       console.log('Cleaning up map instance');
       if (marker.current) {
@@ -64,9 +67,9 @@ const Map = ({ location, address }: MapProps) => {
     };
   }, [location]);
 
-  // Handle map resize when dialog opens
   useEffect(() => {
     if (isOpen && map.current) {
+      console.log('Dialog opened, resizing map');
       setTimeout(() => {
         map.current?.resize();
       }, 100);
