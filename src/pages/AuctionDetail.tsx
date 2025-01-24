@@ -13,7 +13,8 @@ import {
   Hammer,
   ShoppingCart,
   Truck,
-  MessageCircle
+  MessageCircle,
+  Clock
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -22,8 +23,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import Map from "@/components/Map";
 
@@ -34,6 +33,7 @@ const AuctionDetail = () => {
   const auction = {
     id: "1",
     title: "iPhone 15 Pro Max - 256GB",
+    condition: "Nuevo",
     description: "Nuevo iPhone 15 Pro Max con 256GB de almacenamiento. Color Titanium.",
     images: [
       "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
@@ -54,7 +54,19 @@ const AuctionDetail = () => {
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
       rating: 4.8,
       totalSales: 1250,
-      verified: true
+      verified: true,
+      memberSince: "23 de Enero de 2023, 15:13"
+    },
+    specifications: {
+      marca: "Apple",
+      modelo: "iPhone 15 Pro Max",
+      almacenamiento: "256GB",
+      color: "Titanium",
+      estado: "Nuevo",
+      pantalla: "6.7 pulgadas OLED",
+      procesador: "A17 Pro",
+      camara: "48MP + 12MP + 12MP",
+      bateria: "4422 mAh"
     },
     reviews: [
       {
@@ -79,14 +91,7 @@ const AuctionDetail = () => {
     shippingOptions: [
       { carrier: "Correos", price: 4.99, time: "3-5 días" },
       { carrier: "DHL", price: 9.99, time: "24-48 horas" }
-    ],
-    specifications: {
-      condition: "Nuevo",
-      brand: "Apple",
-      model: "iPhone 15 Pro Max",
-      storage: "256GB",
-      color: "Titanium"
-    }
+    ]
   };
 
   const timeLeft = formatTimeLeft(auction.endDate);
@@ -111,8 +116,6 @@ const AuctionDetail = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
             </Carousel>
 
             <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
@@ -133,9 +136,14 @@ const AuctionDetail = () => {
               </div>
 
               {auction.seller.verified && (
-                <div className="flex items-center space-x-2 text-green-600">
-                  <ShieldCheck className="w-5 h-5" />
-                  <span className="text-sm font-medium">Vendedor verificado</span>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2 text-gray-900">
+                    <ShieldCheck className="w-5 h-5 text-green-600" />
+                    <span className="font-medium">Vendedor verificado</span>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    Miembro desde {auction.seller.memberSince}
+                  </p>
                 </div>
               )}
 
@@ -156,11 +164,37 @@ const AuctionDetail = () => {
                 <Map location={auction.location.coordinates} address={auction.location.address} />
               </div>
             </div>
+
+            {/* Opciones de envío */}
+            <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
+              <h4 className="font-medium text-lg">Opciones de envío</h4>
+              {auction.shippingOptions.map((option, index) => (
+                <div 
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Truck className="w-5 h-5 text-auction-secondary" />
+                    <div>
+                      <p className="font-medium">{option.carrier}</p>
+                      <p className="text-sm text-gray-600">{option.time}</p>
+                    </div>
+                  </div>
+                  <span className="font-medium">
+                    {formatCurrency(option.price)}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Columna derecha - Información del producto */}
           <div className="space-y-6">
             <div>
+              <div className="flex justify-between items-start mb-4">
+                <Badge variant="secondary" className="mb-2">{auction.condition}</Badge>
+                <span className="text-sm text-gray-500">ID: {auction.id}</span>
+              </div>
               <h1 className="text-3xl font-bold text-auction-dark mb-4">{auction.title}</h1>
               <p className="text-gray-600">{auction.description}</p>
             </div>
@@ -179,8 +213,9 @@ const AuctionDetail = () => {
                 </div>
                 <div className="text-right space-y-1">
                   <span className="text-sm text-gray-600">Tiempo restante</span>
-                  <div className="text-xl font-semibold text-auction-secondary">
-                    {timeLeft}
+                  <div className="text-xl font-semibold text-auction-secondary flex items-center justify-end space-x-2">
+                    <Clock className="w-5 h-5" />
+                    <span>{timeLeft}</span>
                   </div>
                 </div>
               </div>
@@ -188,7 +223,7 @@ const AuctionDetail = () => {
               <div className="grid grid-cols-2 gap-4">
                 <Button 
                   size="lg"
-                  className="w-full group"
+                  className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all group"
                 >
                   <Hammer className="w-5 h-5 mr-2 transition-transform group-hover:rotate-12" />
                   Hacer puja
@@ -197,32 +232,11 @@ const AuctionDetail = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                  className="w-full hover:bg-auction-soft hover:text-auction-primary transition-colors font-display text-lg"
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  Comprar {formatCurrency(auction.buyNowPrice)}
+                  ¡Cómpralo ya!
                 </Button>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-medium">Opciones de envío</h4>
-                {auction.shippingOptions.map((option, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-white rounded-lg"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <Truck className="w-5 h-5 text-auction-secondary" />
-                      <div>
-                        <p className="font-medium">{option.carrier}</p>
-                        <p className="text-sm text-gray-600">{option.time}</p>
-                      </div>
-                    </div>
-                    <span className="font-medium">
-                      {formatCurrency(option.price)}
-                    </span>
-                  </div>
-                ))}
               </div>
             </div>
 
@@ -234,16 +248,15 @@ const AuctionDetail = () => {
               
               <TabsContent value="details" className="mt-4">
                 <div className="bg-white rounded-lg p-4">
-                  {auction.specifications && (
-                    <dl className="space-y-2">
-                      {Object.entries(auction.specifications).map(([key, value]) => (
-                        <div key={key} className="grid grid-cols-2 gap-4 py-2 border-b border-gray-100 last:border-0">
-                          <dt className="text-gray-500 capitalize">{key}</dt>
-                          <dd className="font-medium text-auction-dark">{value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  )}
+                  <h3 className="font-semibold mb-4">Especificaciones</h3>
+                  <dl className="space-y-2">
+                    {Object.entries(auction.specifications).map(([key, value]) => (
+                      <div key={key} className="grid grid-cols-2 gap-4 py-2 border-b border-gray-100 last:border-0">
+                        <dt className="text-gray-500 capitalize">{key}</dt>
+                        <dd className="font-medium text-auction-dark">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
                 </div>
               </TabsContent>
               
