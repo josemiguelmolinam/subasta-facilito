@@ -300,6 +300,15 @@ const AuctionDetail = () => {
         </Button>
       </div>
 
+      {/* Mapa de ubicación */}
+      <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className="flex items-center space-x-2 mb-4">
+          <MapPin className="w-5 h-5 text-auction-primary" />
+          <span className="font-medium">Ubicación del vendedor</span>
+        </div>
+        <Map location={auction.location.coordinates} address={auction.location.address} />
+      </div>
+
       {/* Opciones de Envío */}
       <Accordion type="single" collapsible className="bg-white rounded-xl shadow-sm">
         <AccordionItem value="shipping">
