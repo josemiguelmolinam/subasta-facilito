@@ -96,7 +96,7 @@ const ShareButton = ({ url, title }: { url: string, title: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="p-2">
         <div className="flex gap-2">
-          <FacebookShareButton url={url} quote={title}>
+          <FacebookShareButton url={url} title={title}>
             <FacebookIcon size={32} round />
           </FacebookShareButton>
           <TwitterShareButton url={url} title={title}>
