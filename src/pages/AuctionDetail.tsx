@@ -18,7 +18,8 @@ import {
   Eye,
   Heart,
   Calendar,
-  Shield
+  Shield,
+  Share2
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
 } from "@/components/ui/carousel";
 import Map from "@/components/Map";
 import { 
@@ -44,6 +47,97 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const ImageCarousel = ({ images, title }: { images: string[], title: string }) => {
+  return (
+    <Carousel className="w-full relative group">
+      <CarouselContent>
+        {images.map((image, index) => (
+          <CarouselItem key={index}>
+            <div className="aspect-square relative rounded-xl overflow-hidden">
+              <img
+                src={image}
+                alt={`${title} - Image ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="opacity-0 group-hover:opacity-100 transition-opacity" />
+      <CarouselNext className="opacity-0 group-hover:opacity-100 transition-opacity" />
+    </Carousel>
+  );
+};
+
+const ShareButton = ({ url, title }: { url: string, title: string }) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon" className="rounded-full">
+          <Share2 className="h-5 w-5" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="p-2">
+        <div className="flex gap-2">
+          <FacebookShareButton url={url} quote={title}>
+            <FacebookIcon size={32} round />
+          </FacebookShareButton>
+          <TwitterShareButton url={url} title={title}>
+            <TwitterIcon size={32} round />
+          </TwitterShareButton>
+          <WhatsappShareButton url={url} title={title}>
+            <WhatsappIcon size={32} round />
+          </WhatsappShareButton>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const WishlistButton = ({ auction }: { auction: any }) => {
+  const { addItem, removeItem, isInWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(auction.id);
+
+  const handleWishlistClick = () => {
+    if (isWishlisted) {
+      removeItem(auction.id);
+    } else {
+      addItem(auction);
+    }
+  };
+
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className="rounded-full"
+      onClick={handleWishlistClick}
+    >
+      <Heart
+        className={`h-5 w-5 ${
+          isWishlisted ? "fill-red-500 text-red-500" : ""
+        }`}
+      />
+    </Button>
+  );
+};
 
 const AuctionDetail = () => {
   const isMobile = useIsMobile();
@@ -139,22 +233,13 @@ const AuctionDetail = () => {
 
   const MobileLayout = () => (
     <div className="space-y-6">
-      {/* Carrusel de imágenes */}
-      <Carousel className="w-full">
-        <CarouselContent>
-          {auction.images.map((image, index) => (
-            <CarouselItem key={index}>
-              <div className="aspect-square rounded-xl overflow-hidden">
-                <img
-                  src={image}
-                  alt={`${auction.title} - Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <div className="relative">
+        <ImageCarousel images={auction.images} title={auction.title} />
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
+          <WishlistButton auction={auction} />
+          <ShareButton url={window.location.href} title={auction.title} />
+        </div>
+      </div>
 
       {/* ID y Estado */}
       <div className="flex justify-between items-center">
@@ -386,21 +471,13 @@ const AuctionDetail = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Columna izquierda - Imágenes y detalles del vendedor */}
       <div className="space-y-6">
-        <Carousel className="w-full max-w-xl mx-auto">
-          <CarouselContent>
-            {auction.images.map((image, index) => (
-              <CarouselItem key={index}>
-                <div className="aspect-square rounded-xl overflow-hidden">
-                  <img
-                    src={image}
-                    alt={`${auction.title} - Image ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <div className="relative">
+          <ImageCarousel images={auction.images} title={auction.title} />
+          <div className="absolute top-4 right-4 flex gap-2 z-10">
+            <WishlistButton auction={auction} />
+            <ShareButton url={window.location.href} title={auction.title} />
+          </div>
+        </div>
 
         <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
           <div className="flex items-center space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
