@@ -65,24 +65,46 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const ImageCarousel = ({ images, title }: { images: string[], title: string }) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   return (
-    <Carousel className="w-full relative group">
-      <CarouselContent>
+    <div className="space-y-4">
+      <Carousel className="w-full relative group">
+        <CarouselContent>
+          {images.map((image, index) => (
+            <CarouselItem key={index}>
+              <div className="aspect-square relative rounded-xl overflow-hidden">
+                <img
+                  src={image}
+                  alt={`${title} - Image ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="opacity-0 group-hover:opacity-100 transition-opacity" />
+        <CarouselNext className="opacity-0 group-hover:opacity-100 transition-opacity" />
+      </Carousel>
+      
+      <div className="flex gap-2 overflow-x-auto pb-2">
         {images.map((image, index) => (
-          <CarouselItem key={index}>
-            <div className="aspect-square relative rounded-xl overflow-hidden">
-              <img
-                src={image}
-                alt={`${title} - Image ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </CarouselItem>
+          <button
+            key={index}
+            onClick={() => setSelectedIndex(index)}
+            className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+              selectedIndex === index ? 'border-auction-primary' : 'border-transparent hover:border-auction-secondary'
+            }`}
+          >
+            <img
+              src={image}
+              alt={`Thumbnail ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </button>
         ))}
-      </CarouselContent>
-      <CarouselPrevious className="opacity-0 group-hover:opacity-100 transition-opacity" />
-      <CarouselNext className="opacity-0 group-hover:opacity-100 transition-opacity" />
-    </Carousel>
+      </div>
+    </div>
   );
 };
 
@@ -675,3 +697,4 @@ const AuctionDetail = () => {
 };
 
 export default AuctionDetail;
+
