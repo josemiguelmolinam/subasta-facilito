@@ -66,18 +66,28 @@ import {
 
 const ImageCarousel = ({ images, title }: { images: string[], title: string }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const displayedThumbnails = images.slice(0, 6);
+
+  const handleThumbnailClick = (index: number) => {
+    setSelectedIndex(index);
+    console.log('Thumbnail clicked:', index);
+  };
 
   return (
     <div className="space-y-4">
-      <Carousel className="w-full relative group">
+      <Carousel 
+        className="w-full relative group"
+        defaultSlide={selectedIndex}
+        key={selectedIndex}
+      >
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index}>
-              <div className="aspect-square relative rounded-xl overflow-hidden">
+              <div className="aspect-[4/3] relative rounded-xl overflow-hidden bg-gray-100">
                 <img
                   src={image}
                   alt={`${title} - Image ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
             </CarouselItem>
@@ -87,20 +97,22 @@ const ImageCarousel = ({ images, title }: { images: string[], title: string }) =
         <CarouselNext className="opacity-0 group-hover:opacity-100 transition-opacity" />
       </Carousel>
       
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {images.map((image, index) => (
+      <div className="flex gap-2 justify-center">
+        {displayedThumbnails.map((image, index) => (
           <button
             key={index}
-            onClick={() => setSelectedIndex(index)}
-            className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-              selectedIndex === index ? 'border-auction-primary' : 'border-transparent hover:border-auction-secondary'
+            onClick={() => handleThumbnailClick(index)}
+            className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
+              selectedIndex === index ? 'border-auction-primary ring-2 ring-auction-primary ring-offset-2' : 'border-transparent hover:border-auction-secondary'
             }`}
           >
-            <img
-              src={image}
-              alt={`Thumbnail ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
+            <div className="absolute inset-0 bg-gray-100">
+              <img
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </button>
         ))}
       </div>
