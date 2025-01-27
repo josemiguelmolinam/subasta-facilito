@@ -86,11 +86,11 @@ const ImageCarousel = ({ images, title }: { images: string[], title: string }) =
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index}>
-              <div className="aspect-[4/3] relative rounded-xl overflow-hidden bg-gray-100">
+              <div className="aspect-[4/3] relative rounded-xl overflow-hidden">
                 <img
                   src={image}
                   alt={`${title} - Image ${index + 1}`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </CarouselItem>
@@ -109,7 +109,7 @@ const ImageCarousel = ({ images, title }: { images: string[], title: string }) =
               selectedIndex === index ? 'border-auction-primary ring-2 ring-auction-primary ring-offset-2' : 'border-transparent hover:border-auction-secondary'
             }`}
           >
-            <div className="absolute inset-0 bg-gray-100">
+            <div className="absolute inset-0">
               <img
                 src={image}
                 alt={`Thumbnail ${index + 1}`}
