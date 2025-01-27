@@ -77,7 +77,10 @@ const ImageCarousel = ({ images, title }: { images: string[], title: string }) =
     <div className="space-y-4">
       <Carousel 
         className="w-full relative group"
-        defaultSlide={selectedIndex}
+        opts={{
+          startIndex: selectedIndex,
+          align: "start",
+        }}
         key={selectedIndex}
       >
         <CarouselContent>
