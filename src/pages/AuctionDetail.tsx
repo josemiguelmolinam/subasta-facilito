@@ -63,6 +63,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ImageCarousel = ({ images, title }: { images: string[], title: string }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -179,6 +180,8 @@ const WishlistButton = ({ auction }: { auction: any }) => {
 const AuctionDetail = () => {
   const isMobile = useIsMobile();
   const [showProtectionInfo, setShowProtectionInfo] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   // Mock data - En un caso real esto vendría de una API
   const auction = {
@@ -316,6 +319,7 @@ const AuctionDetail = () => {
           <Button 
             size="lg"
             className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all group"
+            onClick={() => navigate(`/auction/${id}/bid`)}
           >
             <Hammer className="w-6 h-6 mr-2 transition-transform group-hover:rotate-12" />
             Pujar
@@ -632,6 +636,7 @@ const AuctionDetail = () => {
             <Button 
               size="lg"
               className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all group"
+              onClick={() => navigate(`/auction/${id}/bid`)}
             >
               <Hammer className="w-6 h-6 mr-2 transition-transform group-hover:rotate-12" />
               Pujar
@@ -712,4 +717,3 @@ const AuctionDetail = () => {
 };
 
 export default AuctionDetail;
-

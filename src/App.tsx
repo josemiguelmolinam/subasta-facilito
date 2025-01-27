@@ -29,6 +29,7 @@ import ExploreAuctions from './pages/ExploreAuctions';
 import CheckoutPage from './pages/CheckoutPage';
 import ConfirmPurchasePage from './pages/ConfirmationPurchasePage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import PlaceBid from './pages/PlaceBid';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +66,7 @@ const App = () => (
                   <Route path='/product/:id' element={<ProductCard />} />
                   <Route path='/payment' element={<Payment />} />
                   <Route path='/auction/:id' element={<AuctionDetail />} />
+                  <Route path='/auction/:id/bid' element={<PlaceBid />} />
                   <Route path='/auctions/explore' element={<ExploreAuctions />} />
                   <Route path='/auctions/create' element={<CreateAuction />} />
                   <Route path='/checkout/:id' element={<CheckoutPage />} />
