@@ -68,11 +68,10 @@ const MyPurchases = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-auction-dark mb-8">Mis Compras</h1>
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-5xl">
+        <h1 className="text-2xl md:text-3xl font-bold text-auction-dark mb-6 md:mb-8">Mis Compras</h1>
         
-        {/* Responsive Filters and Sort Section */}
-        <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-6 md:mb-8">
           <PurchaseFilters 
             currentFilter={currentFilter} 
             onFilterChange={setCurrentFilter} 
@@ -91,12 +90,10 @@ const MyPurchases = () => {
           </Select>
         </div>
 
-        {/* Enhanced Delivery Animation Section */}
-        <div className="w-full bg-gradient-to-r from-auction-soft to-white rounded-lg p-4 md:p-6 mb-8 overflow-hidden shadow-lg">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
           <DeliveryTruck status="En tránsito" />
         </div>
 
-        {/* Responsive Purchases Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {purchases?.map((purchase) => (
             <PurchaseCard key={purchase.id} purchase={purchase} />
