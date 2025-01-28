@@ -19,7 +19,7 @@ export const DeliveryTruck = ({ status }: DeliveryTruckProps) => {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-auction-soft via-white to-auction-soft p-4 md:p-6 rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
+    <div className="relative bg-gradient-to-br from-auction-soft via-white to-auction-soft p-4 md:p-6 rounded-xl shadow-lg overflow-hidden mx-auto max-w-3xl">
       {/* Enhanced Progress Track */}
       <div className="h-2 md:h-3 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-full mb-6 md:mb-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-auction-primary/20 to-auction-secondary/20 animate-shimmer" />
@@ -29,7 +29,7 @@ export const DeliveryTruck = ({ status }: DeliveryTruckProps) => {
         />
       </div>
 
-      {/* Delivery Steps with Professional Icons */}
+      {/* Professional Delivery Steps */}
       <div className="flex justify-between mb-4 md:mb-6 relative">
         {[
           { icon: Package, label: 'Pedido recibido', status: 'En preparación', description: 'Procesando' },
@@ -39,13 +39,13 @@ export const DeliveryTruck = ({ status }: DeliveryTruckProps) => {
         ].map((step, index) => (
           <div key={index} className="flex flex-col items-center relative group">
             <div 
-              className={`w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-2 transition-all duration-500
+              className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center mb-2 transition-all duration-300
                 ${status === step.status 
-                  ? 'bg-gradient-to-br from-auction-primary to-auction-secondary scale-105 shadow-lg' 
+                  ? 'bg-gradient-to-br from-auction-primary to-auction-secondary shadow-lg' 
                   : 'bg-gray-100 group-hover:bg-auction-soft'}`}
             >
               <step.icon 
-                className={`w-4 h-4 md:w-6 md:h-6 transition-all duration-300
+                className={`w-4 h-4 md:w-5 md:h-5 transition-colors duration-300
                   ${status === step.status ? 'text-white' : 'text-auction-secondary'}`} 
               />
             </div>
@@ -56,16 +56,17 @@ export const DeliveryTruck = ({ status }: DeliveryTruckProps) => {
               {step.description}
             </span>
             {status === step.status && (
-              <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2">
-                <div className="animate-pulse absolute inline-flex h-2 w-2 md:h-3 md:w-3 rounded-full bg-auction-primary opacity-75"></div>
-                <div className="relative inline-flex rounded-full h-2 w-2 md:h-3 md:w-3 bg-auction-secondary"></div>
+              <div className="absolute -top-1 -right-1">
+                <div className="relative inline-flex h-2 w-2 rounded-full bg-auction-primary">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-auction-secondary opacity-75"></span>
+                </div>
               </div>
             )}
           </div>
         ))}
       </div>
 
-      {/* Professional Animated Truck */}
+      {/* Professional Animated Progress Indicator */}
       <div className={`
         absolute top-8 md:top-12 transform -translate-y-1/2 transition-all duration-1000 ease-in-out
         ${status === 'En preparación' ? 'left-1/4' :
@@ -73,16 +74,13 @@ export const DeliveryTruck = ({ status }: DeliveryTruckProps) => {
           status === 'Entregado' ? 'left-full' : 'left-0'}
       `}>
         <div className="relative">
-          {/* Enhanced Shadow */}
-          <div className="absolute -bottom-1 md:-bottom-2 left-1/2 -translate-x-1/2 w-6 md:w-10 h-1.5 md:h-2 bg-black/10 rounded-full blur-sm"></div>
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1.5 bg-black/10 rounded-full blur-sm"></div>
           
-          {/* Professional Truck Icon */}
-          <div className="bg-gradient-to-br from-auction-primary to-auction-secondary p-2 md:p-3 rounded-lg shadow-lg transform-gpu transition-all duration-300 hover:scale-105">
-            <Truck className="w-4 h-4 md:w-6 md:h-6 text-white" />
+          <div className="bg-gradient-to-br from-auction-primary to-auction-secondary p-2 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+            <Truck className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
           
-          {/* Status Indicator */}
-          <div className="absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded-full shadow-md">
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full shadow-sm">
             <span className="text-[10px] md:text-xs font-semibold bg-gradient-to-r from-auction-primary to-auction-secondary bg-clip-text text-transparent whitespace-nowrap">
               {status}
             </span>
