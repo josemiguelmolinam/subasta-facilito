@@ -1,3 +1,5 @@
+import { Package, Truck, Home, CheckCircle } from 'lucide-react';
+
 interface DeliveryTruckProps {
   status: string;
 }
@@ -17,71 +19,72 @@ export const DeliveryTruck = ({ status }: DeliveryTruckProps) => {
   };
 
   return (
-    <div className="relative">
-      {/* Progress Track */}
-      <div className="h-2 bg-gray-200 rounded-full mb-8">
+    <div className="relative bg-gradient-to-r from-auction-soft to-white p-8 rounded-xl shadow-lg">
+      {/* Progress Track with Gradient */}
+      <div className="h-3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full mb-12">
         <div 
-          className={`h-full bg-auction-primary rounded-full transition-all duration-1000 ease-in-out ${getProgressWidth()}`}
+          className={`h-full bg-gradient-to-r from-auction-primary to-auction-secondary rounded-full transition-all duration-1000 ease-in-out ${getProgressWidth()}`}
         />
       </div>
 
-      {/* Delivery Steps */}
-      <div className="flex justify-between mb-8">
+      {/* Delivery Steps with Enhanced Icons */}
+      <div className="flex justify-between mb-8 relative">
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2
-            ${status === 'En preparación' ? 'bg-auction-primary text-white' : 'bg-gray-200'}`}>
-            1
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300
+            ${status === 'En preparación' ? 'bg-auction-primary text-white scale-110' : 'bg-gray-100'}`}>
+            <Package className={`w-6 h-6 ${status === 'En preparación' ? 'text-white' : 'text-auction-secondary'}`} />
           </div>
-          <span className="text-sm text-auction-secondary">Pedido recibido</span>
+          <span className="text-sm font-medium text-auction-secondary">Pedido recibido</span>
         </div>
 
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2
-            ${status === 'En preparación' ? 'bg-auction-primary text-white' : 'bg-gray-200'}`}>
-            2
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300
+            ${status === 'En preparación' ? 'bg-auction-primary text-white scale-110' : 'bg-gray-100'}`}>
+            <Package className={`w-6 h-6 ${status === 'En preparación' ? 'text-white' : 'text-auction-secondary'}`} />
           </div>
-          <span className="text-sm text-auction-secondary">Preparando</span>
+          <span className="text-sm font-medium text-auction-secondary">Preparando</span>
         </div>
 
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2
-            ${status === 'En tránsito' ? 'bg-auction-primary text-white' : 'bg-gray-200'}`}>
-            3
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300
+            ${status === 'En tránsito' ? 'bg-auction-primary text-white scale-110' : 'bg-gray-100'}`}>
+            <Truck className={`w-6 h-6 ${status === 'En tránsito' ? 'text-white' : 'text-auction-secondary'}`} />
           </div>
-          <span className="text-sm text-auction-secondary">En tránsito</span>
+          <span className="text-sm font-medium text-auction-secondary">En tránsito</span>
         </div>
 
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2
-            ${status === 'Entregado' ? 'bg-auction-primary text-white' : 'bg-gray-200'}`}>
-            4
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300
+            ${status === 'Entregado' ? 'bg-auction-primary text-white scale-110' : 'bg-gray-100'}`}>
+            <Home className={`w-6 h-6 ${status === 'Entregado' ? 'text-white' : 'text-auction-secondary'}`} />
           </div>
-          <span className="text-sm text-auction-secondary">Entregado</span>
+          <span className="text-sm font-medium text-auction-secondary">Entregado</span>
         </div>
       </div>
 
-      {/* Animated Truck */}
+      {/* Animated Truck with Enhanced Effects */}
       <div className={`
-        absolute top-12 transform -translate-y-full transition-all duration-1000 ease-in-out
+        absolute top-14 transform -translate-y-full transition-all duration-1000 ease-in-out
         ${status === 'En preparación' ? 'left-1/4' :
           status === 'En tránsito' ? 'left-3/4' :
           status === 'Entregado' ? 'left-full' : 'left-0'}
       `}>
-        <svg
-          className="w-12 h-12 animate-float"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M19 15H17V13H19M19 11H17V9H19M19 7H17V5H19M15 15H13V13H15M15 11H13V9H15M15 7H13V5H15M11 15H9V13H11M11 11H9V9H11M11 7H9V5H11M7 15H5V13H7M7 11H5V9H7M7 7H5V5H7"
-            fill="#9b87f5"
-          />
-          <path
-            d="M3 21V3H21V21H3ZM5 19H19V5H5V19Z"
-            fill="#9b87f5"
-          />
-        </svg>
+        <div className="relative">
+          {/* Shadow Effect */}
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-10 h-2 bg-black/10 rounded-full blur-sm"></div>
+          
+          {/* Truck Icon with Animation */}
+          <div className="bg-auction-primary p-3 rounded-lg shadow-lg animate-float">
+            <Truck className="w-8 h-8 text-white" />
+          </div>
+          
+          {/* Status Indicator */}
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-md">
+            <span className="text-xs font-medium text-auction-secondary whitespace-nowrap">
+              {status}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
