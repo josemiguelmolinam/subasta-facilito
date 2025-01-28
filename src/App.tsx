@@ -30,6 +30,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import ConfirmPurchasePage from './pages/ConfirmationPurchasePage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import PlaceBid from './pages/PlaceBid';
+import MyPurchases from './pages/MyPurchases';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +73,7 @@ const App = () => (
                   <Route path='/checkout/:id' element={<CheckoutPage />} />
                   <Route path='/confirm-purchase/:id' element={<ConfirmPurchasePage />} />
                   <Route path='/order-success' element={<OrderSuccessPage />} />
+                  <Route path='/my-purchases' element={<MyPurchases />} />
                 </Routes>
               </TooltipProvider>
             </WishlistProvider>
