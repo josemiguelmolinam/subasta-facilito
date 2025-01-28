@@ -3,7 +3,6 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { DeliveryTruck } from '@/components/DeliveryTruck';
 import { PurchaseCard } from '@/components/PurchaseCard';
 import { PurchaseFilters } from '@/components/PurchaseFilters';
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -14,7 +13,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
-// Mock data - replace with actual API call
 const fetchPurchases = async () => {
   console.log('Fetching purchases...');
   return [
@@ -58,8 +56,6 @@ const MyPurchases = () => {
     queryFn: fetchPurchases,
   });
 
-  console.log('Rendering MyPurchases with data:', purchases);
-
   if (isLoading) {
     return (
       <MainLayout>
@@ -75,7 +71,7 @@ const MyPurchases = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-auction-dark mb-8">Mis Compras</h1>
         
-        {/* Filters and Sort Section */}
+        {/* Responsive Filters and Sort Section */}
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
           <PurchaseFilters 
             currentFilter={currentFilter} 
@@ -83,7 +79,7 @@ const MyPurchases = () => {
           />
           
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-[200px]">
+            <SelectTrigger className="w-full md:w-[200px] bg-white">
               <SelectValue placeholder="Ordenar por" />
             </SelectTrigger>
             <SelectContent>
@@ -95,13 +91,13 @@ const MyPurchases = () => {
           </Select>
         </div>
 
-        {/* Delivery Animation Section */}
-        <div className="w-full bg-gradient-to-r from-auction-soft to-white rounded-lg p-6 mb-8 overflow-hidden">
+        {/* Enhanced Delivery Animation Section */}
+        <div className="w-full bg-gradient-to-r from-auction-soft to-white rounded-lg p-4 md:p-6 mb-8 overflow-hidden shadow-lg">
           <DeliveryTruck status="En tránsito" />
         </div>
 
-        {/* Purchases Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Responsive Purchases Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {purchases?.map((purchase) => (
             <PurchaseCard key={purchase.id} purchase={purchase} />
           ))}
