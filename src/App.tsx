@@ -7,6 +7,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { AuctionProvider } from '@/contexts/AuctionContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
+import { useState } from 'react';
 
 // Pages
 import Index from './pages/Index';
@@ -33,26 +34,29 @@ import PlaceBid from './pages/PlaceBid';
 import MyPurchases from './pages/MyPurchases';
 import VerifyEmail from './pages/VerifyEmail';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutos
+const App = () => {
+  // Create a new QueryClient instance for each app instance
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        refetchOnWindowFocus: false,
+      },
     },
-  },
-});
+  }));
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <AuctionProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <Routes>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <AuctionProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <Routes>
                   <Route path='/' element={<Index />} />
                   <Route path='/register' element={<Register />} />
                   <Route path='/login' element={<Login />} />
@@ -76,14 +80,15 @@ const App = () => (
                   <Route path='/confirm-purchase/:id' element={<ConfirmPurchasePage />} />
                   <Route path='/order-success' element={<OrderSuccessPage />} />
                   <Route path='/my-purchases' element={<MyPurchases />} />
-                </Routes>
-              </TooltipProvider>
-            </WishlistProvider>
-          </CartProvider>
-        </AuctionProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+                  </Routes>
+                </TooltipProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </AuctionProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
