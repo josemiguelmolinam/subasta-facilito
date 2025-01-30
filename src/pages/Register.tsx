@@ -10,6 +10,8 @@ import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import ReCAPTCHA from "react-google-recaptcha";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -121,24 +123,32 @@ const Register = () => {
 
         {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
-        <div className="mb-6 flex justify-center gap-4">
-          <Button
-            variant={accountType === "personal" ? "default" : "outline"}
-            onClick={() => setAccountType("personal")}
-            className="flex-col gap-2 h-auto py-3 px-6"
-          >
-            <User className="h-6 w-6" />
-            <span>Personal</span>
-          </Button>
-          <Button
-            variant={accountType === "business" ? "default" : "outline"}
-            onClick={() => setAccountType("business")}
-            className="flex-col gap-2 h-auto py-3 px-6"
-          >
-            <Building2 className="h-6 w-6" />
-            <span>Empresa</span>
-          </Button>
-        </div>
+        <RadioGroup 
+          defaultValue="personal" 
+          className="mb-6 grid grid-cols-2 gap-4"
+          onValueChange={(value) => setAccountType(value as 'personal' | 'business')}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="personal" id="personal" className="text-auction-primary" />
+            <Label 
+              htmlFor="personal" 
+              className="flex flex-col items-center cursor-pointer"
+            >
+              <User className="h-6 w-6 mb-2" />
+              <span>Personal</span>
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="business" id="business" className="text-auction-primary" />
+            <Label 
+              htmlFor="business" 
+              className="flex flex-col items-center cursor-pointer"
+            >
+              <Building2 className="h-6 w-6 mb-2" />
+              <span>Empresa</span>
+            </Label>
+          </div>
+        </RadioGroup>
 
         <Button 
           variant="outline" 
