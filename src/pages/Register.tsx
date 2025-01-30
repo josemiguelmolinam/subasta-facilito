@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { FaBuilding, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { auth, googleProvider } from "../../src/firebase";
+import { auth, googleProvider } from "@/firebase";
 import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -129,7 +129,7 @@ const Register = () => {
         {/* 🔥 Selección de tipo de cuenta */}
         <div className="mb-6 flex justify-center gap-4">
           <Button
-            variant={accountType === "personal" ? "solid" : "outline"}
+            variant={accountType === "personal" ? "default" : "outline"}
             onClick={() => setAccountType("personal")}
             className="w-24 justify-center"
           >
@@ -137,8 +137,8 @@ const Register = () => {
             Personal
           </Button>
           <Button
-            variant={accountType === "empresa" ? "solid" : "outline"}
-            onClick={() => setAccountType("empresa")}
+            variant={accountType === "business" ? "default" : "outline"}
+            onClick={() => setAccountType("business")}
             className="w-24 justify-center"
           >
             <FaBuilding className="mr-2 h-5 w-5" />
@@ -146,7 +146,6 @@ const Register = () => {
           </Button>
         </div>
 
-        {/* 🔥 Botones de Registro con Google y Apple */}
         <Button 
           variant="outline" 
           className="w-full justify-center hover:bg-gray-50 transition-all duration-300 animate-fade-in"
