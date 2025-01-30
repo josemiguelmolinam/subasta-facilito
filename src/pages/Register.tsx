@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Mail, Eye, EyeOff, X, Loader2, User, Building2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
-import { FaBuilding, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "@/firebase";
 import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
@@ -55,12 +54,10 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      // Primero registramos con Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await updateProfile(user, { displayName: email.split("@")[0] });
 
-      // Luego registramos en nuestro sistema
       await authRegister(email, password, email.split("@")[0]);
 
       toast({
@@ -87,7 +84,6 @@ const Register = () => {
       const result = await signInWithPopup(auth, googleProvider);
       console.log("Usuario registrado con Google:", result.user);
       
-      // Registramos en nuestro sistema después de Google
       if (result.user.email && result.user.displayName) {
         await authRegister(result.user.email, "", result.user.displayName);
       }
@@ -111,7 +107,6 @@ const Register = () => {
           <X className="h-5 w-5" />
         </Button>
 
-        {/* 🔥 Imagen de registro */}
         <div className="mb-6 flex justify-center">
           <img 
             src="https://cdni.iconscout.com/illustration/premium/thumb/user-account-sign-up-4489360-3723267.png" 
@@ -126,23 +121,22 @@ const Register = () => {
 
         {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
-        {/* 🔥 Selección de tipo de cuenta */}
         <div className="mb-6 flex justify-center gap-4">
           <Button
             variant={accountType === "personal" ? "default" : "outline"}
             onClick={() => setAccountType("personal")}
-            className="w-24 justify-center"
+            className="flex-col gap-2 h-auto py-3 px-6"
           >
-            <FaUser className="mr-2 h-5 w-5" />
-            Personal
+            <User className="h-6 w-6" />
+            <span>Personal</span>
           </Button>
           <Button
             variant={accountType === "business" ? "default" : "outline"}
             onClick={() => setAccountType("business")}
-            className="w-24 justify-center"
+            className="flex-col gap-2 h-auto py-3 px-6"
           >
-            <FaBuilding className="mr-2 h-5 w-5" />
-            Empresa
+            <Building2 className="h-6 w-6" />
+            <span>Empresa</span>
           </Button>
         </div>
 
@@ -166,7 +160,6 @@ const Register = () => {
           Continuar con Apple
         </Button>
 
-        {/* Línea divisoria */}
         <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-200" />
@@ -176,7 +169,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* 🔥 Formulario de registro */}
         <form className="space-y-4" onSubmit={handleRegister}>
           <Input
             type="email"
@@ -225,7 +217,6 @@ const Register = () => {
         </p>
       </div>
 
-      {/* 🔥 Modal de reCAPTCHA */}
       {showRecaptchaModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
