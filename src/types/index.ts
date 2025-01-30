@@ -3,7 +3,6 @@ export interface User {
   email: string;
   name: string;
   createdAt: Date;
-  avatar?: string;
 }
 
 export interface Seller {
@@ -34,4 +33,33 @@ export interface Auction {
   };
   totalBids: number;
   shippingCost?: number;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  type: 'personal' | 'business';
+  verificationStatus: {
+    email: boolean;
+    twoFactor: boolean;
+    identity: boolean;
+    business?: boolean;
+  };
+  avatar?: string;
+  createdAt: Date;
+  businessInfo?: {
+    name: string;
+    taxId: string;
+    address: string;
+    documents: string[];
+  };
+}
+
+export interface VerificationStep {
+  id: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'completed' | 'error';
+  icon: React.ComponentType;
 }

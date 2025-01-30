@@ -31,6 +31,7 @@ import ConfirmPurchasePage from './pages/ConfirmationPurchasePage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import PlaceBid from './pages/PlaceBid';
 import MyPurchases from './pages/MyPurchases';
+import VerifyEmail from './pages/VerifyEmail';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +57,7 @@ const App = () => (
                   <Route path='/register' element={<Register />} />
                   <Route path='/login' element={<Login />} />
                   <Route path='/reset-password' element={<ResetPassword />} />
+                  <Route path='/verify-email' element={<VerifyEmail />} />
                   <Route path='/profile' element={<UserProfile />} />
                   <Route path='/profile/edit' element={<EditProfile />} />
                   <Route path='/wishlist' element={<Wishlist />} />
