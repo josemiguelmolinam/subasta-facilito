@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import VerificationProgress from '@/components/verification/VerificationProgress';
+import SecuritySettings from '@/components/security/SecuritySettings';
 import {
   User,
   Mail,
@@ -81,10 +83,12 @@ const EditProfile = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue='personal' className='w-full'>
-              <TabsList className='grid w-full grid-cols-2'>
+              <TabsList className='grid w-full grid-cols-3'>
                 <TabsTrigger value='personal'>Información Personal</TabsTrigger>
-                <TabsTrigger value='account'>Cuenta y Seguridad</TabsTrigger>
+                <TabsTrigger value='verification'>Verificación</TabsTrigger>
+                <TabsTrigger value='security'>Cuenta y Seguridad</TabsTrigger>
               </TabsList>
+
               <TabsContent value='personal'>
                 <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
                   <div className='flex flex-col items-center space-y-4'>
@@ -214,78 +218,13 @@ const EditProfile = () => {
                   </Button>
                 </form>
               </TabsContent>
-              <TabsContent value='account'>
-                <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='password'>Nueva Contraseña</Label>
-                    <div className='relative'>
-                      <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
-                      <Input
-                        id='password'
-                        type={showPassword ? 'text' : 'password'}
-                        {...register('password', { minLength: 8 })}
-                        className='pl-10 pr-10'
-                        placeholder='Nueva contraseña'
-                      />
-                      <button
-                        type='button'
-                        onClick={togglePasswordVisibility}
-                        className='absolute right-3 top-1/2 transform -translate-y-1/2'
-                      >
-                        {showPassword ? (
-                          <EyeOff className='h-5 w-5 text-gray-400' />
-                        ) : (
-                          <Eye className='h-5 w-5 text-gray-400' />
-                        )}
-                      </button>
-                    </div>
-                    {errors.password && (
-                      <span className='text-red-500 text-sm'>
-                        La contraseña debe tener al menos 8 caracteres
-                      </span>
-                    )}
-                  </div>
 
-                  <div className='space-y-2'>
-                    <Label htmlFor='confirmPassword'>
-                      Confirmar Nueva Contraseña
-                    </Label>
-                    <div className='relative'>
-                      <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
-                      <Input
-                        id='confirmPassword'
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        {...register('confirmPassword', {
-                          validate: (value) =>
-                            value === watch('password') ||
-                            'Las contraseñas no coinciden',
-                        })}
-                        className='pl-10 pr-10'
-                        placeholder='Confirmar nueva contraseña'
-                      />
-                      <button
-                        type='button'
-                        onClick={toggleConfirmPasswordVisibility}
-                        className='absolute right-3 top-1/2 transform -translate-y-1/2'
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className='h-5 w-5 text-gray-400' />
-                        ) : (
-                          <Eye className='h-5 w-5 text-gray-400' />
-                        )}
-                      </button>
-                    </div>
-                    {errors.confirmPassword && (
-                      <span className='text-red-500 text-sm'>
-                        {errors.confirmPassword.message}
-                      </span>
-                    )}
-                  </div>
+              <TabsContent value='verification'>
+                <VerificationProgress />
+              </TabsContent>
 
-                  <Button type='submit' className='w-full'>
-                    Actualizar Contraseña
-                  </Button>
-                </form>
+              <TabsContent value='security'>
+                <SecuritySettings />
               </TabsContent>
             </Tabs>
           </CardContent>

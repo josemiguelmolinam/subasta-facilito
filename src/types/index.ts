@@ -44,6 +44,7 @@ export interface UserProfile {
     email: boolean;
     twoFactor: boolean;
     identity: boolean;
+    facial?: boolean;
     business?: boolean;
   };
   avatar?: string;
@@ -54,12 +55,14 @@ export interface UserProfile {
     address: string;
     documents: string[];
   };
-}
-
-export interface VerificationStep {
-  id: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'completed' | 'error';
-  icon: React.ComponentType;
+  securitySettings?: {
+    twoFactorEnabled: boolean;
+    notificationsEnabled: boolean;
+    lastLogin?: Date;
+    activeSessions?: {
+      device: string;
+      location: string;
+      lastActive: Date;
+    }[];
+  };
 }
