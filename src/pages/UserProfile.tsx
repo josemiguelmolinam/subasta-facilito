@@ -12,61 +12,113 @@ import {
   CheckCircle2, XCircle, AlertCircle
 } from "lucide-react";
 import { useState } from "react";
+import { ProfileStats } from "@/components/profile/ProfileStats";
+import { AuctionsList } from "@/components/profile/AuctionsList";
+import { PaymentMethods } from "@/components/profile/PaymentMethods";
+import { NotificationSettings } from "@/components/profile/NotificationSettings";
+import { useToast } from "@/hooks/use-toast";
 
 const UserProfile = () => {
   const { user, isLoading, logout } = useAuth();
   const navigate = useNavigate();
-  const [verificationProgress] = useState(66); // Example: 2 of 3 steps completed
+  const { toast } = useToast();
+  const [verificationProgress] = useState(66);
+
+  // Mock data - En una aplicación real, esto vendría de una API
+  const mockAuctions = [
+    {
+      id: "1",
+      title: "iPhone 15 Pro Max",
+      imageUrl: "https://picsum.photos/200/300",
+      currentBid: 1200,
+      endDate: new Date(Date.now() + 7200000), // 2 horas en el futuro
+      status: 'active' as const
+    },
+    {
+      id: "2",
+      title: "MacBook Pro M3",
+      imageUrl: "https://picsum.photos/200/301",
+      currentBid: 2500,
+      endDate: new Date(Date.now() + 3600000), // 1 hora en el futuro
+      status: 'won' as const
+    }
+  ];
+
+  const mockPaymentMethods = [
+    {
+      id: "1",
+      type: 'credit_card' as const,
+      last4: "4242",
+      brand: "Visa",
+      expiryDate: "12/25"
+    },
+    {
+      id: "2",
+      type: 'paypal' as const
+    }
+  ];
+
+  const mockNotificationSettings = [
+    {
+      id: "1",
+      type: 'bids' as const,
+      email: true,
+      push: true
+    },
+    {
+      id: "2",
+      type: 'messages' as const,
+      email: true,
+      push: false
+    },
+    {
+      id: "3",
+      type: 'security' as const,
+      email: true,
+      push: true
+    }
+  ];
 
   if (!user) {
     navigate("/login");
     return null;
   }
 
-  const stats = [
-    {
-      icon: Activity,
-      label: "Subastas Activas",
-      value: "5 en curso",
-      color: "text-blue-500"
-    },
-    {
-      icon: Package,
-      label: "Transacciones",
-      value: "15 completadas",
-      color: "text-green-500"
-    },
-    {
-      icon: Star,
-      label: "Valoración",
-      value: "4.8/5",
-      color: "text-yellow-500"
-    },
-    {
-      icon: Shield,
-      label: "Seguridad",
-      value: "Alto",
-      color: "text-purple-500"
-    }
-  ];
+  const handleViewDetails = (id: string) => {
+    navigate(`/auction/${id}`);
+  };
 
-  const verificationSteps = [
-    {
-      title: "Email verificado",
-      status: user.verificationStatus.email ? "completed" : "pending",
-      icon: user.verificationStatus.email ? CheckCircle2 : AlertCircle
-    },
-    {
-      title: "Identidad verificada",
-      status: user.verificationStatus.identity ? "completed" : "pending",
-      icon: user.verificationStatus.identity ? CheckCircle2 : AlertCircle
-    },
-    {
-      title: "Verificación facial",
-      status: user.verificationStatus.facial ? "completed" : "pending",
-      icon: user.verificationStatus.facial ? CheckCircle2 : AlertCircle
-    }
-  ];
+  const handleContactSeller = (id: string) => {
+    toast({
+      title: "Contactando al vendedor",
+      description: "Se abrirá el chat en breve"
+    });
+  };
+
+  const handleProcessPayment = (id: string) => {
+    navigate(`/payment/${id}`);
+  };
+
+  const handleAddPaymentMethod = () => {
+    toast({
+      title: "Añadir método de pago",
+      description: "Se abrirá el formulario en breve"
+    });
+  };
+
+  const handleRemovePaymentMethod = (id: string) => {
+    toast({
+      title: "Método de pago eliminado",
+      description: "El método de pago ha sido eliminado exitosamente"
+    });
+  };
+
+  const handleToggleNotification = (id: string, channel: 'email' | 'push') => {
+    toast({
+      title: "Configuración actualizada",
+      description: "Tus preferencias de notificación han sido actualizadas"
+    });
+  };
 
   return (
     <MainLayout>
@@ -118,26 +170,13 @@ const UserProfile = () => {
 
           {/* Summary Tab */}
           <TabsContent value="summary" className="space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {stats.map((stat, index) => (
-                <Card key={index}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className={`rounded-full p-3 bg-gray-100 ${stat.color}`}>
-                        <stat.icon className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">{stat.label}</p>
-                        <p className="text-xl font-bold">{stat.value}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <ProfileStats
+              activeAuctions={5}
+              completedTransactions={15}
+              rating={4.8}
+              securityLevel="Alto"
+            />
 
-            {/* Recent Activity */}
             <Card>
               <CardHeader>
                 <CardTitle>Actividad Reciente</CardTitle>
@@ -165,9 +204,12 @@ const UserProfile = () => {
                 <CardTitle>Mis Subastas</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8 text-gray-500">
-                  No tienes subastas activas en este momento
-                </div>
+                <AuctionsList
+                  auctions={mockAuctions}
+                  onViewDetails={handleViewDetails}
+                  onContactSeller={handleContactSeller}
+                  onProcessPayment={handleProcessPayment}
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -192,7 +234,23 @@ const UserProfile = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {verificationSteps.map((step, index) => (
+                  {[
+                    {
+                      title: "Email verificado",
+                      status: user.verificationStatus.email ? "completed" : "pending",
+                      icon: user.verificationStatus.email ? CheckCircle2 : AlertCircle
+                    },
+                    {
+                      title: "Identidad verificada",
+                      status: user.verificationStatus.identity ? "completed" : "pending",
+                      icon: user.verificationStatus.identity ? CheckCircle2 : AlertCircle
+                    },
+                    {
+                      title: "Verificación facial",
+                      status: user.verificationStatus.facial ? "completed" : "pending",
+                      icon: user.verificationStatus.facial ? CheckCircle2 : AlertCircle
+                    }
+                  ].map((step, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
@@ -225,7 +283,19 @@ const UserProfile = () => {
           </TabsContent>
 
           {/* Settings Tab */}
-          <TabsContent value="settings">
+          <TabsContent value="settings" className="space-y-6">
+            <PaymentMethods
+              methods={mockPaymentMethods}
+              balance={1500}
+              onAddMethod={handleAddPaymentMethod}
+              onRemoveMethod={handleRemovePaymentMethod}
+            />
+
+            <NotificationSettings
+              settings={mockNotificationSettings}
+              onToggle={handleToggleNotification}
+            />
+
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
