@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   User, Building2, Edit2, MapPin, Calendar, Shield, 
   Activity, Star, Lock, LogOut, Package, Clock,
-  CheckCircle2, XCircle2, AlertCircle
+  CheckCircle2, XCircle, AlertCircle
 } from "lucide-react";
 import { useState } from "react";
 
