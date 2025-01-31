@@ -17,6 +17,10 @@ import { AuctionsList } from "@/components/profile/AuctionsList";
 import { PaymentMethods } from "@/components/profile/PaymentMethods";
 import { NotificationSettings } from "@/components/profile/NotificationSettings";
 import { useToast } from "@/hooks/use-toast";
+import { ProfileCharts } from "@/components/profile/ProfileCharts";
+import { QuickActions } from "@/components/profile/QuickActions";
+import { auctionData, categoryData } from "@/data/profileData";
+import { Map } from "@/components/Map";
 
 const UserProfile = () => {
   const { user, isLoading, logout } = useAuth();
@@ -177,24 +181,45 @@ const UserProfile = () => {
               securityLevel="Alto"
             />
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Actividad Reciente</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <Clock className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="font-medium">Último inicio de sesión</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date().toLocaleString()}
-                      </p>
+            <QuickActions />
+
+            <ProfileCharts
+              auctionData={auctionData}
+              categoryData={categoryData}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ubicación</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Map 
+                    location={{ lat: 40.4168, lng: -3.7038 }} 
+                    address="Madrid, España" 
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Actividad Reciente</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <Clock className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="font-medium">Último inicio de sesión</p>
+                        <p className="text-sm text-gray-500">
+                          {new Date().toLocaleString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Auctions Tab */}
