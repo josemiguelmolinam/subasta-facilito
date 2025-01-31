@@ -20,7 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ProfileCharts } from "@/components/profile/ProfileCharts";
 import { QuickActions } from "@/components/profile/QuickActions";
 import { auctionData, categoryData } from "@/data/profileData";
-import { Map } from "@/components/Map";
+import Map from "@/components/Map";
 
 const UserProfile = () => {
   const { user, isLoading, logout } = useAuth();
