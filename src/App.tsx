@@ -33,6 +33,7 @@ import OrderSuccessPage from './pages/OrderSuccessPage';
 import PlaceBid from './pages/PlaceBid';
 import MyPurchases from './pages/MyPurchases';
 import VerifyEmail from './pages/VerifyEmail';
+import ShipmentManagement from './pages/ShipmentManagement';
 
 const App = () => {
   // Create a new QueryClient instance for each app instance
@@ -57,29 +58,30 @@ const App = () => {
                   <Toaster />
                   <Sonner />
                   <Routes>
-                  <Route path='/' element={<Index />} />
-                  <Route path='/register' element={<Register />} />
-                  <Route path='/login' element={<Login />} />
-                  <Route path='/reset-password' element={<ResetPassword />} />
-                  <Route path='/verify-email' element={<VerifyEmail />} />
-                  <Route path='/profile' element={<UserProfile />} />
-                  <Route path='/profile/edit' element={<EditProfile />} />
-                  <Route path='/wishlist' element={<Wishlist />} />
-                  <Route path='/about' element={<AboutUs />} />
-                  <Route path='/faq' element={<FAQ />} />
-                  <Route path='/privacy' element={<Privacy />} />
-                  <Route path='/terms' element={<Terms />} />
-                  <Route path='/cart' element={<Cart />} />
-                  <Route path='/product/:id' element={<ProductCard />} />
-                  <Route path='/payment' element={<Payment />} />
-                  <Route path='/auction/:id' element={<AuctionDetail />} />
-                  <Route path='/auction/:id/bid' element={<PlaceBid />} />
-                  <Route path='/auctions/explore' element={<ExploreAuctions />} />
-                  <Route path='/auctions/create' element={<CreateAuction />} />
-                  <Route path='/checkout/:id' element={<CheckoutPage />} />
-                  <Route path='/confirm-purchase/:id' element={<ConfirmPurchasePage />} />
-                  <Route path='/order-success' element={<OrderSuccessPage />} />
-                  <Route path='/my-purchases' element={<MyPurchases />} />
+                    <Route path='/' element={<Index />} />
+                    <Route path='/register' element={<Register />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/reset-password' element={<ResetPassword />} />
+                    <Route path='/verify-email' element={<VerifyEmail />} />
+                    <Route path='/profile' element={<UserProfile />} />
+                    <Route path='/profile/edit' element={<EditProfile />} />
+                    <Route path='/wishlist' element={<Wishlist />} />
+                    <Route path='/about' element={<AboutUs />} />
+                    <Route path='/faq' element={<FAQ />} />
+                    <Route path='/privacy' element={<Privacy />} />
+                    <Route path='/terms' element={<Terms />} />
+                    <Route path='/cart' element={<Cart />} />
+                    <Route path='/product/:id' element={<ProductCard />} />
+                    <Route path='/payment' element={<Payment />} />
+                    <Route path='/auction/:id' element={<AuctionDetail />} />
+                    <Route path='/auction/:id/bid' element={<PlaceBid />} />
+                    <Route path='/auctions/explore' element={<ExploreAuctions />} />
+                    <Route path='/auctions/create' element={<CreateAuction />} />
+                    <Route path='/checkout/:id' element={<CheckoutPage />} />
+                    <Route path='/confirm-purchase/:id' element={<ConfirmPurchasePage />} />
+                    <Route path='/order-success' element={<OrderSuccessPage />} />
+                    <Route path='/my-purchases' element={<MyPurchases />} />
+                    <Route path='/shipment/:id' element={<ShipmentManagement />} />
                   </Routes>
                 </TooltipProvider>
               </WishlistProvider>
