@@ -13,9 +13,6 @@ import {
   Scale, 
   Ruler, 
   QrCode, 
-  Truck,
-  User,
-  DollarSign,
   Trophy,
   ShieldCheck,
   AlertCircle
@@ -29,13 +26,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
@@ -44,7 +34,6 @@ const ShipmentManagement = () => {
   const { toast } = useToast();
   const { id } = useParams();
   const [showQR, setShowQR] = useState(false);
-  const [shippingPayer, setShippingPayer] = useState<"seller" | "buyer">("seller");
   const [shipmentData, setShipmentData] = useState({
     weight: "",
     length: "",
@@ -93,7 +82,7 @@ const ShipmentManagement = () => {
       return;
     }
     
-    console.log("Datos del envío:", { ...shipmentData, shippingPayer });
+    console.log("Datos del envío:", shipmentData);
     const shipmentCode = `SHIP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     setShowQR(true);
@@ -135,88 +124,49 @@ const ShipmentManagement = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <h3 className="text-white font-semibold truncate">{auctionData.title}</h3>
-                      <div className="flex items-center gap-2 text-white/90">
-                        <DollarSign className="w-4 h-4" />
-                        <span className="font-medium">{auctionData.finalPrice.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span>
-                      </div>
+                      <p className="text-white/90 font-medium">
+                        Precio final: {auctionData.finalPrice.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Información del comprador */}
+                {/* Información del comprador con botón de contacto */}
                 <div className="bg-white rounded-xl p-4 border border-auction-soft shadow-sm">
                   <div className="flex items-center gap-4 mb-4">
                     <Trophy className="w-6 h-6 text-auction-primary" />
                     <h3 className="text-lg font-semibold">Ganador de la Subasta</h3>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <Avatar className="w-16 h-16 border-2 border-auction-soft">
-                      <img src={auctionData.buyer.avatar} alt="Comprador" />
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{maskUsername(auctionData.buyer.name)}</p>
-                      <p className="text-sm text-gray-500">ID: {auctionData.buyer.id.slice(0, 4)}***{auctionData.buyer.id.slice(-4)}</p>
-                      <Badge variant="outline" className="mt-2">
-                        <ShieldCheck className="w-3 h-3 mr-1" />
-                        Verificado
-                      </Badge>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="w-16 h-16 border-2 border-auction-soft">
+                        <img src={auctionData.buyer.avatar} alt="Comprador" />
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{maskUsername(auctionData.buyer.name)}</p>
+                        <p className="text-sm text-gray-500">ID: {auctionData.buyer.id.slice(0, 4)}***{auctionData.buyer.id.slice(-4)}</p>
+                        <Badge variant="outline" className="mt-2">
+                          <ShieldCheck className="w-3 h-3 mr-1" />
+                          Verificado
+                        </Badge>
+                      </div>
                     </div>
+                    <Button 
+                      variant="outline"
+                      className="w-full flex items-center justify-center gap-2 hover:bg-auction-soft transition-colors"
+                      onClick={() => toast({
+                        title: "Chat iniciado",
+                        description: "Conectando con el comprador...",
+                      })}
+                    >
+                      <MessageCircle className="w-5 h-5" />
+                      <span>Contactar con el comprador</span>
+                    </Button>
                   </div>
                 </div>
               </div>
 
               <Separator className="my-6" />
-
-              {/* Información del vendedor */}
-              <div className="bg-white rounded-xl p-6 border border-auction-soft shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <Avatar className="w-16 h-16 border-2 border-auction-primary">
-                        <img 
-                          src={user?.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
-                          alt="Usuario" 
-                          className="rounded-full object-cover"
-                        />
-                      </Avatar>
-                      <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-auction-dark">
-                        Vendedor: {maskUsername(user?.name || "")}
-                      </h2>
-                      <p className="text-sm text-auction-secondary">
-                        ID: {user?.id?.slice(0, 4)}***{user?.id?.slice(-4)}
-                      </p>
-                    </div>
-                  </div>
-                  <Button 
-                    variant="outline"
-                    className="flex items-center gap-2 hover:bg-auction-soft transition-colors"
-                    onClick={() => toast({
-                      title: "Chat iniciado",
-                      description: "Conectando con el vendedor...",
-                    })}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>Contactar</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Selector de quién paga el envío */}
-              <div className="bg-white rounded-xl p-6 border border-auction-soft shadow-sm">
-                <Label className="text-lg mb-4 block">¿Quién se hace cargo del envío?</Label>
-                <Select value={shippingPayer} onValueChange={(value: "seller" | "buyer") => setShippingPayer(value)}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecciona quién paga el envío" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seller">Vendedor</SelectItem>
-                    <SelectItem value="buyer">Comprador</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               <form onSubmit={handleSubmit} className="space-y-8">
                 <Card>
@@ -334,7 +284,6 @@ const ShipmentManagement = () => {
                           <QRCode
                             value={JSON.stringify({
                               shipmentData,
-                              shippingPayer,
                               timestamp: new Date().toISOString(),
                               sellerId: user?.id,
                               buyerId: auctionData.buyer.id,
@@ -343,13 +292,6 @@ const ShipmentManagement = () => {
                             })}
                             size={200}
                           />
-                        </div>
-                        
-                        <div className="mt-6 flex items-center justify-center gap-2 text-auction-secondary">
-                          <Truck className="w-5 h-5" />
-                          <p className="text-sm">
-                            El transportista escaneará este código para generar el albarán
-                          </p>
                         </div>
                       </div>
                     </CardContent>
