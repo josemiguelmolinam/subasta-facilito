@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Package, Scale, Ruler, QrCode, Truck, AlertCircle } from "lucide-react";
+import { MessageCircle, Package, Scale, Ruler, QrCode, Truck } from "lucide-react";
 import QRCode from "react-qr-code";
 
 const ShipmentManagement = () => {
@@ -28,10 +28,29 @@ const ShipmentManagement = () => {
     return `${name.charAt(0)}${"*".repeat(name.length - 2)}${name.charAt(name.length - 1)}`;
   };
 
+  const isFormValid = () => {
+    return (
+      shipmentData.weight.trim() !== "" &&
+      shipmentData.length.trim() !== "" &&
+      shipmentData.width.trim() !== "" &&
+      shipmentData.height.trim() !== "" &&
+      shipmentData.description.trim() !== ""
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Datos del envío:", shipmentData);
     
+    if (!isFormValid()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Por favor, completa todos los campos requeridos antes de generar el código QR.",
+      });
+      return;
+    }
+    
+    console.log("Datos del envío:", shipmentData);
     const shipmentCode = `SHIP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     setShowQR(true);
@@ -82,7 +101,6 @@ const ShipmentManagement = () => {
             </div>
           </div>
 
-          {/* Formulario de envío con diseño mejorado */}
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-auction-soft">
               <div className="flex items-center gap-3 mb-8">
@@ -94,7 +112,7 @@ const ShipmentManagement = () => {
                 <div className="space-y-4">
                   <Label htmlFor="weight" className="flex items-center gap-2 text-lg">
                     <Scale className="w-5 h-5 text-auction-secondary" />
-                    Peso (kg)
+                    Peso (kg) *
                   </Label>
                   <Input
                     id="weight"
@@ -104,13 +122,14 @@ const ShipmentManagement = () => {
                     onChange={(e) => setShipmentData({...shipmentData, weight: e.target.value})}
                     placeholder="0.0"
                     className="text-lg"
+                    required
                   />
                 </div>
 
                 <div className="space-y-4">
                   <Label className="flex items-center gap-2 text-lg">
                     <Ruler className="w-5 h-5 text-auction-secondary" />
-                    Dimensiones (cm)
+                    Dimensiones (cm) *
                   </Label>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
@@ -120,6 +139,7 @@ const ShipmentManagement = () => {
                         value={shipmentData.length}
                         onChange={(e) => setShipmentData({...shipmentData, length: e.target.value})}
                         className="text-center"
+                        required
                       />
                       <span className="text-xs text-auction-secondary mt-1 block text-center">Largo</span>
                     </div>
@@ -130,6 +150,7 @@ const ShipmentManagement = () => {
                         value={shipmentData.width}
                         onChange={(e) => setShipmentData({...shipmentData, width: e.target.value})}
                         className="text-center"
+                        required
                       />
                       <span className="text-xs text-auction-secondary mt-1 block text-center">Ancho</span>
                     </div>
@@ -140,6 +161,7 @@ const ShipmentManagement = () => {
                         value={shipmentData.height}
                         onChange={(e) => setShipmentData({...shipmentData, height: e.target.value})}
                         className="text-center"
+                        required
                       />
                       <span className="text-xs text-auction-secondary mt-1 block text-center">Alto</span>
                     </div>
@@ -147,13 +169,14 @@ const ShipmentManagement = () => {
                 </div>
 
                 <div className="col-span-2 space-y-4">
-                  <Label htmlFor="description" className="text-lg">Descripción del contenido</Label>
+                  <Label htmlFor="description" className="text-lg">Descripción del contenido *</Label>
                   <Textarea
                     id="description"
                     value={shipmentData.description}
                     onChange={(e) => setShipmentData({...shipmentData, description: e.target.value})}
                     placeholder="Describe el contenido del paquete"
                     className="min-h-[100px] text-lg"
+                    required
                   />
                 </div>
 
@@ -163,7 +186,7 @@ const ShipmentManagement = () => {
                     id="instructions"
                     value={shipmentData.specialInstructions}
                     onChange={(e) => setShipmentData({...shipmentData, specialInstructions: e.target.value})}
-                    placeholder="Instrucciones especiales para el manejo del paquete"
+                    placeholder="Instrucciones especiales para el manejo del paquete (opcional)"
                     className="min-h-[100px] text-lg"
                   />
                 </div>
@@ -171,7 +194,7 @@ const ShipmentManagement = () => {
             </div>
 
             {/* Sección del código QR con animación y diseño mejorado */}
-            {showQR && (
+            {showQR && isFormValid() && (
               <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-auction-soft animate-fade-in">
                 <div className="max-w-md mx-auto">
                   <div className="mb-6">
@@ -219,6 +242,7 @@ const ShipmentManagement = () => {
               <Button 
                 type="submit"
                 className="min-w-[150px] bg-auction-primary hover:bg-auction-secondary text-white gap-2"
+                disabled={!isFormValid()}
               >
                 <Package className="w-5 h-5" />
                 Generar etiqueta
