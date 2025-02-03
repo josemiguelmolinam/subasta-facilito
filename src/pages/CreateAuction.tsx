@@ -1,4 +1,3 @@
-<lov-code>
 import { MainLayout } from "@/components/layout/MainLayout";
 import { useAuction } from "@/contexts/AuctionContext";
 import { Button } from "@/components/ui/button";
@@ -30,7 +29,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { SaleOptions } from "@/types";
 
-// Importa los SVG de las agencias de transporte como imágenes
+// Import transport agency icons
 import correosIcon from '@/assets/correos.svg';
 import seurIcon from '@/assets/seur.svg';
 import mrwIcon from '@/assets/mrw.svg';
@@ -50,8 +49,6 @@ const CloudUploadIcon = ({ className = "h-11 w-11" }: CloudUploadIconProps) => (
   </svg>
 );
 
-
-// Componente CustomToggle: un pequeño switch que actúa como toggle
 const CustomToggle = ({
   checked,
   onChange,
@@ -89,31 +86,122 @@ const CreateAuction = () => {
   const navigate = useNavigate();
   const { createAuction } = useAuction();
 
-  // Estados del formulario principal
+  // Form states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [category, setCategory] = useState<string>("");
   const [duration, setDuration] = useState<string>("3");
-
-  // Datos generales del producto
   const [itemCondition, setItemCondition] = useState<string>("");
-
-  // Datos de envío
   const [shippingCost, setShippingCost] = useState<string>("0");
   const [shippingPayer, setShippingPayer] = useState<string>("seller");
   const [transport, setTransport] = useState<string>("");
-
-  // Configuración de venta usando dos toggles independientes
   const [enableAuction, setEnableAuction] = useState<boolean>(false);
   const [auctionPrice, setAuctionPrice] = useState<string>("");
   const [buyNowAuctionPrice, setBuyNowAuctionPrice] = useState<string>("");
   const [enableDirectSale, setEnableDirectSale] = useState<boolean>(false);
   const [directSalePrice, setDirectSalePrice] = useState<string>("");
-
-  // Configurador avanzado de envío (Modal)
   const [showShippingModal, setShowShippingModal] = useState(false);
   const [originCity, setOriginCity] = useState("");
   const [destinationCity, setDestinationCity] = useState("");
   const [boxSize, setBoxSize] = useState("");
   const [weight, setWeight] = useState("");
-  const [dimensions, setDimensions] = useState
+  const [dimensions, setDimensions] = useState("");
+
+  // Handle form submission and other logic here...
+
+  return (
+    <MainLayout>
+      <div className="p-4">
+        <h1 className="text-2xl font-bold">Create Auction</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <Label htmlFor="title">Title</Label>
+            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="description">Description</Label>
+            <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="category">Category</Label>
+            <Select onValueChange={setCategory}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="electronics">Electronics</SelectItem>
+                <SelectItem value="furniture">Furniture</SelectItem>
+                <SelectItem value="clothing">Clothing</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="duration">Duration (days)</Label>
+            <Input id="duration" type="number" value={duration} onChange={(e) => setDuration(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="itemCondition">Item Condition</Label>
+            <Input id="itemCondition" value={itemCondition} onChange={(e) => setItemCondition(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="shippingCost">Shipping Cost</Label>
+            <Input id="shippingCost" type="number" value={shippingCost} onChange={(e) => setShippingCost(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="shippingPayer">Shipping Payer</Label>
+            <Select onValueChange={setShippingPayer}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select payer" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="seller">Seller</SelectItem>
+                <SelectItem value="buyer">Buyer</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="transport">Transport</Label>
+            <Select onValueChange={setTransport}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select transport" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="correos">Correos</SelectItem>
+                <SelectItem value="seur">Seur</SelectItem>
+                <SelectItem value="mrw">MRW</SelectItem>
+                <SelectItem value="dhl">DHL</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <CustomToggle
+            checked={enableAuction}
+            onChange={() => setEnableAuction(!enableAuction)}
+            label="Enable Auction"
+          />
+          {enableAuction && (
+            <div className="mb-4">
+              <Label htmlFor="auctionPrice">Auction Price</Label>
+              <Input id="auctionPrice" type="number" value={auctionPrice} onChange={(e) => setAuctionPrice(e.target.value)} required />
+            </div>
+          )}
+          <CustomToggle
+            checked={enableDirectSale}
+            onChange={() => setEnableDirectSale(!enableDirectSale)}
+            label="Enable Direct Sale"
+          />
+          {enableDirectSale && (
+            <div className="mb-4">
+              <Label htmlFor="directSalePrice">Direct Sale Price</Label>
+              <Input id="directSalePrice" type="number" value={directSalePrice} onChange={(e) => setDirectSalePrice(e.target.value)} required />
+            </div>
+          )}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Create Auction"}
+          </Button>
+        </form>
+      </div>
+    </MainLayout>
+  );
+};
+
+export default CreateAuction;
