@@ -3,7 +3,7 @@ import Confetti from "react-confetti";
 import { useNavigate, useParams } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
-import { Trophy, Party, ShoppingBag, Share2 } from "lucide-react";
+import { Trophy, PartyPopper, ShoppingBag, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useWindowSize } from "@/hooks/use-window-size";
 
@@ -82,7 +82,7 @@ export const AuctionWinnerCelebration = () => {
                   className="w-20 h-20 rounded-full border-4 border-auction-primary"
                 />
                 <div className="absolute -bottom-2 -right-2 bg-green-500 rounded-full p-2">
-                  <Party className="w-5 h-5 text-white" />
+                  <PartyPopper className="w-5 h-5 text-white" />
                 </div>
               </div>
               <div className="text-left">

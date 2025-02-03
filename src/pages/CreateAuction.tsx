@@ -102,12 +102,8 @@ const CreateAuction = () => {
   const [buyNowAuctionPrice, setBuyNowAuctionPrice] = useState<string>("");
   const [enableDirectSale, setEnableDirectSale] = useState<boolean>(false);
   const [directSalePrice, setDirectSalePrice] = useState<string>("");
-  const [showShippingModal, setShowShippingModal] = useState(false);
-  const [originCity, setOriginCity] = useState("");
-  const [destinationCity, setDestinationCity] = useState("");
-  const [boxSize, setBoxSize] = useState("");
-  const [weight, setWeight] = useState("");
-  const [dimensions, setDimensions] = useState("");
+  const [startingPrice, setStartingPrice] = useState<string>("0");
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,6 +115,10 @@ const CreateAuction = () => {
       const auctionData = {
         title,
         description,
+        startingPrice: parseFloat(startingPrice),
+        currentBid: parseFloat(startingPrice), // Initially, currentBid equals startingPrice
+        imageUrl: imageUrl || "default-image-url.jpg", // Provide a default image URL
+        totalBids: 0, // Initialize with 0 bids
         saleOptions: {
           auctionPrice: enableAuction ? parseFloat(auctionPrice) : undefined,
           buyNowAuctionPrice: enableAuction ? parseFloat(buyNowAuctionPrice) : undefined,
@@ -134,11 +134,11 @@ const CreateAuction = () => {
         categoryId: category,
         status: "active" as const,
         shippingDetails: {
-          originCity,
-          destinationCity,
-          boxSize,
-          weight,
-          dimensions,
+          originCity: "",
+          destinationCity: "",
+          boxSize: "",
+          weight: 0,
+          dimensions: "",
         },
       };
 
