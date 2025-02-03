@@ -11,6 +11,12 @@ export interface Seller {
   totalSales: number;
 }
 
+export interface SaleOptions {
+  auctionPrice?: number;
+  buyNowAuctionPrice?: number;
+  directSalePrice?: number;
+}
+
 export interface Auction {
   id: string;
   title: string;
@@ -33,36 +39,18 @@ export interface Auction {
   };
   totalBids: number;
   shippingCost?: number;
-}
-
-export interface UserProfile {
-  id: string;
-  email: string;
-  name: string;
-  type: 'personal' | 'business';
-  verificationStatus: {
-    email: boolean;
-    twoFactor: boolean;
-    identity: boolean;
-    facial?: boolean;
-    business?: boolean;
-  };
-  avatar?: string;
-  createdAt: Date;
-  businessInfo?: {
-    name: string;
-    taxId: string;
-    address: string;
-    documents: string[];
-  };
-  securitySettings?: {
-    twoFactorEnabled: boolean;
-    notificationsEnabled: boolean;
-    lastLogin?: Date;
-    activeSessions?: {
-      device: string;
-      location: string;
-      lastActive: Date;
-    }[];
+  saleOptions?: SaleOptions;
+  itemCondition?: string;
+  shippingPayer?: string;
+  transport?: string;
+  images?: File[];
+  shippingDetails?: {
+    originCity: string;
+    destinationCity: string;
+    boxSize: string;
+    weight: number;
+    dimensions: string;
+    additionalShippingCost: number;
+    shippingObservations: string;
   };
 }
