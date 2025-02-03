@@ -139,6 +139,8 @@ const CreateAuction = () => {
           boxSize: "",
           weight: 0,
           dimensions: "",
+          additionalShippingCost: 0, // Added missing property
+          shippingObservations: "", // Added missing property
         },
       };
 
