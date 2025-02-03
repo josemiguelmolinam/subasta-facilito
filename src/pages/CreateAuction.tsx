@@ -88,6 +88,8 @@ const CreateAuction = () => {
 
   // Form states
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [category, setCategory] = useState<string>("");
   const [duration, setDuration] = useState<string>("3");
@@ -107,7 +109,56 @@ const CreateAuction = () => {
   const [weight, setWeight] = useState("");
   const [dimensions, setDimensions] = useState("");
 
-  // Handle form submission and other logic here...
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + parseInt(duration));
+
+      const auctionData = {
+        title,
+        description,
+        saleOptions: {
+          auctionPrice: enableAuction ? parseFloat(auctionPrice) : undefined,
+          buyNowAuctionPrice: enableAuction ? parseFloat(buyNowAuctionPrice) : undefined,
+          directSalePrice: enableDirectSale ? parseFloat(directSalePrice) : undefined,
+        },
+        itemCondition,
+        shippingCost: parseFloat(shippingCost),
+        shippingPayer,
+        transport,
+        images,
+        endDate,
+        sellerId: "temp-seller-id", // This should be replaced with actual seller ID
+        categoryId: category,
+        status: "active" as const,
+        shippingDetails: {
+          originCity,
+          destinationCity,
+          boxSize,
+          weight,
+          dimensions,
+        },
+      };
+
+      await createAuction(auctionData);
+      toast({
+        title: "Success",
+        description: "Auction created successfully",
+      });
+      navigate("/auctions");
+    } catch (error) {
+      console.error("Error creating auction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create auction",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <MainLayout>
