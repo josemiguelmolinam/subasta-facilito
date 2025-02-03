@@ -7,7 +7,6 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { AuctionProvider } from '@/contexts/AuctionContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
-import { useState } from 'react';
 
 // Pages
 import Index from './pages/Index';
@@ -36,17 +35,17 @@ import VerifyEmail from './pages/VerifyEmail';
 import ShipmentManagement from './pages/ShipmentManagement';
 import AuctionWinnerCelebration from './pages/AuctionWinnerCelebration';
 
-const App = () => {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: 1,
-        staleTime: 5 * 60 * 1000,
-        refetchOnWindowFocus: false,
-      },
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
     },
-  }));
+  },
+});
 
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
