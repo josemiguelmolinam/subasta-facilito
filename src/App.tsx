@@ -34,14 +34,14 @@ import PlaceBid from './pages/PlaceBid';
 import MyPurchases from './pages/MyPurchases';
 import VerifyEmail from './pages/VerifyEmail';
 import ShipmentManagement from './pages/ShipmentManagement';
+import AuctionWinnerCelebration from './pages/AuctionWinnerCelebration';
 
 const App = () => {
-  // Create a new QueryClient instance for each app instance
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
         retry: 1,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false,
       },
     },
@@ -82,6 +82,7 @@ const App = () => {
                     <Route path='/order-success' element={<OrderSuccessPage />} />
                     <Route path='/my-purchases' element={<MyPurchases />} />
                     <Route path='/shipment/:id' element={<ShipmentManagement />} />
+                    <Route path='/auction-winner/:id' element={<AuctionWinnerCelebration />} />
                   </Routes>
                 </TooltipProvider>
               </WishlistProvider>
