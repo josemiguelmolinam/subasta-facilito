@@ -131,7 +131,7 @@ const CreateAuction = () => {
       const description = formData.get("description") as string;
 
       // Construimos el objeto saleOptions según la opción activada
-      const saleOptions: any = {};
+      const saleOptions: SaleOptions = {};
       if (enableAuction) {
         saleOptions.auctionPrice = Number(auctionPrice);
         if (buyNowAuctionPrice) {
@@ -145,9 +145,16 @@ const CreateAuction = () => {
       const endDate = new Date();
       endDate.setDate(endDate.getDate() + parseInt(duration));
 
+      // Create a temporary URL for the first image
+      const imageUrl = images.length > 0 ? URL.createObjectURL(images[0]) : '';
+
       await createAuction({
         title,
         description,
+        startingPrice: Number(auctionPrice || 0),
+        currentBid: 0,
+        imageUrl,
+        totalBids: 0,
         saleOptions,
         itemCondition,
         shippingCost: Number(shippingCost),

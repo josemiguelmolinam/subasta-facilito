@@ -54,3 +54,35 @@ export interface Auction {
     shippingObservations: string;
   };
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  type: 'personal' | 'business';
+  verificationStatus: {
+    email: boolean;
+    twoFactor: boolean;
+    identity: boolean;
+    facial?: boolean;
+    business?: boolean;
+  };
+  avatar?: string;
+  createdAt: Date;
+  businessInfo?: {
+    name: string;
+    taxId: string;
+    address: string;
+    documents: string[];
+  };
+  securitySettings?: {
+    twoFactorEnabled: boolean;
+    notificationsEnabled: boolean;
+    lastLogin?: Date;
+    activeSessions?: {
+      device: string;
+      location: string;
+      lastActive: Date;
+    }[];
+  };
+}
