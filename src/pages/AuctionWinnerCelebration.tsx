@@ -15,7 +15,7 @@ export const AuctionWinnerCelebration = () => {
   const { id } = useParams();
   const { toast } = useToast();
 
-  // Mock data - In a real app, this would come from your API
+  // Mock data - En una app real, esto vendría de tu API
   const winnerData = {
     name: "Juan Pérez",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
@@ -25,12 +25,10 @@ export const AuctionWinnerCelebration = () => {
   };
 
   useEffect(() => {
-    // Stop confetti after 12 seconds (extended from 8)
     const timer = setTimeout(() => {
       setIsConfettiActive(false);
     }, 12000);
 
-    // Show celebration toast
     toast({
       title: "¡Victoria!",
       description: "¡Has ganado la subasta! 🎉",
@@ -75,12 +73,12 @@ export const AuctionWinnerCelebration = () => {
         />
       )}
 
-      <div className="container mx-auto px-4 py-8 mt-8">
+      <div className="container mx-auto px-4 py-8 mt-8 max-w-4xl">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-4xl mx-auto text-center space-y-8"
+          className="text-center space-y-8"
         >
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
@@ -93,8 +91,8 @@ export const AuctionWinnerCelebration = () => {
             }}
             className="flex justify-center"
           >
-            <div className="relative">
-              <Trophy className="w-32 h-32 text-yellow-500 animate-pulse" />
+            <div className="relative inline-block">
+              <Trophy className="w-24 h-24 md:w-32 md:h-32 text-yellow-500 animate-pulse" />
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],
@@ -107,7 +105,7 @@ export const AuctionWinnerCelebration = () => {
                 }}
                 className="absolute -top-4 -right-4"
               >
-                <Star className="w-10 h-10 text-yellow-400" />
+                <Star className="w-8 h-8 md:w-10 md:h-10 text-yellow-400" />
               </motion.div>
               <motion.div
                 animate={{
@@ -122,7 +120,7 @@ export const AuctionWinnerCelebration = () => {
                 }}
                 className="absolute -bottom-4 -left-4"
               >
-                <Sparkles className="w-10 h-10 text-purple-400" />
+                <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-purple-400" />
               </motion.div>
             </div>
           </motion.div>
@@ -131,27 +129,27 @@ export const AuctionWinnerCelebration = () => {
             variants={itemVariants}
             className="space-y-4"
           >
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-500 text-transparent bg-clip-text animate-gradient-bold">
+            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-500 text-transparent bg-clip-text animate-gradient-bold">
               ¡Felicidades! ¡Has ganado la subasta!
             </h1>
-            <p className="text-2xl text-gray-600 animate-pulse">
+            <p className="text-xl md:text-2xl text-gray-600 animate-pulse">
               Te has llevado un artículo increíble
             </p>
           </motion.div>
 
           <motion.div
             variants={itemVariants}
-            className="bg-gradient-to-br from-white via-purple-50 to-blue-50 rounded-xl shadow-2xl p-8 space-y-6 transform hover:scale-105 transition-transform duration-300"
+            className="bg-gradient-to-br from-white via-purple-50 to-blue-50 rounded-xl shadow-2xl p-4 md:p-8 space-y-6 transform transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
           >
             <motion.div
-              className="flex items-center justify-center space-x-4"
-              whileHover={{ scale: 1.05 }}
+              className="flex flex-col md:flex-row items-center justify-center md:space-x-4 space-y-4 md:space-y-0"
+              whileHover={{ scale: 1.02 }}
             >
               <div className="relative">
                 <motion.img
                   src={winnerData.avatar}
                   alt={winnerData.name}
-                  className="w-24 h-24 rounded-full border-4 border-auction-primary shadow-lg"
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-auction-primary shadow-lg"
                   animate={{
                     borderColor: ["#9b87f5", "#7E69AB", "#6E59A5", "#9b87f5"],
                   }}
@@ -169,14 +167,14 @@ export const AuctionWinnerCelebration = () => {
                     duration: 2,
                     repeat: Infinity,
                   }}
-                  className="absolute -bottom-2 -right-2 bg-gradient-to-r from-green-400 to-green-600 rounded-full p-3 shadow-lg"
+                  className="absolute -bottom-2 -right-2 bg-gradient-to-r from-green-400 to-green-600 rounded-full p-2 md:p-3 shadow-lg"
                 >
-                  <PartyPopper className="w-6 h-6 text-white" />
+                  <PartyPopper className="w-4 h-4 md:w-6 md:h-6 text-white" />
                 </motion.div>
               </div>
-              <div className="text-left">
+              <div className="text-center md:text-left">
                 <motion.h2
-                  className="text-3xl font-bold bg-gradient-to-r from-auction-primary to-auction-secondary text-transparent bg-clip-text"
+                  className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-auction-primary to-auction-secondary text-transparent bg-clip-text"
                   animate={{
                     scale: [1, 1.05, 1],
                   }}
@@ -187,44 +185,41 @@ export const AuctionWinnerCelebration = () => {
                 >
                   {winnerData.name}
                 </motion.h2>
-                <p className="text-gray-500 text-xl">¡Ganador afortunado!</p>
+                <p className="text-gray-500 text-lg md:text-xl">¡Ganador afortunado!</p>
               </div>
             </motion.div>
 
             <motion.div
-              className="relative group rounded-xl overflow-hidden shadow-2xl"
+              className="relative group rounded-xl overflow-hidden shadow-2xl max-w-sm mx-auto"
               whileHover={{ scale: 1.02 }}
             >
-              <div className="aspect-square max-w-sm mx-auto overflow-hidden">
+              <div className="aspect-square overflow-hidden">
                 <motion.img
                   src={winnerData.itemImage}
                   alt={winnerData.itemName}
-                  className="w-full h-full object-cover"
-                  initial={{ scale: 1 }}
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.3 }}
+                  className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
               <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6"
+                className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6"
                 initial={{ opacity: 0 }}
                 whileHover={{ opacity: 1 }}
               >
-                <h3 className="text-white text-2xl font-bold px-4 py-2 bg-black/30 rounded-full backdrop-blur-sm">
+                <h3 className="text-white text-xl md:text-2xl font-bold px-4 py-2 bg-black/30 rounded-full backdrop-blur-sm">
                   {winnerData.itemName}
                 </h3>
               </motion.div>
             </motion.div>
 
             <motion.div
-              className="grid grid-cols-2 gap-6 mt-8"
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-8"
               variants={itemVariants}
             >
               <Button
                 onClick={() => navigate(`/payment/${id}`)}
-                className="bg-gradient-to-r from-auction-primary to-auction-secondary hover:from-auction-secondary hover:to-auction-primary text-white text-lg py-6 rounded-xl transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full bg-gradient-to-r from-auction-primary to-auction-secondary hover:from-auction-secondary hover:to-auction-primary text-white text-base md:text-lg py-4 md:py-6 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
               >
-                <ShoppingBag className="w-6 h-6 mr-2" />
+                <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 mr-2" />
                 Proceder al pago
               </Button>
               <Button
@@ -236,9 +231,9 @@ export const AuctionWinnerCelebration = () => {
                   });
                   navigate("/auctions/explore");
                 }}
-                className="border-2 border-auction-primary hover:bg-auction-soft text-lg py-6 rounded-xl transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full border-2 border-auction-primary hover:bg-auction-soft text-base md:text-lg py-4 md:py-6 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
               >
-                <Share2 className="w-6 h-6 mr-2" />
+                <Share2 className="w-5 h-5 md:w-6 md:h-6 mr-2" />
                 Compartir victoria
               </Button>
             </motion.div>
