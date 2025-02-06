@@ -13,28 +13,51 @@ export const LatestAuctions = () => {
       currentBid: 899,
       buyNowPrice: 1299,
       timeLeft: "2h 15m",
-      imageUrl: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
+      condition: "new" as const,
+      isTrending: true,
+      totalBids: 15,
+      shipping: {
+        isFree: true
+      }
     },
     {
       title: "MacBook Pro M2",
       currentBid: 1499,
       buyNowPrice: 2199,
       timeLeft: "1h 30m",
-      imageUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80",
+      condition: "like-new" as const,
+      isExclusive: true,
+      totalBids: 8,
+      shipping: {
+        hasMultipleOptions: true
+      }
     },
     {
       title: "PlayStation 5",
       currentBid: 399,
       buyNowPrice: 599,
       timeLeft: "3h 45m",
-      imageUrl: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&q=80",
+      condition: "new" as const,
+      isFeatured: true,
+      totalBids: 20,
+      shipping: {
+        hasPickup: true
+      }
     },
     {
       title: "iPad Pro 2023",
       currentBid: 699,
       buyNowPrice: 999,
       timeLeft: "4h 20m",
-      imageUrl: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80",
+      isEnding: true,
+      totalBids: 12,
+      shipping: {
+        cost: 15
+      }
     }
   ];
 

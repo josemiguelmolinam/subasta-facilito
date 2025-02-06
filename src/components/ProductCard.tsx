@@ -1,7 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Heart, Gavel, Truck, MapPin, Info, Star, Flame, Award, Zap, Timer } from "lucide-react";
+import { 
+  Clock, 
+  Heart, 
+  Gavel, 
+  Truck, 
+  MapPin, 
+  Info, 
+  Star, 
+  Flame, 
+  Award, 
+  Zap, 
+  Timer 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
