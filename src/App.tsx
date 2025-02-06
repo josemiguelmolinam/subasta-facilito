@@ -32,6 +32,8 @@ import OrderSuccessPage from './pages/OrderSuccessPage';
 import PlaceBid from './pages/PlaceBid';
 import MyPurchases from './pages/MyPurchases';
 import VerifyEmail from './pages/VerifyEmail';
+import EmailVerifiedSuccess from './pages/EmailVerifiedSuccess';
+import PasswordChangedSuccess from './pages/PasswordChangedSuccess';
 import ShipmentManagement from './pages/ShipmentManagement';
 import AuctionWinnerCelebration from './pages/AuctionWinnerCelebration';
 
@@ -62,6 +64,8 @@ const App = () => {
                     <Route path='/login' element={<Login />} />
                     <Route path='/reset-password' element={<ResetPassword />} />
                     <Route path='/verify-email' element={<VerifyEmail />} />
+                    <Route path='/email-verified-success' element={<EmailVerifiedSuccess />} />
+                    <Route path='/password-changed-success' element={<PasswordChangedSuccess />} />
                     <Route path='/profile' element={<UserProfile />} />
                     <Route path='/profile/edit' element={<EditProfile />} />
                     <Route path='/wishlist' element={<Wishlist />} />
