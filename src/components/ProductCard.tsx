@@ -104,6 +104,44 @@ export const ProductCard = ({
     );
   };
 
+  const getShippingBadge = () => {
+    if (shipping?.isFree) {
+      return (
+        <div className="flex items-center gap-2">
+          <Truck className="w-4 h-4 text-green-500" />
+          <span className="text-sm font-medium text-green-600">Envío gratis</span>
+        </div>
+      );
+    }
+    if (shipping?.hasPickup) {
+      return (
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-auction-secondary" />
+          <span className="text-sm">Recogida en mano disponible</span>
+        </div>
+      );
+    }
+    if (shipping?.hasMultipleOptions) {
+      return (
+        <div className="flex items-center gap-2">
+          <Info className="w-4 h-4 text-auction-secondary" />
+          <span className="text-sm">Opciones de envío disponibles</span>
+        </div>
+      );
+    }
+    if (shipping?.cost) {
+      return (
+        <div className="flex items-center gap-2">
+          <Truck className="w-4 h-4 text-auction-secondary" />
+          <span className="text-sm">
+            Envío: {shipping.cost.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+          </span>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className={cn(
       "group overflow-hidden transition-all duration-300 hover:shadow-lg bg-white",
@@ -166,36 +204,15 @@ export const ProductCard = ({
             </div>
           )}
 
-          {shipping && (
-            <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-              <div className="flex items-center gap-2">
-                {shipping.hasPickup ? (
-                  <MapPin className="w-4 h-4 text-gray-500" />
-                ) : shipping.hasMultipleOptions ? (
-                  <Info className="w-4 h-4 text-gray-500" />
-                ) : (
-                  <Truck className="w-4 h-4 text-gray-500" />
-                )}
-                <span className="text-sm text-gray-600">
-                  {shipping.isFree ? "Envío gratis" :
-                    shipping.hasPickup ? "Recogida en mano" :
-                    shipping.hasMultipleOptions ? "Varias opciones" :
-                    "Costes de envío"}
-                </span>
-              </div>
-              {!shipping.isFree && !shipping.hasPickup && shipping.cost && (
-                <span className="text-sm font-medium text-gray-700">
-                  {shipping.cost.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
-                </span>
-              )}
-            </div>
-          )}
+          <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+            {getShippingBadge()}
+          </div>
         </div>
         
         <div className="grid grid-cols-2 gap-2">
           <Button 
             variant="outline"
-            className="w-full hover:bg-auction-soft hover:text-auction-primary transition-colors"
+            className="w-full bg-red-500 hover:bg-red-600 text-white border-0 transition-colors"
           >
             <Gavel className="w-4 h-4 mr-1" />
             Pujar
