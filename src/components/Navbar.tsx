@@ -40,15 +40,23 @@ export const Navbar = () => {
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-auction-soft">
         <div className="ml-4 container mx-auto px-4">
           <div className="flex items-center justify-between h-24">
-            {/* Logo */}
+            {/* Logo Mejorado */}
             <div className="flex items-center">
-              <a href="/" className="flex items-center space-x-2 group">
-                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary p-1.5 shadow-lg group-hover:shadow-auction-primary/25 transition-all duration-300">
-                  <Gavel className="h-full w-full text-white transform group-hover:rotate-[-20deg] transition-all duration-300" />
+              <a href="/" className="flex items-center space-x-2 group relative">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary rounded-lg blur-md opacity-75 group-hover:opacity-100 transition-all duration-500"></div>
+                  <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary p-2 relative transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-5deg]">
+                    <Gavel className="h-full w-full text-white transform transition-all duration-500 group-hover:rotate-[-20deg] group-hover:scale-110" />
+                  </div>
                 </div>
-                <span className="text-3xl font-bold bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-[length:400%_400%] bg-clip-text text-transparent animate-gradient-bold hover:animate-none hover:from-auction-tertiary hover:via-auction-secondary hover:to-auction-primary transition-all duration-700" style={{ marginLeft: "14px" }}>
-                  Subastalo
-                </span>
+                <div className="flex flex-col items-start ml-3">
+                  <span className="text-3xl font-bold bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text text-transparent relative group-hover:after:w-full after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-gradient-to-r after:from-auction-primary after:to-auction-tertiary after:w-0 after:transition-all after:duration-500">
+                    Subastalo
+                  </span>
+                  <span className="text-xs text-auction-secondary font-medium tracking-wider opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-1 group-hover:translate-y-0">
+                    PREMIUM AUCTIONS
+                  </span>
+                </div>
               </a>
             </div>
 
@@ -98,9 +106,9 @@ export const Navbar = () => {
                           className="relative h-12 w-12 rounded-full bg-auction-soft hover:bg-auction-primary/10 transition-all duration-300"
                           style={{ marginLeft: "150px" }}
                         >
-                          <Avatar className="h-8 w-8 ring-2 ring-auction-primary ring-offset-2 transition-all duration-300">
+                          <Avatar className="h-8 w-8">
                             <AvatarImage src={user.avatar} alt={user.name} />
-                            <AvatarFallback className="bg-gradient-to-br from-auction-primary to-auction-tertiary">
+                            <AvatarFallback>
                               <User className="h-4 w-4 text-white" />
                             </AvatarFallback>
                           </Avatar>
