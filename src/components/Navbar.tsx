@@ -50,11 +50,11 @@ export const Navbar = () => {
                   </div>
                 </div>
                 <div className="flex flex-col items-start ml-3">
-                  <span className="text-3xl font-bold bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text text-transparent relative group-hover:after:w-full after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-gradient-to-r after:from-auction-primary after:to-auction-tertiary after:w-0 after:transition-all after:duration-500">
+                  <span className="text-3xl font-playfair font-black bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text text-transparent relative group-hover:after:w-full after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-gradient-to-r after:from-auction-primary after:to-auction-tertiary after:w-0 after:transition-all after:duration-500">
                     Subastalo
                   </span>
-                  <span className="text-xs text-auction-secondary font-medium tracking-wider opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-1 group-hover:translate-y-0">
-                    PREMIUM AUCTIONS
+                  <span className="text-xs font-playfair text-auction-secondary font-medium tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-1 group-hover:translate-y-0">
+                    SUBASTAS EXCLUSIVAS
                   </span>
                 </div>
               </a>
