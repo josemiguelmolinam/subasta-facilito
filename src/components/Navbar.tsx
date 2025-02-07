@@ -103,17 +103,23 @@ export const Navbar = () => {
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
-                          className="relative h-12 w-12 rounded-full bg-auction-soft hover:bg-auction-primary/10 transition-all duration-300"
+                          className="relative h-12 w-12 rounded-full bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary p-0.5 shadow-lg hover:shadow-auction-primary/50 transition-all duration-300 group"
                           style={{ marginLeft: "150px" }}
                         >
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={user.avatar} alt={user.name} />
-                            <AvatarFallback>
-                              <User className="h-4 w-4 text-white" />
-                            </AvatarFallback>
-                          </Avatar>
-                          {/* Indicador de notificaciones */}
-                          <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
+                          <div className="relative h-full w-full rounded-full bg-white p-0.5 transition-transform duration-300 group-hover:scale-105">
+                            <Avatar className="h-full w-full transition-opacity duration-300">
+                              <AvatarImage 
+                                src={user.avatar} 
+                                alt={user.name}
+                                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                              />
+                              <AvatarFallback className="bg-gradient-to-br from-auction-soft via-auction-primary to-auction-secondary animate-gradient-smooth">
+                                <User className="h-5 w-5 text-white" />
+                              </AvatarFallback>
+                            </Avatar>
+                            {/* Indicador de notificaciones */}
+                            <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
+                          </div>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-64 mt-2" align="end" forceMount>
