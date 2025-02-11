@@ -1,3 +1,4 @@
+
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -36,6 +37,7 @@ import EmailVerifiedSuccess from './pages/EmailVerifiedSuccess';
 import PasswordChangedSuccess from './pages/PasswordChangedSuccess';
 import ShipmentManagement from './pages/ShipmentManagement';
 import AuctionWinnerCelebration from './pages/AuctionWinnerCelebration';
+import PurchaseConfirmationPage from './pages/PurchaseConfirmationPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
