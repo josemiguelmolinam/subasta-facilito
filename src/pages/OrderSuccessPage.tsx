@@ -1,4 +1,3 @@
-
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +38,7 @@ const OrderSuccessPage = () => {
     type: "auction" // o "direct" para venta directa
   };
 
-  // Hasheamos la información sensible para el código QR
+  // Generamos la información hasheada para el código QR usando btoa (base64)
   const getHashedShippingInfo = () => {
     const sensitiveInfo = {
       orderId: purchase.id,
@@ -48,8 +47,8 @@ const OrderSuccessPage = () => {
       buyerName: purchase.buyer.name
     };
     
-    // En producción, usaríamos una clave secreta del backend para el hash
-    return Buffer.from(JSON.stringify(sensitiveInfo)).toString('base64');
+    // Usamos btoa para codificar en base64 (disponible en navegador)
+    return btoa(JSON.stringify(sensitiveInfo));
   };
 
   return (
