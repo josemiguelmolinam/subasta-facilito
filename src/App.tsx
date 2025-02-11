@@ -82,6 +82,7 @@ const App = () => {
                     <Route path='/auctions/create' element={<CreateAuction />} />
                     <Route path='/checkout/:id' element={<CheckoutPage />} />
                     <Route path='/confirm-purchase/:id' element={<ConfirmPurchasePage />} />
+                    <Route path='/purchase-confirmation' element={<PurchaseConfirmationPage />} />
                     <Route path='/order-success' element={<OrderSuccessPage />} />
                     <Route path='/my-purchases' element={<MyPurchases />} />
                     <Route path='/shipment/:id' element={<ShipmentManagement />} />
