@@ -3,8 +3,9 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "@/lib/utils/currency";
-import { Package, MessageCircle, CreditCard, Receipt, Clock, User, MapPin, Truck } from "lucide-react";
+import { Package, MessageCircle, CreditCard, Receipt, Clock, User, MapPin, Truck, AlertCircle } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const PurchaseConfirmationPage = () => {
   const navigate = useNavigate();
@@ -20,16 +21,22 @@ const PurchaseConfirmationPage = () => {
       description: "El último modelo de iPhone con pantalla de 6.7 pulgadas, procesador A16 Bionic y cámara profesional."
     },
     seller: {
-      name: "Carlos Martinez",
+      id: btoa("seller-123"), // ID hasheado del vendedor
+      name: "S****z", // Nombre parcialmente oculto
       rating: 4.8,
       totalSales: 127,
       response_time: "2 horas"
     },
     shipping: {
-      status: "Pendiente de envío",
-      address: "Calle Principal 123, Madrid, España",
-      estimated_delivery: "3-5 días hábiles",
-      tracking_number: null
+      status: "Pendiente de procesamiento",
+      tracking: {
+        number: null,
+        carrier: null,
+        status: "waiting_seller",
+        lastUpdate: null,
+        estimatedDelivery: null,
+        updates: []
+      }
     },
     payment: {
       method: "Tarjeta terminada en **** 4242",
@@ -44,7 +51,7 @@ const PurchaseConfirmationPage = () => {
       title: "Contactando al vendedor",
       description: "Te redirigiremos al chat con el vendedor",
     });
-    // En un caso real, aquí redirigiríamos al chat
+    // En un caso real, aquí redirigiríamos al chat usando el ID hasheado del vendedor
     navigate('/messages');
   };
 
@@ -55,6 +62,39 @@ const PurchaseConfirmationPage = () => {
     });
     // Aquí iría la lógica real de descarga
   };
+
+  const getShippingStatusDisplay = () => {
+    const { status, tracking } = purchase.shipping;
+    
+    switch(tracking.status) {
+      case "waiting_seller":
+        return {
+          message: "Esperando que el vendedor procese el envío",
+          description: "El vendedor tiene 48 horas para procesar tu pedido",
+          icon: <Clock className="w-5 h-5 text-yellow-500" />
+        };
+      case "processing":
+        return {
+          message: "Procesando envío",
+          description: "El vendedor está preparando tu pedido",
+          icon: <Package className="w-5 h-5 text-blue-500" />
+        };
+      case "shipped":
+        return {
+          message: "Envío en camino",
+          description: `En tránsito con ${tracking.carrier}`,
+          icon: <Truck className="w-5 h-5 text-green-500" />
+        };
+      default:
+        return {
+          message: status,
+          description: "Estado del envío pendiente",
+          icon: <AlertCircle className="w-5 h-5 text-gray-500" />
+        };
+    }
+  };
+
+  const shippingStatus = getShippingStatusDisplay();
 
   return (
     <MainLayout>
@@ -100,7 +140,7 @@ const PurchaseConfirmationPage = () => {
             </div>
           </div>
 
-          {/* Información del vendedor */}
+          {/* Información del vendedor (hasheada) */}
           <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -127,29 +167,36 @@ const PurchaseConfirmationPage = () => {
           <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
             <h3 className="text-lg font-semibold text-auction-dark flex items-center gap-2">
               <Truck className="w-5 h-5 text-auction-primary" />
-              Información de Envío
+              Estado del Envío
             </h3>
-            <div className="grid gap-4">
-              <div className="flex items-start gap-3 text-gray-600">
-                <MapPin className="w-5 h-5 text-auction-secondary mt-1" />
+            <Alert>
+              <div className="flex items-center gap-3">
+                {shippingStatus.icon}
                 <div>
-                  <p className="font-medium text-auction-dark">Dirección de envío</p>
-                  <p>{purchase.shipping.address}</p>
+                  <h4 className="font-semibold">{shippingStatus.message}</h4>
+                  <AlertDescription>
+                    {shippingStatus.description}
+                  </AlertDescription>
                 </div>
               </div>
-              <div className="flex items-start gap-3 text-gray-600">
-                <Clock className="w-5 h-5 text-auction-secondary mt-1" />
-                <div>
-                  <p className="font-medium text-auction-dark">Entrega estimada</p>
-                  <p>{purchase.shipping.estimated_delivery}</p>
+            </Alert>
+            
+            {purchase.shipping.tracking.number && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Número de seguimiento:</p>
+                    <p className="text-auction-primary font-mono">{purchase.shipping.tracking.number}</p>
+                  </div>
+                  {purchase.shipping.tracking.carrier && (
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-600">Transportista:</p>
+                      <p className="text-auction-dark">{purchase.shipping.tracking.carrier}</p>
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="p-4 bg-yellow-50 rounded-lg">
-                <p className="text-yellow-800">
-                  El vendedor tiene 48 horas para realizar el envío. Recibirás una notificación cuando el producto sea enviado.
-                </p>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Resumen de pago */}
