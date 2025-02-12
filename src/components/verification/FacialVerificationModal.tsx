@@ -56,9 +56,12 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
         stream.getTracks().forEach(track => track.stop());
       }
       toast({
-        title: "Verificación completada",
-        description: "Tu identidad ha sido verificada correctamente",
+        title: "Verificación en proceso",
+        description: "Estamos procesando tu verificación facial. Te notificaremos cuando esté lista.",
       });
+      setTimeout(() => {
+        onOpenChange(false);
+      }, 2000);
     }, 3000);
   };
 
@@ -69,40 +72,41 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
           <div className="space-y-6">
             <div className="bg-primary/5 p-6 rounded-lg">
               <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Camera className="w-8 h-8 text-primary" />
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Camera className="w-10 h-10 text-primary" />
                 </div>
                 <div className="text-center">
-                  <h3 className="font-medium">Preparación para la verificación facial</h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Asegúrate de estar en un lugar bien iluminado
+                  <h3 className="text-lg font-semibold">Preparación para la verificación facial</h3>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Asegúrate de estar en un lugar bien iluminado y mantén una expresión neutral
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <h4 className="text-sm font-medium">Antes de empezar:</h4>
-              <ul className="space-y-2">
+            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+              <h4 className="text-sm font-semibold text-gray-700">Antes de empezar:</h4>
+              <ul className="space-y-3">
                 {[
-                  "Asegúrate de tener una buena iluminación",
-                  "Quítate gafas de sol u otros accesorios",
+                  "Asegúrate de tener una buena iluminación frontal",
+                  "Quítate gafas de sol u otros accesorios que cubran tu rostro",
                   "Mira directamente a la cámara",
-                  "Mantén una expresión neutral"
+                  "Mantén una expresión neutral",
+                  "Asegúrate de que tu rostro esté completamente visible"
                 ].map((req, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
+                    <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                     {req}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 pt-4">
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
-              <Button onClick={startCamera}>
+              <Button onClick={startCamera} className="min-w-[160px]">
                 Comenzar Verificación
               </Button>
             </div>
@@ -120,20 +124,32 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 muted
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 border-2 border-dashed border-white/50 m-8 rounded-lg" />
+              <div className="absolute inset-0 border-4 border-dashed border-white/50 m-8 rounded-lg" />
+              <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-white text-center text-sm">
+                  Centra tu rostro dentro del marco y mantén una expresión neutral
+                </p>
+              </div>
             </div>
 
-            <div className="flex justify-center gap-3">
-              <Button variant="outline" onClick={() => {
-                if (stream) {
-                  stream.getTracks().forEach(track => track.stop());
-                }
-                setStep('instructions');
-              }}>
+            <div className="flex justify-center gap-4">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                  }
+                  setStep('instructions');
+                }}
+                className="min-w-[120px]"
+              >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Reintentar
               </Button>
-              <Button onClick={takePhoto}>
+              <Button 
+                onClick={takePhoto}
+                className="min-w-[120px]"
+              >
                 <Camera className="w-4 h-4 mr-2" />
                 Capturar
               </Button>
@@ -143,13 +159,13 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
 
       case 'verifying':
         return (
-          <div className="py-8">
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <div className="py-12">
+            <div className="flex flex-col items-center gap-6">
+              <Loader2 className="w-16 h-16 text-primary animate-spin" />
               <div className="text-center">
-                <h3 className="font-medium">Verificando tu identidad</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Por favor, espera mientras procesamos tu imagen
+                <h3 className="text-lg font-semibold">Verificando tu identidad</h3>
+                <p className="text-sm text-gray-500 mt-2">
+                  Por favor, espera mientras procesamos tu imagen...
                 </p>
               </div>
             </div>
@@ -158,19 +174,20 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
 
       case 'success':
         return (
-          <div className="py-8">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle2 className="w-8 h-8 text-green-600" />
+          <div className="py-12">
+            <div className="flex flex-col items-center gap-6">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-green-600" />
               </div>
               <div className="text-center">
-                <h3 className="font-medium">¡Verificación Completada!</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Tu identidad ha sido verificada correctamente
+                <h3 className="text-lg font-semibold">¡Imagen Capturada!</h3>
+                <p className="text-sm text-gray-500 mt-2">
+                  Tu verificación facial está siendo procesada.<br />
+                  Te notificaremos por email cuando esté lista.
                 </p>
               </div>
-              <Button onClick={() => onOpenChange(false)}>
-                Cerrar
+              <Button onClick={() => onOpenChange(false)} className="mt-4">
+                Entendido
               </Button>
             </div>
           </div>
@@ -180,11 +197,11 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Verificación Facial</DialogTitle>
-          <DialogDescription>
-            Realizaremos un escaneo facial para verificar tu identidad
+          <DialogTitle className="text-2xl font-bold">Verificación Facial</DialogTitle>
+          <DialogDescription className="text-base">
+            Para garantizar la seguridad de tu cuenta, necesitamos realizar una verificación facial
           </DialogDescription>
         </DialogHeader>
 
