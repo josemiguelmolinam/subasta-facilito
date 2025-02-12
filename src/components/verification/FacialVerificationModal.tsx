@@ -124,10 +124,43 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 muted
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 border-4 border-dashed border-white/50 m-8 rounded-lg" />
+              {/* Contorno facial y guías de alineación */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Círculo exterior con degradado */}
+                <div className="w-72 h-72 rounded-full border-4 border-white/30 backdrop-blur-sm" />
+                
+                {/* Máscara facial con guías */}
+                <div className="absolute w-64 h-64">
+                  {/* Guías de alineación */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-full w-0.5 bg-gradient-to-b from-transparent via-white/50 to-transparent" />
+                  </div>
+                  
+                  {/* Esquinas de referencia */}
+                  <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-white/70" />
+                  <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-white/70" />
+                  <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-white/70" />
+                  <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-white/70" />
+                </div>
+
+                {/* Animación de escaneo */}
+                <div className="absolute w-64 h-64 overflow-hidden">
+                  <div className="w-full h-1 bg-primary/50 blur-sm animate-scan" 
+                       style={{
+                         animation: 'scan 2s linear infinite',
+                         boxShadow: '0 0 15px rgba(139, 92, 246, 0.5)',
+                       }}
+                  />
+                </div>
+              </div>
+
+              {/* Instrucciones superpuestas */}
               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
                 <p className="text-white text-center text-sm">
-                  Centra tu rostro dentro del marco y mantén una expresión neutral
+                  Centra tu rostro dentro del círculo y mantén una expresión neutral
                 </p>
               </div>
             </div>
