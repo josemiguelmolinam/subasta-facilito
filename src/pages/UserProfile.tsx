@@ -21,6 +21,8 @@ import { ProfileCharts } from "@/components/profile/ProfileCharts";
 import { QuickActions } from "@/components/profile/QuickActions";
 import { auctionData, categoryData } from "@/data/profileData";
 import Map from "@/components/Map";
+import IdentityVerificationModal from "@/components/verification/IdentityVerificationModal";
+import FacialVerificationModal from "@/components/verification/FacialVerificationModal";
 
 const UserProfile = () => {
   const { user, isLoading, logout } = useAuth();
@@ -123,6 +125,9 @@ const UserProfile = () => {
       description: "Tus preferencias de notificación han sido actualizadas"
     });
   };
+  
+  const [showIdentityModal, setShowIdentityModal] = useState(false);
+  const [showFacialModal, setShowFacialModal] = useState(false);
 
   return (
     <MainLayout>
@@ -263,17 +268,20 @@ const UserProfile = () => {
                     {
                       title: "Email verificado",
                       status: user.verificationStatus.email ? "completed" : "pending",
-                      icon: user.verificationStatus.email ? CheckCircle2 : AlertCircle
+                      icon: user.verificationStatus.email ? CheckCircle2 : AlertCircle,
+                      onClick: null
                     },
                     {
                       title: "Identidad verificada",
                       status: user.verificationStatus.identity ? "completed" : "pending",
-                      icon: user.verificationStatus.identity ? CheckCircle2 : AlertCircle
+                      icon: user.verificationStatus.identity ? CheckCircle2 : AlertCircle,
+                      onClick: () => setShowIdentityModal(true)
                     },
                     {
                       title: "Verificación facial",
                       status: user.verificationStatus.facial ? "completed" : "pending",
-                      icon: user.verificationStatus.facial ? CheckCircle2 : AlertCircle
+                      icon: user.verificationStatus.facial ? CheckCircle2 : AlertCircle,
+                      onClick: () => setShowFacialModal(true)
                     }
                   ].map((step, index) => (
                     <div
@@ -295,8 +303,8 @@ const UserProfile = () => {
                             : "Pendiente de verificación"}
                         </p>
                       </div>
-                      {step.status !== "completed" && (
-                        <Button variant="outline" size="sm">
+                      {step.status !== "completed" && step.onClick && (
+                        <Button variant="outline" size="sm" onClick={step.onClick}>
                           Verificar
                         </Button>
                       )}
@@ -356,6 +364,16 @@ const UserProfile = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+              {/* Modales de verificación */}
+              <IdentityVerificationModal
+                open={showIdentityModal}
+                onOpenChange={setShowIdentityModal}
+              />
+              <FacialVerificationModal
+                open={showFacialModal}
+                onOpenChange={setShowFacialModal}
+              />
       </div>
     </MainLayout>
   );
