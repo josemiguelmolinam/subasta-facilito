@@ -1,3 +1,4 @@
+
 import { MainLayout } from "@/components/layout/MainLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -29,15 +30,17 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [verificationProgress] = useState(66);
+  const [showIdentityModal, setShowIdentityModal] = useState(false);
+  const [showFacialModal, setShowFacialModal] = useState(false);
 
-  // Mock data - En una aplicación real, esto vendría de una API
-  const mockAuctions = [
+  // Definir todos los estados al inicio del componente
+  const [mockAuctions] = useState([
     {
       id: "1",
       title: "iPhone 15 Pro Max",
       imageUrl: "https://picsum.photos/200/300",
       currentBid: 1200,
-      endDate: new Date(Date.now() + 7200000), // 2 horas en el futuro
+      endDate: new Date(Date.now() + 7200000),
       status: 'active' as const
     },
     {
@@ -45,12 +48,12 @@ const UserProfile = () => {
       title: "MacBook Pro M3",
       imageUrl: "https://picsum.photos/200/301",
       currentBid: 2500,
-      endDate: new Date(Date.now() + 3600000), // 1 hora en el futuro
+      endDate: new Date(Date.now() + 3600000),
       status: 'won' as const
     }
-  ];
+  ]);
 
-  const mockPaymentMethods = [
+  const [mockPaymentMethods] = useState([
     {
       id: "1",
       type: 'credit_card' as const,
@@ -62,9 +65,9 @@ const UserProfile = () => {
       id: "2",
       type: 'paypal' as const
     }
-  ];
+  ]);
 
-  const mockNotificationSettings = [
+  const [mockNotificationSettings] = useState([
     {
       id: "1",
       type: 'bids' as const,
@@ -83,7 +86,7 @@ const UserProfile = () => {
       email: true,
       push: true
     }
-  ];
+  ]);
 
   if (!user) {
     navigate("/login");
@@ -125,9 +128,27 @@ const UserProfile = () => {
       description: "Tus preferencias de notificación han sido actualizadas"
     });
   };
-  
-  const [showIdentityModal, setShowIdentityModal] = useState(false);
-  const [showFacialModal, setShowFacialModal] = useState(false);
+
+  const verificationSteps = [
+    {
+      title: "Email verificado",
+      status: user.verificationStatus.email ? "completed" : "pending",
+      icon: user.verificationStatus.email ? CheckCircle2 : AlertCircle,
+      onClick: null
+    },
+    {
+      title: "Identidad verificada",
+      status: user.verificationStatus.identity ? "completed" : "pending",
+      icon: user.verificationStatus.identity ? CheckCircle2 : AlertCircle,
+      onClick: () => setShowIdentityModal(true)
+    },
+    {
+      title: "Verificación facial",
+      status: user.verificationStatus.facial ? "completed" : "pending",
+      icon: user.verificationStatus.facial ? CheckCircle2 : AlertCircle,
+      onClick: () => setShowFacialModal(true)
+    }
+  ];
 
   return (
     <MainLayout>
@@ -264,26 +285,7 @@ const UserProfile = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {[
-                    {
-                      title: "Email verificado",
-                      status: user.verificationStatus.email ? "completed" : "pending",
-                      icon: user.verificationStatus.email ? CheckCircle2 : AlertCircle,
-                      onClick: null
-                    },
-                    {
-                      title: "Identidad verificada",
-                      status: user.verificationStatus.identity ? "completed" : "pending",
-                      icon: user.verificationStatus.identity ? CheckCircle2 : AlertCircle,
-                      onClick: () => setShowIdentityModal(true)
-                    },
-                    {
-                      title: "Verificación facial",
-                      status: user.verificationStatus.facial ? "completed" : "pending",
-                      icon: user.verificationStatus.facial ? CheckCircle2 : AlertCircle,
-                      onClick: () => setShowFacialModal(true)
-                    }
-                  ].map((step, index) => (
+                  {verificationSteps.map((step, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
@@ -365,15 +367,15 @@ const UserProfile = () => {
           </TabsContent>
         </Tabs>
 
-              {/* Modales de verificación */}
-              <IdentityVerificationModal
-                open={showIdentityModal}
-                onOpenChange={setShowIdentityModal}
-              />
-              <FacialVerificationModal
-                open={showFacialModal}
-                onOpenChange={setShowFacialModal}
-              />
+        {/* Modales de verificación */}
+        <IdentityVerificationModal
+          open={showIdentityModal}
+          onOpenChange={setShowIdentityModal}
+        />
+        <FacialVerificationModal
+          open={showFacialModal}
+          onOpenChange={setShowFacialModal}
+        />
       </div>
     </MainLayout>
   );
