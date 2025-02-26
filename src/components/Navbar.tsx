@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { LogIn, Gavel, User, Settings, MessageSquare, Bell, LogOut } from "lucide-react";
 import { MobileNav } from "./MobileNav";
@@ -117,8 +118,8 @@ export const Navbar = () => {
                                 <User className="h-5 w-5 text-white" />
                               </AvatarFallback>
                             </Avatar>
-                            {/* Indicador de notificaciones */}
-                            <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
+                            {/* Indicador de notificaciones - Removida la clase animate-pulse */}
+                            <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-500 ring-2 ring-white" />
                           </div>
                         </Button>
                       </DropdownMenuTrigger>
