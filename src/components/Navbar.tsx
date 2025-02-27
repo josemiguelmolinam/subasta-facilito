@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { LogIn, Gavel, User, Settings, MessageSquare, Bell, LogOut } from "lucide-react";
 import { MobileNav } from "./MobileNav";
@@ -43,35 +42,26 @@ export const Navbar = () => {
           <div className="flex items-center justify-between h-24">
             {/* Logo Mejorado y Profesional */}
             <div className="flex items-center">
-              <a href="/" className="flex items-center space-x-2 group relative">
+              <a href="/" className="flex items-center space-x-3 group">
                 <div className="relative">
-                  {/* Efecto de resplandor del logo */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary rounded-xl blur-xl opacity-50 group-hover:opacity-75 transition-all duration-700 animate-pulse"></div>
-                  
                   {/* Contenedor principal del logo */}
-                  <div className="relative h-14 w-14 bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary rounded-xl p-0.5 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-5deg] hover:shadow-xl">
+                  <div className="relative h-14 w-14 bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary rounded-xl p-0.5 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
                     {/* Fondo interno del logo */}
                     <div className="absolute inset-[1px] bg-white rounded-[9px] flex items-center justify-center">
-                      {/* Icono del martillo con efectos */}
-                      <Gavel className="h-8 w-8 text-transparent bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text transform transition-all duration-500 group-hover:rotate-[-20deg] group-hover:scale-110" />
+                      {/* Icono del martillo */}
+                      <Gavel className="h-8 w-8 text-transparent bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text transition-all duration-300 group-hover:rotate-[-12deg]" />
                     </div>
-                    
-                    {/* Efectos decorativos */}
-                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-auction-tertiary rounded-full animate-ping"></div>
-                    <div className="absolute -bottom-1 -left-1 h-2 w-2 bg-auction-primary rounded-full animate-pulse"></div>
                   </div>
                 </div>
                 
                 {/* Texto del logo */}
                 <div className="flex flex-col items-start">
-                  <span className="text-3xl font-bold bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text text-transparent relative group-hover:after:w-full after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-gradient-to-r after:from-auction-primary after:to-auction-tertiary after:w-0 after:transition-all after:duration-500">
+                  <span className="text-3xl font-bold text-auction-primary transition-all duration-300">
                     Subastalo
                   </span>
-                  <div className="overflow-hidden h-5">
-                    <span className="text-xs text-auction-secondary font-medium tracking-wider transform transition-all duration-500 translate-y-5 group-hover:translate-y-0 inline-block">
-                      PREMIUM AUCTIONS
-                    </span>
-                  </div>
+                  <span className="text-sm text-auction-secondary font-medium">
+                    Tu plataforma líder en subastas
+                  </span>
                 </div>
               </a>
             </div>
