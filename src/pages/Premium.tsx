@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Crown, Diamond, ShieldCheck, CreditCard, Users, Clock, Zap, Sparkles, Star, Award, Gift, Check } from "lucide-react";
+import { Crown, Diamond, ShieldCheck, CreditCard, Users, Clock, Zap, Sparkles, Star, Award, Gift, Check, Building2, BriefcaseBusiness, Target } from "lucide-react";
 
 const Premium = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
@@ -169,18 +169,18 @@ const Premium = () => {
               
               <div className="flex gap-4">
                 <div className="bg-gradient-to-br from-auction-soft to-auction-primary/20 rounded-full p-3 h-fit">
-                  <Check className="h-6 w-6 text-auction-primary" />
+                  <Target className="h-6 w-6 text-auction-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Verificación prioritaria</h3>
-                  <p className="text-gray-600">Proceso de verificación acelerado para empezar a subastar de inmediato.</p>
+                  <h3 className="text-xl font-bold mb-2">Posicionamiento destacado</h3>
+                  <p className="text-gray-600">Tus subastas aparecerán en posiciones preferentes para mayor visibilidad.</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Pricing Section - Mejorado y reordenado */}
+        {/* Pricing Section - Con los nuevos precios y la opción para empresas */}
         <div id="pricing" className="container mx-auto px-4 py-24">
           <h2 className="text-4xl font-bold text-center mb-6">Planes y Precios</h2>
           <div className="h-1 w-20 bg-gradient-to-r from-auction-primary to-auction-tertiary rounded-full mx-auto mb-6"></div>
@@ -202,45 +202,44 @@ const Premium = () => {
             </Tabs>
           </div>
 
-          {/* Pricing Cards - Reordenados: Estándar, Plus, Pro */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {/* Pricing Cards - Con los nuevos precios */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
             <PricingCard
               title="Estándar"
-              price={getPrice(19.99)}
-              description="Para entusiastas de subastas"
+              price={0}
+              description="Para todos los usuarios"
               features={[
                 "Acceso a todas las subastas públicas",
+                "Pujas limitadas en subastas",
+                "Perfil básico de usuario",
+                "Soporte por email",
+                "Alertas básicas"
+              ]}
+              ctaText="Usar Gratis"
+              onSelectPlan={() => handlePlanSelected("Estándar")}
+            />
+            <PricingCard
+              title="Plus"
+              price={getPrice(20)}
+              description="Para entusiastas de subastas"
+              features={[
+                "Todo lo de Estándar",
+                "Pujas ilimitadas",
                 "Notificaciones en tiempo real",
-                "Subastas exclusivas para miembros",
                 "Estadísticas básicas",
                 "Soporte prioritario",
                 "Alertas personalizadas"
               ]}
               isPopular={true}
-              ctaText="Seleccionar Estándar"
-              onSelectPlan={() => handlePlanSelected("Estándar")}
-            />
-            <PricingCard
-              title="Plus"
-              price={getPrice(9.99)}
-              description="Para usuarios ocasionales"
-              features={[
-                "Acceso a todas las subastas públicas",
-                "Pujas ilimitadas en subastas abiertas",
-                "Seguimiento de subastas favoritas",
-                "Soporte por email",
-                "Alertas básicas",
-                "Perfil verificado"
-              ]}
-              ctaText="Comenzar con Plus"
+              ctaText="Seleccionar Plus"
               onSelectPlan={() => handlePlanSelected("Plus")}
             />
             <PricingCard
               title="Pro"
-              price={getPrice(39.99)}
+              price={getPrice(50)}
               description="Para coleccionistas y vendedores"
               features={[
-                "Todo lo de Estándar",
+                "Todo lo de Plus",
                 "Métricas y estadísticas avanzadas",
                 "Acceso anticipado a subastas premium",
                 "Subasta sin comisiones",
@@ -250,6 +249,21 @@ const Premium = () => {
               ctaText="Obtener Pro"
               onSelectPlan={() => handlePlanSelected("Pro")}
             />
+            <PricingCard
+              title="Empresas"
+              price={getPrice(100)}
+              description="Para negocios y profesionales"
+              features={[
+                "Todo lo de Pro",
+                "Anuncios en posiciones destacadas",
+                "Perfil de empresa verificado",
+                "Dashboard analítico avanzado",
+                "API de integración",
+                "Gestor de cuenta personal"
+              ]}
+              ctaText="Contactar para Empresas"
+              onSelectPlan={() => handlePlanSelected("Empresas")}
+            />
           </div>
           
           <div className="mt-20 max-w-6xl mx-auto">
@@ -258,7 +272,91 @@ const Premium = () => {
           </div>
         </div>
 
-        {/* Testimonials - Nueva sección */}
+        {/* Sección especial para empresas */}
+        <div className="bg-gradient-to-r from-auction-tertiary/10 to-auction-primary/10 py-24">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <div className="flex flex-col md:flex-row items-center gap-10">
+                <div className="md:w-1/2">
+                  <div className="bg-white p-8 rounded-2xl shadow-xl border border-auction-primary/20">
+                    <div className="flex justify-center mb-6">
+                      <div className="bg-gradient-to-br from-auction-primary to-auction-tertiary rounded-2xl p-5">
+                        <Building2 className="h-12 w-12 text-white" />
+                      </div>
+                    </div>
+                    <h2 className="text-3xl font-bold text-center mb-6">Soluciones para Empresas</h2>
+                    <p className="text-gray-600 mb-6 text-center">
+                      Potencia tu negocio con nuestras soluciones especializadas para empresas y profesionales del sector.
+                    </p>
+                    <ul className="space-y-4 mb-8">
+                      <li className="flex items-start">
+                        <div className="rounded-full bg-auction-soft p-1 mr-3">
+                          <BriefcaseBusiness className="h-5 w-5 text-auction-primary" />
+                        </div>
+                        <span>Posicionamiento preferente en todas las categorías</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="rounded-full bg-auction-soft p-1 mr-3">
+                          <BriefcaseBusiness className="h-5 w-5 text-auction-primary" />
+                        </div>
+                        <span>Creación de subastas ilimitadas y exclusivas</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="rounded-full bg-auction-soft p-1 mr-3">
+                          <BriefcaseBusiness className="h-5 w-5 text-auction-primary" />
+                        </div>
+                        <span>Herramientas de marketing y promoción avanzadas</span>
+                      </li>
+                    </ul>
+                    <Button 
+                      className="w-full bg-gradient-to-r from-auction-primary to-auction-tertiary hover:from-auction-tertiary hover:to-auction-primary text-white py-3 font-bold rounded-xl shadow-lg"
+                      onClick={() => handlePlanSelected("Empresas")}
+                    >
+                      Solicitar información
+                    </Button>
+                  </div>
+                </div>
+                <div className="md:w-1/2">
+                  <h3 className="text-3xl font-bold mb-6">Maximiza tu presencia en el mercado</h3>
+                  <p className="text-lg text-gray-600 mb-6">
+                    Nuestro plan para empresas está diseñado para satisfacer las necesidades específicas de profesionales y negocios que buscan destacar en el mundo de las subastas.
+                  </p>
+                  <div className="space-y-6">
+                    <div className="flex gap-4 items-start">
+                      <div className="rounded-full bg-auction-primary/10 p-2">
+                        <Target className="h-6 w-6 text-auction-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold mb-1">Alcance ampliado</h4>
+                        <p className="text-gray-600">Llega a más compradores potenciales con anuncios destacados y mayor visibilidad.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="rounded-full bg-auction-primary/10 p-2">
+                        <Target className="h-6 w-6 text-auction-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold mb-1">Informes detallados</h4>
+                        <p className="text-gray-600">Análisis exhaustivos de rendimiento y comportamiento de los usuarios.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="rounded-full bg-auction-primary/10 p-2">
+                        <Target className="h-6 w-6 text-auction-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold mb-1">Soporte dedicado</h4>
+                        <p className="text-gray-600">Un gestor de cuenta personal para ayudarte en todo momento.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials */}
         <div className="bg-gradient-to-b from-auction-soft/20 to-white py-24">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-6">Lo que dicen nuestros usuarios</h2>
@@ -274,12 +372,12 @@ const Premium = () => {
                   </div>
                 </div>
                 <div className="pt-6">
-                  <p className="text-gray-600 italic mb-4">Desde que me suscribí al plan Estándar, he conseguido artículos exclusivos que no hubiera encontrado de otra manera. ¡Totalmente recomendado!</p>
+                  <p className="text-gray-600 italic mb-4">Utilizo el plan Plus y ha mejorado enormemente mi experiencia. Por solo 20€ al mes tengo acceso a muchas más oportunidades.</p>
                   <div className="flex items-center mt-6">
                     <div className="w-12 h-12 bg-auction-soft rounded-full"></div>
                     <div className="ml-4">
                       <h4 className="font-bold">Carlos M.</h4>
-                      <p className="text-sm text-gray-500">Usuario Estándar</p>
+                      <p className="text-sm text-gray-500">Usuario Plus</p>
                     </div>
                   </div>
                 </div>
@@ -294,7 +392,7 @@ const Premium = () => {
                   </div>
                 </div>
                 <div className="pt-6">
-                  <p className="text-gray-600 italic mb-4">El plan Pro ha revolucionado la forma en que gestiono mis subastas. Ahorro en comisiones y tengo acceso a analíticas que me ayudan a maximizar mis ganancias.</p>
+                  <p className="text-gray-600 italic mb-4">El plan Pro ha revolucionado mi negocio. Los 50€ mensuales son una inversión que recupero con creces gracias a las ventas adicionales.</p>
                   <div className="flex items-center mt-6">
                     <div className="w-12 h-12 bg-auction-soft rounded-full"></div>
                     <div className="ml-4">
@@ -314,12 +412,12 @@ const Premium = () => {
                   </div>
                 </div>
                 <div className="pt-6">
-                  <p className="text-gray-600 italic mb-4">Empecé con el plan Plus y fue perfecto para probar. Las notificaciones y el seguimiento me han ayudado a conseguir artículos a precios increíbles.</p>
+                  <p className="text-gray-600 italic mb-4">Nuestra empresa ha multiplicado sus ventas desde que contratamos el plan para Empresas. La visibilidad y herramientas son excepcionales.</p>
                   <div className="flex items-center mt-6">
                     <div className="w-12 h-12 bg-auction-soft rounded-full"></div>
                     <div className="ml-4">
                       <h4 className="font-bold">Miguel A.</h4>
-                      <p className="text-sm text-gray-500">Usuario Plus</p>
+                      <p className="text-sm text-gray-500">Cliente Empresarial</p>
                     </div>
                   </div>
                 </div>
@@ -328,7 +426,7 @@ const Premium = () => {
           </div>
         </div>
 
-        {/* FAQ Section - Mejorado */}
+        {/* FAQ Section */}
         <div className="container mx-auto px-4 py-24">
           <h2 className="text-4xl font-bold text-center mb-6">Preguntas Frecuentes</h2>
           <div className="h-1 w-20 bg-gradient-to-r from-auction-primary to-auction-tertiary rounded-full mx-auto mb-16"></div>
@@ -352,7 +450,7 @@ const Premium = () => {
           </div>
         </div>
 
-        {/* CTA Section - Mejorado */}
+        {/* CTA Section */}
         <div className="bg-gradient-to-r from-auction-primary/10 to-auction-tertiary/10 py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">

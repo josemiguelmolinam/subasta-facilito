@@ -4,22 +4,26 @@ import { Check, X } from "lucide-react";
 
 interface Feature {
   name: string;
-  plus: boolean;
   standard: boolean;
+  plus: boolean;
   pro: boolean;
+  business: boolean;
 }
 
 export const FeatureComparisonTable = () => {
   const features: Feature[] = [
-    { name: "Acceso a todas las subastas públicas", plus: true, standard: true, pro: true },
-    { name: "Pujas ilimitadas en subastas abiertas", plus: true, standard: true, pro: true },
-    { name: "Seguimiento de subastas favoritas", plus: true, standard: true, pro: true },
-    { name: "Notificaciones en tiempo real", plus: false, standard: true, pro: true },
-    { name: "Subastas exclusivas para miembros", plus: false, standard: true, pro: true },
-    { name: "Métricas y estadísticas avanzadas", plus: false, standard: false, pro: true },
-    { name: "Acceso anticipado a subastas premium", plus: false, standard: false, pro: true },
-    { name: "Subasta sin comisiones", plus: false, standard: false, pro: true },
-    { name: "Soporte prioritario 24/7", plus: false, standard: false, pro: true }
+    { name: "Acceso a todas las subastas públicas", standard: true, plus: true, pro: true, business: true },
+    { name: "Pujas ilimitadas en subastas abiertas", standard: false, plus: true, pro: true, business: true },
+    { name: "Seguimiento de subastas favoritas", standard: true, plus: true, pro: true, business: true },
+    { name: "Notificaciones en tiempo real", standard: false, plus: true, pro: true, business: true },
+    { name: "Subastas exclusivas para miembros", standard: false, plus: true, pro: true, business: true },
+    { name: "Métricas y estadísticas avanzadas", standard: false, plus: false, pro: true, business: true },
+    { name: "Acceso anticipado a subastas premium", standard: false, plus: false, pro: true, business: true },
+    { name: "Subasta sin comisiones", standard: false, plus: false, pro: true, business: true },
+    { name: "Soporte prioritario 24/7", standard: false, plus: false, pro: true, business: true },
+    { name: "Posicionamiento destacado", standard: false, plus: false, pro: false, business: true },
+    { name: "API de integración", standard: false, plus: false, pro: false, business: true },
+    { name: "Gestor de cuenta personal", standard: false, plus: false, pro: false, business: true }
   ];
 
   return (
@@ -31,6 +35,7 @@ export const FeatureComparisonTable = () => {
             <TableHead className="text-center py-4 text-lg font-bold">Estándar</TableHead>
             <TableHead className="text-center py-4 text-lg font-bold">Plus</TableHead>
             <TableHead className="text-center py-4 text-lg font-bold">Pro</TableHead>
+            <TableHead className="text-center py-4 text-lg font-bold">Empresas</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -53,6 +58,13 @@ export const FeatureComparisonTable = () => {
               </TableCell>
               <TableCell className="text-center py-4">
                 {feature.pro ? (
+                  <Check className="h-6 w-6 text-green-500 mx-auto" />
+                ) : (
+                  <X className="h-6 w-6 text-gray-300 mx-auto" />
+                )}
+              </TableCell>
+              <TableCell className="text-center py-4">
+                {feature.business ? (
                   <Check className="h-6 w-6 text-green-500 mx-auto" />
                 ) : (
                   <X className="h-6 w-6 text-gray-300 mx-auto" />
