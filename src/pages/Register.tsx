@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Eye, EyeOff, X, Loader2, User, Building2 } from "lucide-react";
+import { Mail, Eye, EyeOff, X, Loader2, User, Building2, UserPlus } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -109,19 +110,24 @@ const Register = () => {
           <X className="h-5 w-5" />
         </Button>
 
-        <div className="mb-6 flex justify-center">
-          <img 
-            src="https://cdni.iconscout.com/illustration/premium/thumb/user-account-sign-up-4489360-3723267.png" 
-            alt="Crear cuenta" 
-            className="w-40 sm:w-64 h-auto object-contain"
-          />
+        <div className="mb-6 text-center space-y-4">
+          {/* Icono animado */}
+          <div className="relative inline-block">
+            <div className="absolute inset-0 bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary rounded-full blur-lg opacity-75 animate-pulse"></div>
+            <div className="relative bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary p-4 rounded-full">
+              <UserPlus className="h-12 w-12 text-white animate-bounce" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text text-transparent">
+            Crear una cuenta
+          </h2>
         </div>
 
-        <h2 className="text-2xl font-bold text-center text-auction-dark mb-6">
-          Crear una cuenta
-        </h2>
-
-        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+            {error}
+          </div>
+        )}
 
         <RadioGroup 
           defaultValue="personal" 
@@ -150,27 +156,29 @@ const Register = () => {
           </div>
         </RadioGroup>
 
-        <Button 
-          variant="outline" 
-          className="w-full justify-center hover:bg-gray-50 transition-all duration-300 animate-fade-in"
-          onClick={handleGoogleRegister}
-          disabled={isSubmitting}
-        >
-          <FcGoogle className="mr-2 h-5 w-5" />
-          Continuar con Google
-        </Button>
+        <div className="space-y-2">
+          <Button 
+            variant="outline" 
+            className="w-full justify-center hover:bg-gray-50 transition-all duration-300 animate-fade-in"
+            onClick={handleGoogleRegister}
+            disabled={isSubmitting}
+          >
+            <FcGoogle className="mr-2 h-5 w-5" />
+            Continuar con Google
+          </Button>
 
-        <Button 
-          variant="outline" 
-          className="w-full justify-center hover:bg-gray-50 transition-all duration-300 animate-fade-in mt-2"
-          onClick={() => alert("Apple Login estará disponible próximamente.")}
-          disabled={isSubmitting}
-        >
-          <FaApple className="mr-2 h-5 w-5" />
-          Continuar con Apple
-        </Button>
+          <Button 
+            variant="outline" 
+            className="w-full justify-center hover:bg-gray-50 transition-all duration-300 animate-fade-in"
+            onClick={() => alert("Apple Login estará disponible próximamente.")}
+            disabled={isSubmitting}
+          >
+            <FaApple className="mr-2 h-5 w-5" />
+            Continuar con Apple
+          </Button>
+        </div>
 
-        <div className="relative my-4">
+        <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-200" />
           </div>
@@ -180,19 +188,23 @@ const Register = () => {
         </div>
 
         <form className="space-y-4" onSubmit={handleRegister}>
-          <Input
-            type="email"
-            placeholder="Correo electrónico"
-            className="w-full"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={isSubmitting}
-          />
+          <div className="relative">
+            <Input
+              type="email"
+              placeholder="Correo electrónico"
+              className="pl-10"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitting}
+            />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          </div>
+
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="Contraseña"
-              className="w-full pr-10"
+              className="pl-10"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isSubmitting}
@@ -209,14 +221,18 @@ const Register = () => {
 
           <Button 
             type="submit" 
-            className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all duration-300"
+            className="w-full bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary hover:opacity-90 text-white transition-all duration-300"
             disabled={isSubmitting}
           >
-            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Crear cuenta"}
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Crear cuenta"
+            )}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-gray-500 mt-6">
           ¿Ya tienes una cuenta?{" "}
           <button 
             onClick={() => navigate('/login')} 
@@ -225,19 +241,19 @@ const Register = () => {
             Inicia sesión
           </button>
         </p>
-      </div>
 
-      {showRecaptchaModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-lg font-bold mb-4">Verificación de seguridad</h2>
-            <ReCAPTCHA 
-              sitekey="6Lf5VscqAAAAAKB3SfloHT_3RyBWbTkQ_EOS7vDy"
-              onChange={handleRecaptchaVerify}
-            />
+        {showRecaptchaModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+            <div className="bg-white p-6 rounded-xl shadow-xl">
+              <h3 className="text-lg font-semibold mb-4 text-center">Verificación de seguridad</h3>
+              <ReCAPTCHA 
+                sitekey="6Lf5VscqAAAAAKB3SfloHT_3RyBWbTkQ_EOS7vDy"
+                onChange={handleRecaptchaVerify}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
