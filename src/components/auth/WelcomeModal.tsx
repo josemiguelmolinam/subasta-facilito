@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,16 @@ interface WelcomeModalProps {
 }
 
 export const WelcomeModal = ({ isOpen, onClose, userName }: WelcomeModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 5000); // 5 segundos
+
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, onClose]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">

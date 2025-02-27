@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { UserProfile } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { WelcomeModal } from "@/components/auth/WelcomeModal";
 
 interface AuthContextType {
   user: UserProfile | null;
