@@ -31,24 +31,26 @@ export const PricingCard = ({
     }`}>
       {isPopular && (
         <div className="absolute -top-4 left-0 right-0 flex justify-center">
-          <div className="bg-auction-primary text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+          <div className="bg-gradient-to-r from-auction-primary to-auction-tertiary text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
             Más popular
           </div>
         </div>
       )}
-      <CardHeader className={`${isPopular ? "bg-auction-soft/30" : ""} rounded-t-lg pb-6`}>
+      <CardHeader className={`${isPopular ? "bg-gradient-to-br from-auction-soft to-white" : ""} rounded-t-lg pb-6`}>
         <CardTitle className="text-2xl font-bold text-center text-auction-dark">{title}</CardTitle>
         <CardDescription className="text-center text-muted-foreground pt-2">{description}</CardDescription>
         <div className="mt-4 text-center">
-          <span className="text-4xl font-bold text-auction-primary">{formatCurrency(price)}</span>
+          <span className="text-4xl font-bold bg-gradient-to-r from-auction-primary to-auction-tertiary bg-clip-text text-transparent">{formatCurrency(price)}</span>
           <span className="text-muted-foreground">/mes</span>
         </div>
       </CardHeader>
       <CardContent className="pt-6">
         <ul className="space-y-3">
           {features.map((feature, i) => (
-            <li key={i} className="flex items-start">
-              <Check className="h-5 w-5 text-auction-primary mr-2 mt-0.5 flex-shrink-0" />
+            <li key={i} className="flex items-start group">
+              <div className="rounded-full bg-auction-soft p-1 mr-3 group-hover:bg-auction-primary/20 transition-colors">
+                <Check className="h-4 w-4 text-auction-primary" />
+              </div>
               <span className="text-sm">{feature}</span>
             </li>
           ))}
@@ -59,7 +61,7 @@ export const PricingCard = ({
           onClick={onSelectPlan} 
           className={`w-full ${
             isPopular 
-              ? "bg-auction-primary hover:bg-auction-secondary text-white" 
+              ? "bg-gradient-to-r from-auction-primary to-auction-tertiary hover:from-auction-tertiary hover:to-auction-primary text-white shadow-md" 
               : "bg-white border border-auction-primary/70 text-auction-primary hover:bg-auction-soft/30"
           }`}
         >

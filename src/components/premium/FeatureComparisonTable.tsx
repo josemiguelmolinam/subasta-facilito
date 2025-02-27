@@ -24,38 +24,38 @@ export const FeatureComparisonTable = () => {
 
   return (
     <div className="w-full overflow-auto">
-      <Table>
-        <TableHeader>
+      <Table className="border shadow-md rounded-lg overflow-hidden">
+        <TableHeader className="bg-gradient-to-r from-auction-soft/70 to-white">
           <TableRow>
-            <TableHead className="w-[300px]">Característica</TableHead>
-            <TableHead className="text-center">Plus</TableHead>
-            <TableHead className="text-center">Estándar</TableHead>
-            <TableHead className="text-center">Pro</TableHead>
+            <TableHead className="w-[300px] py-4 text-lg font-bold">Característica</TableHead>
+            <TableHead className="text-center py-4 text-lg font-bold">Estándar</TableHead>
+            <TableHead className="text-center py-4 text-lg font-bold">Plus</TableHead>
+            <TableHead className="text-center py-4 text-lg font-bold">Pro</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {features.map((feature, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{feature.name}</TableCell>
-              <TableCell className="text-center">
-                {feature.plus ? (
-                  <Check className="h-5 w-5 text-green-500 mx-auto" />
-                ) : (
-                  <X className="h-5 w-5 text-gray-300 mx-auto" />
-                )}
-              </TableCell>
-              <TableCell className="text-center">
+            <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+              <TableCell className="font-medium py-4">{feature.name}</TableCell>
+              <TableCell className="text-center py-4">
                 {feature.standard ? (
-                  <Check className="h-5 w-5 text-green-500 mx-auto" />
+                  <Check className="h-6 w-6 text-green-500 mx-auto" />
                 ) : (
-                  <X className="h-5 w-5 text-gray-300 mx-auto" />
+                  <X className="h-6 w-6 text-gray-300 mx-auto" />
                 )}
               </TableCell>
-              <TableCell className="text-center">
-                {feature.pro ? (
-                  <Check className="h-5 w-5 text-green-500 mx-auto" />
+              <TableCell className="text-center py-4">
+                {feature.plus ? (
+                  <Check className="h-6 w-6 text-green-500 mx-auto" />
                 ) : (
-                  <X className="h-5 w-5 text-gray-300 mx-auto" />
+                  <X className="h-6 w-6 text-gray-300 mx-auto" />
+                )}
+              </TableCell>
+              <TableCell className="text-center py-4">
+                {feature.pro ? (
+                  <Check className="h-6 w-6 text-green-500 mx-auto" />
+                ) : (
+                  <X className="h-6 w-6 text-gray-300 mx-auto" />
                 )}
               </TableCell>
             </TableRow>
