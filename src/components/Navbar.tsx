@@ -43,35 +43,26 @@ export const Navbar = () => {
           <div className="flex items-center justify-between h-24">
             {/* Logo Mejorado y Profesional */}
             <div className="flex items-center">
-              <a href="/" className="flex items-center space-x-2 group relative">
+              <a href="/" className="flex items-center space-x-3 group">
                 <div className="relative">
-                  {/* Efecto de resplandor del logo */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary rounded-xl blur-xl opacity-50 group-hover:opacity-75 transition-all duration-700 animate-pulse"></div>
-                  
                   {/* Contenedor principal del logo */}
-                  <div className="relative h-14 w-14 bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary rounded-xl p-0.5 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-5deg] hover:shadow-xl">
+                  <div className="h-12 w-12 bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary rounded-xl p-0.5 transition-all duration-300 group-hover:scale-105">
                     {/* Fondo interno del logo */}
-                    <div className="absolute inset-[1px] bg-white rounded-[9px] flex items-center justify-center">
-                      {/* Icono del martillo con efectos */}
-                      <Gavel className="h-8 w-8 text-transparent bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text transform transition-all duration-500 group-hover:rotate-[-20deg] group-hover:scale-110" />
+                    <div className="h-full w-full bg-white rounded-[9px] flex items-center justify-center">
+                      {/* Icono del martillo */}
+                      <Gavel className="h-7 w-7 text-auction-primary" />
                     </div>
-                    
-                    {/* Efectos decorativos */}
-                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-auction-tertiary rounded-full animate-ping"></div>
-                    <div className="absolute -bottom-1 -left-1 h-2 w-2 bg-auction-primary rounded-full animate-pulse"></div>
                   </div>
                 </div>
                 
                 {/* Texto del logo */}
-                <div className="flex flex-col items-start">
-                  <span className="text-3xl font-bold bg-gradient-to-r from-auction-primary via-auction-secondary to-auction-tertiary bg-clip-text text-transparent relative group-hover:after:w-full after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-gradient-to-r after:from-auction-primary after:to-auction-tertiary after:w-0 after:transition-all after:duration-500">
+                <div className="flex flex-col">
+                  <span className="text-2xl font-bold text-auction-primary">
                     Subastalo
                   </span>
-                  <div className="overflow-hidden h-5">
-                    <span className="text-xs text-auction-secondary font-medium tracking-wider transform transition-all duration-500 translate-y-5 group-hover:translate-y-0 inline-block">
-                      PREMIUM AUCTIONS
-                    </span>
-                  </div>
+                  <span className="text-sm text-auction-secondary">
+                    Tu plataforma líder en subastas
+                  </span>
                 </div>
               </a>
             </div>
@@ -114,28 +105,20 @@ export const Navbar = () => {
                       Subastalo
                     </Button>
 
-                    {/* Menú de perfil mejorado */}
+                    {/* Menú de perfil */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
-                          className="relative h-12 w-12 rounded-full bg-gradient-to-br from-auction-primary via-auction-secondary to-auction-tertiary p-0.5 shadow-lg hover:shadow-auction-primary/50 transition-all duration-300 group"
+                          className="relative h-12 w-12 rounded-full"
                           style={{ marginLeft: "150px" }}
                         >
-                          <div className="relative h-full w-full rounded-full bg-white p-0.5 transition-transform duration-300 group-hover:scale-105">
-                            <Avatar className="h-full w-full transition-opacity duration-300">
-                              <AvatarImage 
-                                src={user.avatar} 
-                                alt={user.name}
-                                className="object-cover transition-transform duration-300 group-hover:scale-110"
-                              />
-                              <AvatarFallback className="bg-gradient-to-br from-auction-soft via-auction-primary to-auction-secondary animate-gradient-smooth">
-                                <User className="h-5 w-5 text-white" />
-                              </AvatarFallback>
-                            </Avatar>
-                            {/* Indicador de notificaciones - Removida la clase animate-pulse */}
-                            <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-500 ring-2 ring-white" />
-                          </div>
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={user.avatar} alt={user.name} />
+                            <AvatarFallback>
+                              <User className="h-6 w-6" />
+                            </AvatarFallback>
+                          </Avatar>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-64 mt-2" align="end" forceMount>
