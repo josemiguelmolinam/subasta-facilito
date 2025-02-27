@@ -21,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -63,10 +64,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(mockUser);
       localStorage.setItem('user', JSON.stringify(mockUser));
       
-      toast({
-        title: "¡Bienvenido!",
-        description: "Has iniciado sesión correctamente",
-      });
+      // Mostramos el modal de bienvenida
+      setShowWelcomeModal(true);
       
       navigate('/');
     } catch (error) {
@@ -310,6 +309,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {children}
+      {user && showWelcomeModal && (
+        <WelcomeModal
+          isOpen={showWelcomeModal}
+          onClose={() => setShowWelcomeModal(false)}
+          userName={user.name}
+        />
+      )}
     </AuthContext.Provider>
   );
 };
