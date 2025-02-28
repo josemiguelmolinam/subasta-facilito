@@ -64,6 +64,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate, useParams } from "react-router-dom";
+import { AuctionChat } from "@/components/chat/AuctionChat";
 
 const ImageCarousel = ({ images, title }: { images: string[], title: string }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -183,7 +184,6 @@ const AuctionDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Mock data - En un caso real esto vendría de una API
   const auction = {
     id: "1",
     title: "iPhone 15 Pro Max - 256GB",
@@ -281,19 +281,16 @@ const AuctionDetail = () => {
         </div>
       </div>
 
-      {/* ID y Estado */}
       <div className="flex justify-between items-center">
         <Badge variant="secondary">{auction.condition}</Badge>
         <span className="text-sm text-gray-500">ID: {auction.id}</span>
       </div>
 
-      {/* Título y Descripción */}
       <div>
         <h1 className="text-2xl font-bold text-auction-dark mb-2">{auction.title}</h1>
         <p className="text-gray-600">{auction.description}</p>
       </div>
 
-      {/* Contenedor de Pujas */}
       <div className="bg-auction-soft rounded-xl p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
@@ -335,7 +332,6 @@ const AuctionDetail = () => {
         </div>
       </div>
 
-      {/* Tabs de Detalles y Valoraciones */}
       <Tabs defaultValue="details" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="details">Detalles</TabsTrigger>
@@ -388,7 +384,6 @@ const AuctionDetail = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Información del Vendedor */}
       <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
         <div className="flex items-center space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
           <Avatar className="h-12 w-12">
@@ -426,7 +421,6 @@ const AuctionDetail = () => {
         </Button>
       </div>
 
-      {/* Mapa de ubicación */}
       <div className="bg-white rounded-xl p-6 shadow-sm">
         <div className="flex items-center space-x-2 mb-4">
           <MapPin className="w-5 h-5 text-auction-primary" />
@@ -435,7 +429,6 @@ const AuctionDetail = () => {
         <Map location={auction.location.coordinates} address={auction.location.address} />
       </div>
 
-      {/* Opciones de Envío */}
       <Accordion type="single" collapsible className="bg-white rounded-xl shadow-sm">
         <AccordionItem value="shipping">
           <AccordionTrigger className="px-6 py-4">
@@ -465,7 +458,6 @@ const AuctionDetail = () => {
         </AccordionItem>
       </Accordion>
 
-      {/* Protección Subastalo */}
       <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -484,7 +476,6 @@ const AuctionDetail = () => {
         </div>
       </div>
 
-      {/* Estadísticas */}
       <div className="bg-white rounded-xl p-6 shadow-sm">
         <div className="flex items-center justify-between text-sm text-gray-600">
           <div className="flex items-center space-x-4">
@@ -510,7 +501,6 @@ const AuctionDetail = () => {
 
   const DesktopLayout = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Columna izquierda - Imágenes y detalles del vendedor */}
       <div className="space-y-6">
         <div className="relative">
           <ImageCarousel images={auction.images} title={auction.title} />
@@ -567,7 +557,6 @@ const AuctionDetail = () => {
           </div>
         </div>
 
-        {/* Opciones de envío como desplegable */}
         <div className="bg-white rounded-xl p-6 shadow-md">
           <Accordion type="single" collapsible>
             <AccordionItem value="shipping">
@@ -600,7 +589,6 @@ const AuctionDetail = () => {
         </div>
       </div>
 
-      {/* Columna derecha - Información del producto */}
       <div className="space-y-6">
         <div>
           <div className="flex justify-between items-start mb-4">
@@ -712,6 +700,14 @@ const AuctionDetail = () => {
       <div className="container mx-auto px-4 py-8">
         {isMobile ? <MobileLayout /> : <DesktopLayout />}
       </div>
+
+      <AuctionChat 
+        auctionId={auction.id}
+        auctionTitle={auction.title}
+        sellerId={auction.seller.id}
+        sellerName={auction.seller.name}
+        sellerAvatar={auction.seller.avatar}
+      />
     </MainLayout>
   );
 };
