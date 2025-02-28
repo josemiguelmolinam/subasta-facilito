@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,8 @@ import {
   Heart,
   Calendar,
   Shield,
-  Share2
+  Share2,
+  MessageCircle
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -66,76 +68,40 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { AuctionChat } from "@/components/chat/AuctionChat";
 
-const ImageCarousel = ({ images, title }: { images: string[], title: string }) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const displayedThumbnails = images.slice(0, 6);
-
-  const handleThumbnailClick = (index: number) => {
-    setSelectedIndex(index);
-    console.log('Thumbnail clicked:', index);
-  };
-
+const ImageCarousel = ({ images }: { images: string[] }) => {
   return (
-    <div className="space-y-4">
-      <Carousel 
-        className="w-full relative group"
-        opts={{
-          startIndex: selectedIndex,
-          align: "start",
-        }}
-        key={selectedIndex}
-      >
-        <CarouselContent>
-          {images.map((image, index) => (
-            <CarouselItem key={index}>
-              <div className="aspect-[4/3] relative rounded-xl overflow-hidden">
-                <img
-                  src={image}
-                  alt={`${title} - Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="opacity-0 group-hover:opacity-100 transition-opacity" />
-        <CarouselNext className="opacity-0 group-hover:opacity-100 transition-opacity" />
-      </Carousel>
-      
-      <div className="flex gap-2 justify-center">
-        {displayedThumbnails.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => handleThumbnailClick(index)}
-            className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
-              selectedIndex === index ? 'border-auction-primary ring-2 ring-auction-primary ring-offset-2' : 'border-transparent hover:border-auction-secondary'
-            }`}
-          >
-            <div className="absolute inset-0">
-              <img
-                src={image}
-                alt={`Thumbnail ${index + 1}`}
-                className="w-full h-full object-cover"
+    <Carousel className="w-full">
+      <CarouselContent>
+        {images.map((image, index) => (
+          <CarouselItem key={index}>
+            <div className="p-1 h-[300px] sm:h-[400px] md:h-[500px]">
+              <img 
+                src={image} 
+                alt={`Product image ${index + 1}`} 
+                className="w-full h-full object-contain rounded-md"
               />
             </div>
-          </button>
+          </CarouselItem>
         ))}
-      </div>
-    </div>
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
   );
 };
 
-const ShareButton = ({ url, title }: { url: string, title: string }) => {
+const ShareButton = ({ url, title }: { url: string; title: string }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full">
-          <Share2 className="h-5 w-5" />
+        <Button variant="outline" size="sm" className="gap-2">
+          <Share2 className="h-4 w-4" />
+          Compartir
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="p-2">
-        <div className="flex gap-2">
-          <FacebookShareButton url={url} title={title}>
+        <div className="flex gap-2 justify-center p-2">
+          <FacebookShareButton url={url} quote={title}>
             <FacebookIcon size={32} round />
           </FacebookShareButton>
           <TwitterShareButton url={url} title={title}>
@@ -150,30 +116,42 @@ const ShareButton = ({ url, title }: { url: string, title: string }) => {
   );
 };
 
-const WishlistButton = ({ auction }: { auction: any }) => {
-  const { addItem, removeItem, isInWishlist } = useWishlist();
-  const isWishlisted = isInWishlist(auction.id);
-
-  const handleWishlistClick = () => {
-    if (isWishlisted) {
-      removeItem(auction.id);
+const WishlistButton = ({ auctionId }: { auctionId: string }) => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { toast } = useToast();
+  
+  const inWishlist = isInWishlist(auctionId);
+  
+  const handleToggleWishlist = () => {
+    if (inWishlist) {
+      removeFromWishlist(auctionId);
+      toast({
+        title: "Eliminado de favoritos",
+        description: "El artículo ha sido eliminado de tu lista de favoritos",
+      });
     } else {
-      addItem(auction);
+      addToWishlist({
+        id: auctionId,
+        title: "iPhone 15 Pro Max - 256GB",
+        price: 1199,
+        image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
+      });
+      toast({
+        title: "Añadido a favoritos",
+        description: "El artículo ha sido añadido a tu lista de favoritos",
+      });
     }
   };
-
+  
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      className="rounded-full"
-      onClick={handleWishlistClick}
+    <Button 
+      variant="outline" 
+      size="sm"
+      onClick={handleToggleWishlist}
+      className={`gap-2 ${inWishlist ? 'text-red-500 hover:text-red-600' : ''}`}
     >
-      <Heart
-        className={`h-5 w-5 ${
-          isWishlisted ? "fill-red-500 text-red-500" : ""
-        }`}
-      />
+      <Heart className={`h-4 w-4 ${inWishlist ? 'fill-current' : ''}`} />
+      {inWishlist ? 'En favoritos' : 'Añadir a favoritos'}
     </Button>
   );
 };
@@ -181,9 +159,12 @@ const WishlistButton = ({ auction }: { auction: any }) => {
 const AuctionDetail = () => {
   const isMobile = useIsMobile();
   const [showProtectionInfo, setShowProtectionInfo] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { toast } = useToast();
 
+  // Mock data - En un caso real esto vendría de una API
   const auction = {
     id: "1",
     title: "iPhone 15 Pro Max - 256GB",
@@ -250,6 +231,22 @@ const AuctionDetail = () => {
 
   const timeLeft = formatTimeLeft(auction.endDate);
 
+  const handleContactSeller = () => {
+    setShowChat(true);
+    toast({
+      title: "Chat abierto",
+      description: "Ahora puedes comunicarte con el vendedor",
+    });
+  };
+
+  const handlePlaceBid = () => {
+    navigate(`/auction/${auction.id}/bid`);
+  };
+
+  const handleBuyNow = () => {
+    navigate(`/checkout/${auction.id}`);
+  };
+
   const ProtectionInfo = () => (
     <Dialog open={showProtectionInfo} onOpenChange={setShowProtectionInfo}>
       <DialogContent>
@@ -273,424 +270,407 @@ const AuctionDetail = () => {
 
   const MobileLayout = () => (
     <div className="space-y-6">
-      <div className="relative">
-        <ImageCarousel images={auction.images} title={auction.title} />
-        <div className="absolute top-4 right-4 flex gap-2 z-10">
-          <WishlistButton auction={auction} />
-          <ShareButton url={window.location.href} title={auction.title} />
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <Badge variant="secondary">{auction.condition}</Badge>
-        <span className="text-sm text-gray-500">ID: {auction.id}</span>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-bold text-auction-dark mb-2">{auction.title}</h1>
-        <p className="text-gray-600">{auction.description}</p>
-      </div>
-
-      <div className="bg-auction-soft rounded-xl p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <span className="text-sm text-gray-600">Puja actual</span>
-            <div className="text-2xl font-bold text-auction-primary">
-              {formatCurrency(auction.currentBid)}
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-auction-secondary">
-              <Hammer className="w-4 h-4" />
-              <span>{auction.totalBids} pujas</span>
-            </div>
-          </div>
-          <div className="text-right space-y-1">
-            <span className="text-sm text-gray-600">Tiempo restante</span>
-            <div className="text-xl font-semibold text-auction-tertiary flex items-center justify-end space-x-2">
-              <Clock className="w-5 h-5" />
-              <span>{timeLeft}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Button 
-            size="lg"
-            className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all group"
-            onClick={() => navigate(`/auction/${id}/bid`)}
-          >
-            <Hammer className="w-6 h-6 mr-2 transition-transform group-hover:rotate-12" />
-            Pujar
-          </Button>
+      <ImageCarousel images={auction.images} />
+      
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Badge variant="outline" className="bg-blue-50">
+            {auction.condition}
+          </Badge>
+          <h1 className="text-2xl font-bold">{auction.title}</h1>
           
-          <Button
-            size="lg"
-            className="w-full bg-white text-auction-primary border-2 border-auction-primary hover:bg-red-50 hover:border-red-300 transition-all duration-300 group"
-          >
-            <ShoppingCart className="w-5 h-5 mr-2 transition-transform group-hover:translate-x-1" />
-            ¡Cómpralo ya!
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-500">Puja actual</p>
+              <p className="text-xl font-bold">{formatCurrency(auction.currentBid)}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Compra inmediata</p>
+              <p className="text-xl font-bold">{formatCurrency(auction.buyNowPrice)}</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Hammer className="w-4 h-4" />
+            <span>{auction.totalBids} pujas</span>
+            <span className="mx-2">•</span>
+            <Clock className="w-4 h-4" />
+            <span>{timeLeft}</span>
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-3 my-4">
+          <Button onClick={handlePlaceBid}>Realizar puja</Button>
+          <Button variant="outline" onClick={handleBuyNow}>
+            Comprar ahora por {formatCurrency(auction.buyNowPrice)}
           </Button>
         </div>
-      </div>
-
-      <Tabs defaultValue="details" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="details">Detalles</TabsTrigger>
-          <TabsTrigger value="reviews">Valoraciones</TabsTrigger>
-        </TabsList>
         
-        <TabsContent value="details" className="mt-4">
-          <div className="bg-white rounded-lg p-4">
-            <h3 className="font-semibold mb-4">Especificaciones</h3>
-            <dl className="space-y-2">
-              {Object.entries(auction.specifications).map(([key, value]) => (
-                <div key={key} className="grid grid-cols-2 gap-4 py-2 border-b border-gray-100 last:border-0">
-                  <dt className="text-gray-500 capitalize">{key}</dt>
-                  <dd className="font-medium text-auction-dark">{value}</dd>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between border-b pb-3">
+            <div className="flex items-center gap-2">
+              <Avatar>
+                <AvatarImage src={auction.seller.avatar} />
+                <AvatarFallback>{auction.seller.name[0]}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">{auction.seller.name}</p>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Star className="w-4 h-4 text-yellow-400" />
+                  <span className="ml-1">{auction.seller.rating}</span>
+                  <span className="mx-1">•</span>
+                  <span>{auction.seller.totalSales} ventas</span>
                 </div>
-              ))}
-            </dl>
+              </div>
+            </div>
+            {auction.seller.verified && (
+              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                <ShieldCheck className="w-3 h-3 mr-1" />
+                Verificado
+              </Badge>
+            )}
           </div>
-        </TabsContent>
-        
-        <TabsContent value="reviews" className="mt-4">
-          <div className="space-y-4">
-            {auction.reviews.map((review) => (
-              <div key={review.id} className="bg-white rounded-lg p-4 space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={review.user.avatar} />
-                    <AvatarFallback>{review.user.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">{review.user.name}</p>
-                    <div className="flex items-center space-x-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < review.rating
-                              ? "text-yellow-400 fill-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
+          
+          <Button 
+            variant="outline" 
+            className="w-full gap-2"
+            onClick={handleContactSeller}
+          >
+            <MessageCircle className="h-5 w-5" />
+            Contactar con el vendedor
+          </Button>
+
+          <div className="flex justify-between mt-2">
+            <WishlistButton auctionId={auction.id} />
+            <ShareButton url={window.location.href} title={auction.title} />
+          </div>
+        </div>
+      </div>
+      
+      <div className="space-y-6">
+        <Tabs defaultValue="details">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="details">Detalles</TabsTrigger>
+            <TabsTrigger value="shipping">Envío</TabsTrigger>
+            <TabsTrigger value="seller">Vendedor</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="details" className="space-y-4">
+            <div>
+              <h3 className="font-semibold mb-2">Descripción</h3>
+              <p className="text-gray-700">{auction.description}</p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-2">Especificaciones</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {Object.entries(auction.specifications).map(([key, value]) => (
+                  <div key={key} className="flex justify-between py-2 border-b">
+                    <span className="text-gray-500 capitalize">{key}</span>
+                    <span className="font-medium">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="shipping" className="space-y-4">
+            <div>
+              <h3 className="font-semibold mb-2">Ubicación</h3>
+              <div className="flex items-center gap-2 text-gray-700 mb-3">
+                <MapPin className="w-4 h-4" />
+                <span>{auction.location.address}</span>
+              </div>
+              <div className="h-[200px] w-full rounded-md overflow-hidden">
+                <Map 
+                  location={auction.location.coordinates} 
+                  address={auction.location.address}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-2">Opciones de envío</h3>
+              <div className="space-y-2">
+                {auction.shippingOptions.map((option, index) => (
+                  <div key={index} className="flex justify-between items-center p-3 border rounded-md">
+                    <div className="flex items-center gap-2">
+                      <Truck className="w-4 h-4" />
+                      <span>{option.carrier}</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{formatCurrency(option.price)}</p>
+                      <p className="text-sm text-gray-500">{option.time}</p>
                     </div>
                   </div>
-                </div>
-                <p className="text-gray-600">{review.comment}</p>
+                ))}
               </div>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
-        <div className="flex items-center space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={auction.seller.avatar} />
-            <AvatarFallback>{auction.seller.name[0]}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <h3 className="font-semibold">{auction.seller.name}</h3>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Star className="w-4 h-4 text-yellow-400" />
-              <span>{auction.seller.rating}</span>
-              <ChartBar className="w-4 h-4 ml-2" />
-              <span>{auction.seller.totalSales}+ ventas</span>
             </div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-5 h-5 text-green-600" />
-            <span className="font-medium text-gray-900">Vendedor verificado</span>
-          </div>
-          <p className="text-sm text-gray-500">
-            Miembro desde {auction.seller.memberSince}
-          </p>
-        </div>
-
-        <Button 
-          variant="outline" 
-          className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all duration-300"
-          onClick={() => console.log("Open chat")}
-        >
-          <MessageSquare className="w-4 h-4 mr-2" />
-          Abrir chat
-        </Button>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm">
-        <div className="flex items-center space-x-2 mb-4">
-          <MapPin className="w-5 h-5 text-auction-primary" />
-          <span className="font-medium">Ubicación del vendedor</span>
-        </div>
-        <Map location={auction.location.coordinates} address={auction.location.address} />
-      </div>
-
-      <Accordion type="single" collapsible className="bg-white rounded-xl shadow-sm">
-        <AccordionItem value="shipping">
-          <AccordionTrigger className="px-6 py-4">
-            <div className="flex items-center space-x-2">
-              <Truck className="w-5 h-5 text-auction-primary" />
-              <span>Opciones de envío</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="px-6 pb-4">
-            <div className="space-y-4">
-              {auction.shippingOptions.map((option, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium">{option.carrier}</p>
-                    <p className="text-sm text-gray-600">{option.time}</p>
-                  </div>
-                  <span className="font-medium text-auction-primary">
-                    {formatCurrency(option.price)}
-                  </span>
+          </TabsContent>
+          
+          <TabsContent value="seller" className="space-y-4">
+            <div className="flex items-center gap-4 pb-4 border-b">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={auction.seller.avatar} />
+                <AvatarFallback>{auction.seller.name[0]}</AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="font-semibold">{auction.seller.name}</h3>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Star className="w-4 h-4 text-yellow-400" />
+                  <span className="ml-1">{auction.seller.rating}</span>
+                  <span className="mx-1">•</span>
+                  <span>{auction.seller.totalSales} ventas</span>
                 </div>
-              ))}
+                <div className="flex items-center gap-1 mt-1 text-sm text-gray-500">
+                  <Calendar className="w-4 h-4" />
+                  <span>Miembro desde {auction.seller.memberSince}</span>
+                </div>
+              </div>
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Shield className="w-5 h-5 text-auction-primary" />
-            <h3 className="font-semibold">Protección Subastalo</h3>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => setShowProtectionInfo(true)}
-            className="text-auction-primary hover:text-auction-secondary"
-          >
-            <Info className="w-4 h-4 mr-1" />
-            Más info
-          </Button>
-        </div>
+            
+            <div>
+              <h3 className="font-semibold mb-2">Valoraciones</h3>
+              <div className="space-y-3">
+                {auction.reviews.map((review) => (
+                  <div key={review.id} className="p-3 bg-gray-50 rounded-md">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={review.user.avatar} />
+                        <AvatarFallback>{review.user.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{review.user.name}</p>
+                        <div className="flex items-center">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-4 h-4 ${
+                                i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                              }`} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700">{review.comment}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center space-x-4">
-            <Calendar className="w-4 h-4" />
-            <span>Editado: 2 días atrás</span>
-          </div>
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-1">
-              <Eye className="w-4 h-4" />
-              <span>324</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Heart className="w-4 h-4" />
-              <span>45</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <ProtectionInfo />
     </div>
   );
 
   const DesktopLayout = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="space-y-6">
-        <div className="relative">
-          <ImageCarousel images={auction.images} title={auction.title} />
-          <div className="absolute top-4 right-4 flex gap-2 z-10">
-            <WishlistButton auction={auction} />
-            <ShareButton url={window.location.href} title={auction.title} />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
-          <div className="flex items-center space-x-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={auction.seller.avatar} />
-              <AvatarFallback>{auction.seller.name[0]}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h3 className="font-semibold">{auction.seller.name}</h3>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Star className="w-4 h-4 text-yellow-400" />
-                <span>{auction.seller.rating}</span>
-                <ChartBar className="w-4 h-4 ml-2" />
-                <span>{auction.seller.totalSales}+ ventas</span>
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-8 pt-8">
+      <div className="col-span-3">
+        <ImageCarousel images={auction.images} />
+        
+        <div className="mt-8 space-y-6">
+          <Tabs defaultValue="details">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="details">Detalles</TabsTrigger>
+              <TabsTrigger value="shipping">Envío</TabsTrigger>
+              <TabsTrigger value="reviews">Valoraciones</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="details" className="space-y-6 py-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Descripción</h3>
+                <p className="text-gray-700">{auction.description}</p>
               </div>
-            </div>
-          </div>
-
-          {auction.seller.verified && (
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <ShieldCheck className="w-5 h-5 text-green-600" />
-                <span className="font-medium text-gray-900">Vendedor verificado</span>
-              </div>
-              <p className="text-sm text-gray-500">
-                Miembro desde {auction.seller.memberSince}
-              </p>
-            </div>
-          )}
-
-          <Button 
-            variant="outline" 
-            className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all duration-300"
-            onClick={() => console.log("Open chat")}
-          >
-            <MessageSquare className="w-4 h-4 mr-2" />
-            Abrir chat
-          </Button>
-
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <MapPin className="w-4 h-4 text-auction-primary" />
-              <span>{auction.location.address}</span>
-            </div>
-            <Map location={auction.location.coordinates} address={auction.location.address} />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-md">
-          <Accordion type="single" collapsible>
-            <AccordionItem value="shipping">
-              <AccordionTrigger className="text-lg font-medium">
-                Opciones de envío
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
-                  {auction.shippingOptions.map((option, index) => (
-                    <div 
-                      key={index}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <Truck className="w-5 h-5 text-auction-secondary" />
-                        <div>
-                          <p className="font-medium">{option.carrier}</p>
-                          <p className="text-sm text-gray-600">{option.time}</p>
-                        </div>
-                      </div>
-                      <span className="font-medium text-auction-primary">
-                        {formatCurrency(option.price)}
-                      </span>
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Especificaciones</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.entries(auction.specifications).map(([key, value]) => (
+                    <div key={key} className="flex justify-between p-3 bg-gray-50 rounded-md">
+                      <span className="text-gray-500 capitalize">{key}</span>
+                      <span className="font-medium">{value}</span>
                     </div>
                   ))}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <div>
-          <div className="flex justify-between items-start mb-4">
-            <Badge variant="secondary" className="mb-2">{auction.condition}</Badge>
-            <span className="text-sm text-gray-500">ID: {auction.id}</span>
-          </div>
-          <h1 className="text-3xl font-bold text-auction-dark mb-4">{auction.title}</h1>
-          <p className="text-gray-600">{auction.description}</p>
-        </div>
-
-        <div className="bg-auction-soft rounded-xl p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <span className="text-sm text-gray-600">Puja actual</span>
-              <div className="text-3xl font-bold text-auction-primary">
-                {formatCurrency(auction.currentBid)}
               </div>
-              <div className="flex items-center space-x-2 text-sm text-auction-secondary">
-                <Hammer className="w-4 h-4" />
-                <span>{auction.totalBids} pujas</span>
-              </div>
-            </div>
-            <div className="text-right space-y-1">
-              <span className="text-sm text-gray-600">Tiempo restante</span>
-              <div className="text-xl font-semibold text-auction-tertiary flex items-center justify-end space-x-2">
-                <Clock className="w-5 h-5" />
-                <span>{timeLeft}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Button 
-              size="lg"
-              className="w-full bg-auction-primary hover:bg-auction-secondary text-white transition-all group"
-              onClick={() => navigate(`/auction/${id}/bid`)}
-            >
-              <Hammer className="w-6 h-6 mr-2 transition-transform group-hover:rotate-12" />
-              Pujar
-            </Button>
+            </TabsContent>
             
-            <Button
-              size="lg"
-              className="w-full bg-white text-auction-primary border-2 border-auction-primary hover:bg-red-100 hover:border-red-300 transition-all duration-300 font-display text-lg group"
-            >
-              <ShoppingCart className="w-5 h-5 mr-2 transition-transform group-hover:translate-x-1" />
-              ¡Cómpralo ya!
-            </Button>
-          </div>
-        </div>
-
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="details">Detalles</TabsTrigger>
-            <TabsTrigger value="reviews">Valoraciones</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="details" className="mt-4">
-            <div className="bg-white rounded-lg p-4">
-              <h3 className="font-semibold mb-4">Especificaciones</h3>
-              <dl className="space-y-2">
-                {Object.entries(auction.specifications).map(([key, value]) => (
-                  <div key={key} className="grid grid-cols-2 gap-4 py-2 border-b border-gray-100 last:border-0">
-                    <dt className="text-gray-500 capitalize">{key}</dt>
-                    <dd className="font-medium text-auction-dark">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="reviews" className="mt-4">
-            <div className="space-y-4">
-              {auction.reviews.map((review) => (
-                <div key={review.id} className="bg-white rounded-lg p-4 space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={review.user.avatar} />
-                      <AvatarFallback>{review.user.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{review.user.name}</p>
-                      <div className="flex items-center space-x-1">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < review.rating
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
+            <TabsContent value="shipping" className="space-y-6 py-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Ubicación</h3>
+                <div className="flex items-center gap-2 text-gray-700 mb-3">
+                  <MapPin className="w-4 h-4" />
+                  <span>{auction.location.address}</span>
+                </div>
+                <div className="h-[300px] w-full rounded-md overflow-hidden">
+                  <Map 
+                    location={auction.location.coordinates} 
+                    address={auction.location.address}
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Opciones de envío</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {auction.shippingOptions.map((option, index) => (
+                    <div key={index} className="flex justify-between items-center p-4 border rounded-md">
+                      <div className="flex items-center gap-3">
+                        <Truck className="w-5 h-5" />
+                        <span className="font-medium">{option.carrier}</span>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">{formatCurrency(option.price)}</p>
+                        <p className="text-sm text-gray-500">{option.time}</p>
                       </div>
                     </div>
-                  </div>
-                  <p className="text-gray-600">{review.comment}</p>
+                  ))}
                 </div>
-              ))}
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="reviews" className="space-y-6 py-4">
+              <div className="space-y-4">
+                {auction.reviews.map((review) => (
+                  <div key={review.id} className="p-4 bg-gray-50 rounded-md">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={review.user.avatar} />
+                        <AvatarFallback>{review.user.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{review.user.name}</p>
+                        <div className="flex items-center">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-4 h-4 ${
+                                i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                              }`} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700">{review.comment}</p>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+      
+      <div className="col-span-2 space-y-6">
+        <div className="bg-white p-6 border rounded-lg shadow-sm space-y-4">
+          <div>
+            <Badge variant="outline" className="bg-blue-50 mb-2">
+              {auction.condition}
+            </Badge>
+            <h1 className="text-2xl font-bold">{auction.title}</h1>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 py-3 border-t border-b">
+            <div>
+              <p className="text-sm text-gray-500">Puja actual</p>
+              <p className="text-2xl font-bold">{formatCurrency(auction.currentBid)}</p>
             </div>
-          </TabsContent>
-        </Tabs>
+            <div>
+              <p className="text-sm text-gray-500">Compra inmediata</p>
+              <p className="text-2xl font-bold">{formatCurrency(auction.buyNowPrice)}</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <Hammer className="w-4 h-4" />
+              <span>{auction.totalBids} pujas</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="w-4 h-4" />
+              <span>{timeLeft}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Eye className="w-4 h-4" />
+              <span>56 vistas</span>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-3 pt-2">
+            <Button size="lg" onClick={handlePlaceBid}>Realizar puja</Button>
+            <Button variant="outline" size="lg" onClick={handleBuyNow}>
+              Comprar ahora por {formatCurrency(auction.buyNowPrice)}
+            </Button>
+          </div>
+          
+          <div className="flex items-center justify-between pt-2">
+            <WishlistButton auctionId={auction.id} />
+            <ShareButton url={window.location.href} title={auction.title} />
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 border rounded-lg shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Avatar className="w-12 h-12">
+                <AvatarImage src={auction.seller.avatar} />
+                <AvatarFallback>{auction.seller.name[0]}</AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="font-semibold">{auction.seller.name}</h3>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Star className="w-4 h-4 text-yellow-400" />
+                  <span className="ml-1">{auction.seller.rating}</span>
+                  <span className="mx-1">•</span>
+                  <span>{auction.seller.totalSales} ventas</span>
+                </div>
+              </div>
+            </div>
+            {auction.seller.verified && (
+              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                <ShieldCheck className="w-3 h-3 mr-1" />
+                Verificado
+              </Badge>
+            )}
+          </div>
+          
+          {/* Botón de chat justo debajo de "Verificado" */}
+          <Button 
+            variant="outline" 
+            className="w-full gap-2"
+            onClick={handleContactSeller}
+          >
+            <MessageCircle className="h-5 w-5" />
+            Contactar con el vendedor
+          </Button>
+
+          <div className="pt-2 border-t">
+            <div className="flex items-center gap-1 text-sm text-gray-500 mb-2">
+              <Calendar className="w-4 h-4" />
+              <span>Miembro desde {auction.seller.memberSince}</span>
+            </div>
+            
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-gray-500 hover:text-gray-700"
+              onClick={() => navigate(`/seller/${auction.seller.id}`)}
+            >
+              Ver perfil del vendedor
+            </Button>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 border rounded-lg shadow-sm">
+          <div className="flex items-center gap-2 text-primary cursor-pointer" onClick={() => setShowProtectionInfo(true)}>
+            <Shield className="h-5 w-5" />
+            <span className="font-medium">Compra protegida por Subastalo</span>
+            <Info className="h-4 w-4" />
+          </div>
+          <p className="text-sm text-gray-500 mt-2">
+            Tu compra está protegida de principio a fin. Garantía de devolución si el artículo no es como se describe.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -701,13 +681,18 @@ const AuctionDetail = () => {
         {isMobile ? <MobileLayout /> : <DesktopLayout />}
       </div>
 
-      <AuctionChat 
-        auctionId={auction.id}
-        auctionTitle={auction.title}
-        sellerId={auction.seller.id}
-        sellerName={auction.seller.name}
-        sellerAvatar={auction.seller.avatar}
-      />
+      {/* Chat con el vendedor */}
+      {showChat && (
+        <AuctionChat 
+          auctionId={auction.id}
+          auctionTitle={auction.title}
+          sellerId={auction.seller.id}
+          sellerName={auction.seller.name}
+          sellerAvatar={auction.seller.avatar}
+        />
+      )}
+      
+      <ProtectionInfo />
     </MainLayout>
   );
 };

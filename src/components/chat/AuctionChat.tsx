@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, Send, X, MinusCircle, Info } from "lucide-react";
+import { MessageCircle, Send, X, MinusCircle, Info, ChevronUp, Clock, CheckCheck, CheckCircle, CircleOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,6 +24,7 @@ interface Message {
   content: string;
   timestamp: Date;
   isMe: boolean;
+  status?: 'sent' | 'delivered' | 'read';
 }
 
 interface AuctionChatProps {
@@ -52,6 +53,7 @@ const MOCK_MESSAGES: Message[] = [
     content: "Hola, ¿El iPhone tiene garantía oficial de Apple?",
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 horas atrás
     isMe: true,
+    status: 'read'
   },
   {
     id: "3",
@@ -65,11 +67,12 @@ const MOCK_MESSAGES: Message[] = [
 ];
 
 export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sellerAvatar }: AuctionChatProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES);
   const [newMessage, setNewMessage] = useState("");
   const [minimized, setMinimized] = useState(false);
   const [unreadCount, setUnreadCount] = useState(1);
+  const [sellerTyping, setSellerTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -88,6 +91,33 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
     }
   }, [isOpen]);
 
+  const formatMessageTime = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHrs = diffMs / (1000 * 60 * 60);
+    
+    if (diffHrs < 24) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else if (diffHrs < 48) {
+      return 'Ayer ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else {
+      return date.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: '2-digit' });
+    }
+  };
+
+  const getMessageStatusIcon = (status?: 'sent' | 'delivered' | 'read') => {
+    switch (status) {
+      case 'sent':
+        return <CheckCircle className="h-3 w-3 text-gray-400" />;
+      case 'delivered':
+        return <CheckCheck className="h-3 w-3 text-gray-400" />;
+      case 'read':
+        return <CheckCheck className="h-3 w-3 text-blue-500" />;
+      default:
+        return <CircleOff className="h-3 w-3 text-gray-400" />;
+    }
+  };
+
   const handleSendMessage = () => {
     if (newMessage.trim() === "") return;
 
@@ -98,29 +128,56 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
       content: newMessage.trim(),
       timestamp: new Date(),
       isMe: true,
+      status: 'sent'
     };
 
     setMessages([...messages, newMsg]);
     setNewMessage("");
 
-    // Simulamos respuesta automática después de 1 segundo
+    // Actualizar estado del mensaje a entregado después de un momento
     setTimeout(() => {
-      const autoReply: Message = {
-        id: (Date.now() + 1).toString(),
-        senderId: sellerId,
-        senderName: sellerName,
-        senderAvatar: sellerAvatar,
-        content: "Gracias por tu mensaje. Te responderé a la brevedad posible.",
-        timestamp: new Date(),
-        isMe: false,
-      };
-      setMessages(prevMessages => [...prevMessages, autoReply]);
-      
-      // Si el chat está minimizado, aumentamos el contador de no leídos
-      if (minimized) {
-        setUnreadCount(prev => prev + 1);
-      }
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === newMsg.id ? {...msg, status: 'delivered'} : msg
+        )
+      );
     }, 1000);
+
+    // Mostrar que el vendedor está escribiendo
+    setTimeout(() => {
+      setSellerTyping(true);
+      
+      // Simulamos respuesta automática después de un momento
+      setTimeout(() => {
+        setSellerTyping(false);
+        
+        const autoReply: Message = {
+          id: (Date.now() + 1).toString(),
+          senderId: sellerId,
+          senderName: sellerName,
+          senderAvatar: sellerAvatar,
+          content: "Gracias por tu mensaje. Te responderé a la brevedad posible.",
+          timestamp: new Date(),
+          isMe: false,
+        };
+        
+        setMessages(prevMessages => [...prevMessages, autoReply]);
+        
+        // Marcar nuestro mensaje como leído
+        setTimeout(() => {
+          setMessages(prevMessages => 
+            prevMessages.map(msg => 
+              msg.id === newMsg.id ? {...msg, status: 'read'} : msg
+            )
+          );
+        }, 1000);
+        
+        // Si el chat está minimizado, aumentamos el contador de no leídos
+        if (minimized) {
+          setUnreadCount(prev => prev + 1);
+        }
+      }, 3000);
+    }, 1500);
 
     // Foco en el textarea después de enviar
     if (textareaRef.current) {
@@ -140,9 +197,9 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
     if (!isOpen) return null;
     
     return (
-      <div className="fixed bottom-4 right-4 z-50 w-80 sm:w-96 rounded-lg shadow-2xl bg-white flex flex-col border border-gray-200 max-h-[500px]">
+      <div className="fixed bottom-0 right-4 z-50 w-80 sm:w-96 rounded-t-lg shadow-2xl bg-white flex flex-col border border-gray-200 max-h-[500px]">
         {/* Header */}
-        <div className="p-3 border-b flex justify-between items-center bg-primary text-white rounded-t-lg">
+        <div className="p-3 border-b flex justify-between items-center bg-gradient-to-r from-primary to-purple-700 text-white rounded-t-lg">
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
               <AvatarImage src={sellerAvatar} />
@@ -150,14 +207,17 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
             </Avatar>
             <div>
               <h3 className="font-semibold text-sm">{sellerName}</h3>
-              <p className="text-xs opacity-80 truncate max-w-[160px]">{auctionTitle}</p>
+              <div className="flex items-center">
+                <div className="h-2 w-2 rounded-full bg-green-400 mr-1.5"></div>
+                <p className="text-xs opacity-80 truncate max-w-[160px]">En línea</p>
+              </div>
             </div>
           </div>
           <div className="flex gap-1">
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-white hover:bg-primary-foreground/10"
+              className="h-7 w-7 text-white hover:bg-white/10"
               onClick={() => setMinimized(true)}
             >
               <MinusCircle className="h-5 w-5" />
@@ -165,11 +225,31 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-white hover:bg-primary-foreground/10"
+              className="h-7 w-7 text-white hover:bg-white/10"
               onClick={() => setIsOpen(false)}
             >
               <X className="h-5 w-5" />
             </Button>
+          </div>
+        </div>
+        
+        {/* Info del producto */}
+        <div className="bg-gray-50 p-3 border-b">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gray-200 rounded overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80" 
+                alt={auctionTitle}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-medium truncate">{auctionTitle}</p>
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-500">ID: {auctionId}</p>
+                <Badge variant="outline" className="text-[10px] h-4 px-1">Activo</Badge>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -198,16 +278,38 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
                     >
                       <p className="text-sm">{message.content}</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {message.timestamp.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
+                    <div className={`flex items-center gap-1 mt-1 ${message.isMe ? 'justify-end' : ''}`}>
+                      <p className="text-xs text-gray-500">
+                        {formatMessageTime(message.timestamp)}
+                      </p>
+                      {message.isMe && getMessageStatusIcon(message.status)}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
+            
+            {sellerTyping && (
+              <div className="flex justify-start">
+                <div className="flex gap-2 max-w-[80%]">
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarImage src={sellerAvatar} />
+                    <AvatarFallback>{sellerName[0]}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="rounded-lg px-3 py-2 bg-gray-100 text-gray-800">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
+                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Escribiendo...</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
@@ -221,17 +323,20 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe un mensaje..."
-              className="min-h-[45px] resize-none"
+              className="min-h-[45px] resize-none text-sm"
             />
             <Button
               size="icon"
               onClick={handleSendMessage}
               disabled={newMessage.trim() === ""}
-              className="h-[45px] w-[45px] flex-shrink-0"
+              className="h-[45px] w-[45px] flex-shrink-0 bg-primary hover:bg-primary/90"
             >
               <Send className="h-5 w-5" />
             </Button>
           </div>
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            El tiempo de respuesta es aproximadamente 2-4 horas
+          </p>
         </div>
       </div>
     );
@@ -247,15 +352,18 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
           setMinimized(false); 
           setUnreadCount(0);
         }}
-        className="fixed bottom-4 right-4 z-50 rounded-full w-auto px-4 gap-2"
+        className="fixed bottom-0 right-4 z-50 rounded-t-lg rounded-b-none w-auto px-4 gap-2 shadow-lg"
       >
-        <MessageCircle className="h-5 w-5" />
-        <span>Chat</span>
-        {unreadCount > 0 && (
-          <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
-            {unreadCount}
-          </Badge>
-        )}
+        <div className="flex items-center gap-2">
+          <MessageCircle className="h-5 w-5" />
+          <span className="font-medium">Chat con {sellerName}</span>
+          {unreadCount > 0 && (
+            <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
+              {unreadCount}
+            </Badge>
+          )}
+          <ChevronUp className="h-4 w-4" />
+        </div>
       </Button>
     );
   };
@@ -267,7 +375,7 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 z-50 rounded-full w-auto px-4 gap-2"
+        className="fixed bottom-4 right-4 z-50 rounded-full w-auto px-4 gap-2 shadow-lg"
       >
         <MessageCircle className="h-5 w-5" />
         <span>Chat con vendedor</span>
