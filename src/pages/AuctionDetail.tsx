@@ -101,7 +101,7 @@ const ShareButton = ({ url, title }: { url: string; title: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="p-2">
         <div className="flex gap-2 justify-center p-2">
-          <FacebookShareButton url={url} quote={title}>
+          <FacebookShareButton url={url}>
             <FacebookIcon size={32} round />
           </FacebookShareButton>
           <TwitterShareButton url={url} title={title}>
@@ -117,24 +117,33 @@ const ShareButton = ({ url, title }: { url: string; title: string }) => {
 };
 
 const WishlistButton = ({ auctionId }: { auctionId: string }) => {
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addItem, removeItem, isInWishlist } = useWishlist();
   const { toast } = useToast();
   
   const inWishlist = isInWishlist(auctionId);
   
   const handleToggleWishlist = () => {
     if (inWishlist) {
-      removeFromWishlist(auctionId);
+      removeItem(auctionId);
       toast({
         title: "Eliminado de favoritos",
         description: "El artículo ha sido eliminado de tu lista de favoritos",
       });
     } else {
-      addToWishlist({
+      addItem({
         id: auctionId,
         title: "iPhone 15 Pro Max - 256GB",
-        price: 1199,
-        image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
+        currentBid: 950,
+        buyNowPrice: 1199,
+        imageUrl: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
+        totalBids: 15,
+        description: "Nuevo iPhone 15 Pro Max con 256GB de almacenamiento. Color Titanium.",
+        startingPrice: 900,
+        endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 2),
+        sellerId: "1",
+        categoryId: "smartphones",
+        status: 'active',
+        createdAt: new Date(),
       });
       toast({
         title: "Añadido a favoritos",
