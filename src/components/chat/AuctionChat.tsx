@@ -12,9 +12,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, Send, X, MinusCircle, Info, ChevronUp, Clock, CheckCheck, CheckCircle, CircleOff } from "lucide-react";
+import { MessageCircle, Send, X, ArrowLeft, CheckCheck, CheckCircle, CircleOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Message {
   id: string;
@@ -67,15 +68,15 @@ const MOCK_MESSAGES: Message[] = [
 ];
 
 export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sellerAvatar }: AuctionChatProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES);
   const [newMessage, setNewMessage] = useState("");
-  const [minimized, setMinimized] = useState(false);
   const [unreadCount, setUnreadCount] = useState(1);
   const [sellerTyping, setSellerTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   // Scroll al último mensaje cuando se abre el chat o llega uno nuevo
   useEffect(() => {
@@ -172,8 +173,8 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
           );
         }, 1000);
         
-        // Si el chat está minimizado, aumentamos el contador de no leídos
-        if (minimized) {
+        // Si el chat está cerrado, aumentamos el contador de no leídos
+        if (!isOpen) {
           setUnreadCount(prev => prev + 1);
         }
       }, 3000);
@@ -192,8 +193,8 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
     }
   };
 
-  // Para chat flotante cuando no usamos el Sheet
-  const renderChatFloating = () => {
+  // Renderizar chat para versión de escritorio
+  const renderDesktopChat = () => {
     if (!isOpen) return null;
     
     return (
@@ -214,14 +215,6 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
             </div>
           </div>
           <div className="flex gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 text-white hover:bg-white/10"
-              onClick={() => setMinimized(true)}
-            >
-              <MinusCircle className="h-5 w-5" />
-            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -342,45 +335,163 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
     );
   };
 
-  // Botón minimizado
-  const renderMinimizedButton = () => {
-    if (!minimized) return null;
+  // Renderizar chat para versión móvil (pantalla completa)
+  const renderMobileChat = () => {
+    if (!isOpen) return null;
     
     return (
-      <Button
-        onClick={() => {
-          setMinimized(false); 
-          setUnreadCount(0);
-        }}
-        className="fixed bottom-0 right-4 z-50 rounded-t-lg rounded-b-none w-auto px-4 gap-2 shadow-lg"
-      >
-        <div className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
-          <span className="font-medium">Chat con {sellerName}</span>
-          {unreadCount > 0 && (
-            <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
-              {unreadCount}
-            </Badge>
-          )}
-          <ChevronUp className="h-4 w-4" />
+      <div className="fixed inset-0 z-50 bg-white flex flex-col">
+        {/* Header */}
+        <div className="p-3 border-b flex justify-between items-center bg-gradient-to-r from-primary to-purple-700 text-white">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-white hover:bg-white/10 mr-2"
+            onClick={() => setIsOpen(false)}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          
+          <div className="flex items-center gap-2 flex-1">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={sellerAvatar} />
+              <AvatarFallback>{sellerName[0]}</AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="font-semibold text-sm">{sellerName}</h3>
+              <div className="flex items-center">
+                <div className="h-2 w-2 rounded-full bg-green-400 mr-1.5"></div>
+                <p className="text-xs opacity-80 truncate max-w-[160px]">En línea</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </Button>
+        
+        {/* Info del producto */}
+        <div className="bg-gray-50 p-3 border-b">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gray-200 rounded overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80" 
+                alt={auctionTitle}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-medium truncate">{auctionTitle}</p>
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-500">ID: {auctionId}</p>
+                <Badge variant="outline" className="text-[10px] h-4 px-1">Activo</Badge>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Messages area - full height on mobile */}
+        <ScrollArea className="flex-1 p-3 overflow-y-auto">
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.isMe ? "justify-end" : "justify-start"}`}
+              >
+                <div className={`flex gap-2 max-w-[80%] ${message.isMe ? "flex-row-reverse" : ""}`}>
+                  {!message.isMe && (
+                    <Avatar className="h-8 w-8 flex-shrink-0">
+                      <AvatarImage src={message.senderAvatar} />
+                      <AvatarFallback>{message.senderName[0]}</AvatarFallback>
+                    </Avatar>
+                  )}
+                  <div>
+                    <div
+                      className={`rounded-lg px-3 py-2 ${
+                        message.isMe
+                          ? "bg-primary text-white"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      <p className="text-sm">{message.content}</p>
+                    </div>
+                    <div className={`flex items-center gap-1 mt-1 ${message.isMe ? 'justify-end' : ''}`}>
+                      <p className="text-xs text-gray-500">
+                        {formatMessageTime(message.timestamp)}
+                      </p>
+                      {message.isMe && getMessageStatusIcon(message.status)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {sellerTyping && (
+              <div className="flex justify-start">
+                <div className="flex gap-2 max-w-[80%]">
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarImage src={sellerAvatar} />
+                    <AvatarFallback>{sellerName[0]}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="rounded-lg px-3 py-2 bg-gray-100 text-gray-800">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
+                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Escribiendo...</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+        </ScrollArea>
+        
+        {/* Input area - fixed at bottom on mobile */}
+        <div className="p-3 border-t bg-white">
+          <div className="flex gap-2">
+            <Textarea
+              ref={textareaRef}
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Escribe un mensaje..."
+              className="min-h-[45px] resize-none text-sm"
+            />
+            <Button
+              size="icon"
+              onClick={handleSendMessage}
+              disabled={newMessage.trim() === ""}
+              className="h-[45px] w-[45px] flex-shrink-0 bg-primary hover:bg-primary/90"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </div>
     );
   };
 
   // Botón flotante para abrir el chat
   const renderChatButton = () => {
-    if (isOpen || minimized) return null;
+    if (isOpen) return null;
     
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 z-50 rounded-full w-auto px-4 gap-2 shadow-lg"
+        className={`fixed z-50 ${isMobile ? 'bottom-20 right-4 rounded-full w-12 h-12 p-0' : 'bottom-4 right-4 rounded-full w-auto px-4 gap-2'} shadow-lg`}
       >
-        <MessageCircle className="h-5 w-5" />
-        <span>Chat con vendedor</span>
+        {isMobile ? (
+          <MessageCircle className="h-6 w-6" />
+        ) : (
+          <>
+            <MessageCircle className="h-5 w-5" />
+            <span>Chat con vendedor</span>
+          </>
+        )}
         {unreadCount > 0 && (
-          <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
+          <Badge variant="destructive" className={`absolute ${isMobile ? '-top-1 -right-1' : 'ml-1'} h-5 w-5 p-0 flex items-center justify-center rounded-full`}>
             {unreadCount}
           </Badge>
         )}
@@ -391,8 +502,7 @@ export const AuctionChat = ({ auctionId, auctionTitle, sellerId, sellerName, sel
   return (
     <>
       {renderChatButton()}
-      {renderChatFloating()}
-      {renderMinimizedButton()}
+      {isMobile ? renderMobileChat() : renderDesktopChat()}
     </>
   );
 };
