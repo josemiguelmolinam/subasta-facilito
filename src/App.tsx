@@ -1,5 +1,4 @@
 
-
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -40,6 +39,7 @@ import ShipmentManagement from './pages/ShipmentManagement';
 import AuctionWinnerCelebration from './pages/AuctionWinnerCelebration';
 import PurchaseConfirmationPage from './pages/PurchaseConfirmationPage';
 import Premium from './pages/Premium';
+import VerificationDemo from './pages/VerificationDemo';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -92,6 +92,7 @@ const App = () => {
                     <Route path='/shipment/:id' element={<ShipmentManagement />} />
                     <Route path='/auction-winner/:id' element={<AuctionWinnerCelebration />} />
                     <Route path='/premium' element={<Premium />} />
+                    <Route path='/verification' element={<VerificationDemo />} />
                   </Routes>
                 </TooltipProvider>
               </WishlistProvider>
@@ -104,4 +105,3 @@ const App = () => {
 };
 
 export default App;
-
