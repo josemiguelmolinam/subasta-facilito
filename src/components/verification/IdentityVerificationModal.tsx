@@ -1,7 +1,6 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FileUp, CheckCircle2, AlertCircle, Loader2, CreditCard, PassportIcon } from "lucide-react";
+import { FileUp, CheckCircle2, AlertCircle, Loader2, CreditCard, FileText } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -16,7 +15,6 @@ interface IdentityVerificationModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Define validation schema
 const formSchema = z.object({
   documentType: z.enum(["dni", "passport"], {
     required_error: "Por favor selecciona un tipo de documento",
@@ -34,7 +32,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const { toast } = useToast();
 
-  // Initialize form with react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,7 +54,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
       return;
     }
 
-    // Create object URL for preview
     const preview = URL.createObjectURL(file);
     
     if (side === 'front') {
@@ -81,7 +77,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
 
     setUploadStatus('uploading');
     
-    // Simular proceso de verificación
     setTimeout(() => {
       setUploadStatus('success');
       toast({
@@ -90,7 +85,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
       });
       setTimeout(() => {
         onOpenChange(false);
-        // Reset state
         setFrontFile({ file: null, preview: null });
         setBackFile({ file: null, preview: null });
         setUploadStatus('idle');
@@ -158,7 +152,7 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                             <RadioGroupItem value="passport" id="passport" className="sr-only" />
                             <div className="flex flex-col items-center w-full">
                               <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                                <PassportIcon className="w-8 h-8 text-primary" />
+                                <FileText className="w-8 h-8 text-primary" />
                               </div>
                               <FormLabel htmlFor="passport" className="font-semibold cursor-pointer text-center">
                                 Pasaporte / NIE
@@ -180,7 +174,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Sube imágenes de tu {documentType === "dni" ? "DNI" : "Pasaporte/NIE"}</h3>
               
-              {/* Front side upload */}
               <div className="space-y-2">
                 <p className="text-sm font-medium text-gray-700">
                   {documentType === "dni" ? "Parte frontal del DNI" : "Página principal con foto"}
@@ -230,7 +223,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                 </div>
               </div>
 
-              {/* Back side upload (only for DNI) */}
               {documentType === "dni" && (
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-gray-700">Parte trasera del DNI</p>
@@ -280,7 +272,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                 </div>
               )}
 
-              {/* Additional upload for Passport/NIE - second page or document */}
               {documentType === "passport" && (
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-gray-700">Documento adicional (opcional)</p>
@@ -331,7 +322,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
               )}
             </div>
 
-            {/* Requirements */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
               <h4 className="text-sm font-semibold text-gray-700">Requisitos del documento:</h4>
               <ul className="space-y-3">
@@ -350,7 +340,6 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
               </ul>
             </div>
 
-            {/* Status and Action */}
             <div className="flex justify-end gap-3 pt-4 border-t">
               <Button
                 variant="outline"
