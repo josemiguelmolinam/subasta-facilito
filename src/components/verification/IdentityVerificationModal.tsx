@@ -2,7 +2,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -31,18 +31,14 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
   });
 
   const documentType = form.watch("documentType");
-
-  const handleFileValidation = (file: File): boolean => {
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      toast({
-        title: "Archivo demasiado grande",
-        description: "El archivo no debe superar los 5MB",
-        variant: "destructive",
-      });
-      return false;
-    }
-    return true;
-  };
+  
+  // Limpiar las vistas previas si se cambia el tipo de documento
+  useEffect(() => {
+    if (frontFile.preview) URL.revokeObjectURL(frontFile.preview);
+    if (backFile.preview) URL.revokeObjectURL(backFile.preview);
+    setFrontFile({ file: null, preview: null });
+    setBackFile({ file: null, preview: null });
+  }, [documentType]);
 
   const handleUpload = async () => {
     if (!frontFile.file || (documentType === "dni" && !backFile.file)) {
@@ -110,6 +106,8 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                 file={frontFile}
                 setFile={setFrontFile}
                 disabled={uploadStatus === 'uploading'}
+                documentType={documentType}
+                side="front"
               />
 
               {documentType === "dni" ? (
@@ -118,6 +116,8 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                   file={backFile}
                   setFile={setBackFile}
                   disabled={uploadStatus === 'uploading'}
+                  documentType="dni"
+                  side="back"
                 />
               ) : (
                 <DocumentUploader
@@ -125,6 +125,8 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                   file={backFile}
                   setFile={setBackFile}
                   disabled={uploadStatus === 'uploading'}
+                  documentType="passport"
+                  side="front"
                 />
               )}
             </div>
