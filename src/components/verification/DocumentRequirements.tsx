@@ -1,25 +1,29 @@
 
-import { CheckCircle2 } from "lucide-react";
-
-const DocumentRequirements = () => {
-  const requirements = [
-    "Documento oficial vigente y sin daños",
-    "Todas las esquinas visibles en la foto",
-    "Información claramente legible",
-    "Sin reflejos ni brillos excesivos",
-    "Foto tomada sobre fondo claro"
-  ];
-
+export const DocumentRequirements = () => {
   return (
-    <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
-      <h4 className="text-sm font-semibold text-gray-700">Requisitos del documento:</h4>
-      <ul className="space-y-3">
-        {requirements.map((req, i) => (
-          <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-            <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-            {req}
-          </li>
-        ))}
+    <div className="space-y-2">
+      <h3 className="text-sm font-semibold">Requisitos del documento:</h3>
+      <ul className="space-y-1 text-xs text-gray-500">
+        <li className="flex items-start gap-1">
+          <span className="text-primary font-bold block mt-0.5">•</span>
+          <span>Documento en vigencia y legible</span>
+        </li>
+        <li className="flex items-start gap-1">
+          <span className="text-primary font-bold block mt-0.5">•</span>
+          <span>Toda la información debe ser claramente visible</span>
+        </li>
+        <li className="flex items-start gap-1">
+          <span className="text-primary font-bold block mt-0.5">•</span>
+          <span>Sin reflejos ni sombras que dificulten la lectura</span>
+        </li>
+        <li className="flex items-start gap-1">
+          <span className="text-primary font-bold block mt-0.5">•</span>
+          <span>Documentos no recortados o manipulados</span>
+        </li>
+        <li className="flex items-start gap-1">
+          <span className="text-primary font-bold block mt-0.5">•</span>
+          <span>Imágenes en formato JPG, PNG o PDF (máx. 5MB)</span>
+        </li>
       </ul>
     </div>
   );

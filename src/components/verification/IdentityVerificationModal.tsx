@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import DocumentTypeSelector, { documentFormSchema, DocumentFormValues } from "./DocumentTypeSelector";
 import DocumentUploader, { DocumentFile } from "./DocumentUploader";
@@ -22,6 +23,7 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
   const [backFile, setBackFile] = useState<DocumentFile>({ file: null, preview: null });
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const form = useForm<DocumentFormValues>({
     resolver: zodResolver(documentFormSchema),
@@ -86,20 +88,20 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
         onOpenChange(newOpen);
       }}
     >
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] max-w-[95vw] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Verificación de Identidad</DialogTitle>
-          <DialogDescription className="text-base">
+          <DialogTitle className="text-xl sm:text-2xl font-bold">Verificación de Identidad</DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
             Para garantizar la seguridad de nuestra comunidad, necesitamos verificar tu identidad
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form className="space-y-6">
+          <form className="space-y-4 sm:space-y-6">
             <DocumentTypeSelector form={form} />
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Sube imágenes de tu {documentType === "dni" ? "DNI" : "Pasaporte/NIE"}</h3>
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base sm:text-lg font-semibold">Sube imágenes de tu {documentType === "dni" ? "DNI" : "Pasaporte/NIE"}</h3>
               
               <DocumentUploader
                 title={documentType === "dni" ? "Parte frontal del DNI" : "Página principal con foto"}
@@ -133,12 +135,13 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
 
             <DocumentRequirements />
 
-            <div className="flex justify-end gap-3 pt-4 border-t">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t">
               <Button
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={uploadStatus === 'uploading'}
-                className="min-w-[100px]"
+                className="mt-2 sm:mt-0 sm:min-w-[100px]"
+                fullWidth={isMobile}
               >
                 Cancelar
               </Button>
@@ -150,7 +153,8 @@ const IdentityVerificationModal = ({ open, onOpenChange }: IdentityVerificationM
                   !frontFile.file || 
                   (documentType === "dni" && !backFile.file)
                 }
-                className="min-w-[100px]"
+                className="sm:min-w-[100px]"
+                fullWidth={isMobile}
               >
                 {uploadStatus === 'uploading' ? (
                   <>
