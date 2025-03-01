@@ -19,7 +19,7 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
   const { toast } = useToast();
   const faceCheckInterval = useRef<number | null>(null);
 
-  // Limpiar el stream cuando el componente se desmonta o cuando cambia el estado
+  // Cleanup stream when component unmounts or when state changes
   useEffect(() => {
     return () => {
       if (stream) {
@@ -31,7 +31,7 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
     };
   }, [stream]);
 
-  // Efecto para cuando el modal se cierra
+  // Effect for when modal closes
   useEffect(() => {
     if (!open) {
       if (stream) {
@@ -46,17 +46,17 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
     }
   }, [open]);
 
-  // Simular detección facial (en un entorno real se usaría un SDK para esto)
+  // Simulate face detection (in a real environment, an SDK would be used for this)
   const simulateFaceDetection = () => {
     if (canvasRef.current && videoRef.current && videoRef.current.readyState === 4) {
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
       if (!context) return;
       
-      // Dibujar el video en el canvas para procesar
+      // Draw video on canvas for processing
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
       
-      // Simulamos detección después de 3 segundos
+      // Simulate detection after 3 seconds
       setTimeout(() => {
         setFaceDetected(true);
       }, 3000);
@@ -77,32 +77,33 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        videoRef.current.style.display = 'block'; // Ensure video is visible
         
-        // Esperamos a que el video esté listo
+        // Wait for video to be ready
         videoRef.current.onloadedmetadata = () => {
           if (videoRef.current) {
             videoRef.current.play()
               .then(() => {
-                console.log("Video está reproduciéndose");
+                console.log("Video is playing");
                 setStep('camera');
                 
-                // Iniciar simulación de detección facial después de que el video esté reproduciéndose
+                // Start facial detection simulation after video is playing
                 if (faceCheckInterval.current) clearInterval(faceCheckInterval.current);
                 faceCheckInterval.current = window.setInterval(simulateFaceDetection, 1000);
               })
               .catch(err => {
-                console.error("Error al reproducir video:", err);
+                console.error("Error playing video:", err);
                 setStep('error');
               });
           }
         };
       }
     } catch (error) {
-      console.error("Error al acceder a la cámara:", error);
+      console.error("Error accessing camera:", error);
       setStep('error');
       toast({
-        title: "Error al acceder a la cámara",
-        description: "Por favor, asegúrate de dar permiso a la cámara y que no esté siendo utilizada por otra aplicación",
+        title: "Error accessing camera",
+        description: "Please make sure you have given camera permission and it's not being used by another application",
         variant: "destructive",
       });
     }
@@ -111,26 +112,26 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
   const takePhoto = () => {
     setStep('verifying');
     
-    // Detenemos el intervalo de detección facial
+    // Stop facial detection interval
     if (faceCheckInterval.current) {
       clearInterval(faceCheckInterval.current);
     }
     
-    // Capturar la imagen del canvas
+    // Capture image from canvas
     if (canvasRef.current) {
-      // En una implementación real, aquí se enviaría la imagen al backend
+      // In a real implementation, the image would be sent to the backend
       // const imageData = canvasRef.current.toDataURL('image/jpeg');
     }
     
-    // Simular proceso de verificación
+    // Simulate verification process
     setTimeout(() => {
       setStep('success');
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
       toast({
-        title: "Verificación en proceso",
-        description: "Estamos procesando tu verificación facial. Te notificaremos cuando esté lista.",
+        title: "Verification in progress",
+        description: "We are processing your facial verification. We will notify you when it's ready.",
       });
       setTimeout(() => {
         onOpenChange(false);
@@ -161,23 +162,23 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                   <Camera className="w-10 h-10 text-primary" />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-lg font-semibold">Verificación biométrica facial</h3>
+                  <h3 className="text-lg font-semibold">Biometric Facial Verification</h3>
                   <p className="text-sm text-gray-500 mt-2">
-                    Esta verificación refuerza la seguridad de tu cuenta y protege a todos los usuarios
+                    This verification enhances your account security and protects all users
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4 bg-gray-50 p-6 rounded-lg">
-              <h4 className="text-sm font-semibold text-gray-700">Antes de empezar:</h4>
+              <h4 className="text-sm font-semibold text-gray-700">Before starting:</h4>
               <ul className="space-y-3">
                 {[
-                  "Asegúrate de tener una buena iluminación frontal",
-                  "Quítate gafas de sol u otros accesorios que cubran tu rostro",
-                  "Mira directamente a la cámara",
-                  "Mantén una expresión neutral",
-                  "Asegúrate de que tu rostro esté completamente visible"
+                  "Ensure you have good frontal lighting",
+                  "Remove sunglasses or other accessories that cover your face",
+                  "Look directly at the camera",
+                  "Maintain a neutral expression",
+                  "Make sure your face is fully visible"
                 ].map((req, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
                     <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -189,15 +190,15 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
 
             <div className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 text-blue-700">
               <Shield className="w-5 h-5 flex-shrink-0" />
-              <p className="text-sm">Esta verificación es segura y cumple con todas las normativas de protección de datos.</p>
+              <p className="text-sm">This verification is secure and complies with all data protection regulations.</p>
             </div>
 
             <div className="flex justify-end gap-3 pt-4">
               <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Cancelar
+                Cancel
               </Button>
               <Button onClick={startCamera} className="min-w-[160px]">
-                Comenzar Verificación
+                Start Verification
               </Button>
             </div>
           </div>
@@ -207,15 +208,17 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
         return (
           <div className="space-y-6">
             <div className="relative rounded-lg overflow-hidden bg-black aspect-video">
+              {/* Important: The video element must be visible and properly sized */}
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
                 className="w-full h-full object-cover"
+                style={{ display: 'block' }} // Ensure video is always visible
               />
               
-              {/* Canvas oculto para procesar la imagen */}
+              {/* Hidden canvas for processing the image */}
               <canvas 
                 ref={canvasRef} 
                 width="1280" 
@@ -223,16 +226,68 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 className="hidden" 
               />
               
-              {/* Contorno facial y guías de alineación */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Círculo exterior con degradado */}
-                <div className={`w-72 h-72 rounded-full border-4 transition-colors duration-500 ${
-                  faceDetected ? 'border-green-400/70 shadow-lg shadow-green-400/20' : 'border-white/30'
-                }`} />
-                
-                {/* Máscara facial con guías */}
-                <div className="absolute w-64 h-64">
-                  {/* Guías de alineación */}
+              {/* Facial outline and alignment guides */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {/* 3D facial scan effect */}
+                <div className="relative">
+                  {/* Outer circle with gradient */}
+                  <div className={`w-72 h-72 rounded-full border-4 transition-colors duration-500 ${
+                    faceDetected ? 'border-green-400/70 shadow-lg shadow-green-400/20' : 'border-white/30'
+                  }`} />
+                  
+                  {/* Facial scan pattern */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-64 h-64 rounded-full overflow-hidden">
+                      {/* Horizontal scan lines */}
+                      {[...Array(20)].map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`w-full h-px ${faceDetected ? 'bg-green-400/30' : 'bg-blue-400/30'}`}
+                          style={{ 
+                            position: 'absolute', 
+                            top: `${10 + i * 3}%`,
+                            left: 0,
+                            boxShadow: `0 0 5px ${faceDetected ? 'rgba(74, 222, 128, 0.5)' : 'rgba(96, 165, 250, 0.5)'}`
+                          }}
+                        />
+                      ))}
+                      
+                      {/* Vertical scan lines */}
+                      {[...Array(20)].map((_, i) => (
+                        <div 
+                          key={i+100} 
+                          className={`h-full w-px ${faceDetected ? 'bg-green-400/30' : 'bg-blue-400/30'}`}
+                          style={{ 
+                            position: 'absolute', 
+                            left: `${10 + i * 4}%`,
+                            top: 0,
+                            boxShadow: `0 0 5px ${faceDetected ? 'rgba(74, 222, 128, 0.5)' : 'rgba(96, 165, 250, 0.5)'}`
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Facial recognition points */}
+                  {faceDetected && (
+                    <>
+                      {/* Eye points */}
+                      <div className="absolute top-[35%] left-[35%] w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-md shadow-green-400/50" />
+                      <div className="absolute top-[35%] right-[35%] w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-md shadow-green-400/50" />
+                      
+                      {/* Nose point */}
+                      <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-md shadow-green-400/50" />
+                      
+                      {/* Mouth points */}
+                      <div className="absolute bottom-[30%] left-[40%] w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-md shadow-green-400/50" />
+                      <div className="absolute bottom-[30%] right-[40%] w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-md shadow-green-400/50" />
+                      
+                      {/* Chin point */}
+                      <div className="absolute bottom-[20%] left-[50%] transform -translate-x-1/2 w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-md shadow-green-400/50" />
+                    </>
+                  )}
+                  
+                  {/* Face measurement lines */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
                   </div>
@@ -240,14 +295,14 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                     <div className="h-full w-0.5 bg-gradient-to-b from-transparent via-white/50 to-transparent" />
                   </div>
                   
-                  {/* Esquinas de referencia */}
+                  {/* Corner reference points */}
                   <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-white/70" />
                   <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-white/70" />
                   <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-white/70" />
                   <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-white/70" />
                 </div>
 
-                {/* Animación de escaneo */}
+                {/* Scan animation */}
                 <div className="absolute w-64 h-64 overflow-hidden">
                   <div className={`w-full h-1 blur-sm animate-scan ${
                     faceDetected ? 'bg-green-400/50' : 'bg-primary/50'
@@ -259,21 +314,21 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                   />
                 </div>
 
-                {/* Indicador de rostro detectado */}
+                {/* Face detected indicator */}
                 {faceDetected && (
                   <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 animate-pulse">
                     <CheckCircle2 className="w-4 h-4" />
-                    Rostro detectado
+                    Face detected
                   </div>
                 )}
               </div>
 
-              {/* Instrucciones superpuestas */}
+              {/* Overlaid instructions */}
               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
                 <p className="text-white text-center text-sm">
                   {faceDetected 
-                    ? "Rostro detectado correctamente. Puedes capturar la imagen."
-                    : "Centra tu rostro dentro del círculo y mantén una expresión neutral"}
+                    ? "Face detected correctly. You can capture the image."
+                    : "Center your face within the circle and maintain a neutral expression"}
                 </p>
               </div>
             </div>
@@ -285,7 +340,7 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 className="min-w-[120px]"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
-                Reintentar
+                Retry
               </Button>
               <Button 
                 onClick={takePhoto}
@@ -295,7 +350,7 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 }`}
               >
                 <Camera className="w-4 h-4 mr-2" />
-                Capturar
+                Capture
               </Button>
             </div>
           </div>
@@ -307,9 +362,9 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
             <div className="flex flex-col items-center gap-6">
               <Loader2 className="w-16 h-16 text-primary animate-spin" />
               <div className="text-center">
-                <h3 className="text-lg font-semibold">Verificando tu identidad</h3>
+                <h3 className="text-lg font-semibold">Verifying your identity</h3>
                 <p className="text-sm text-gray-500 mt-2">
-                  Por favor, espera mientras procesamos y analizamos tu imagen...
+                  Please wait while we process and analyze your image...
                 </p>
                 
                 <div className="mt-6 w-full max-w-xs mx-auto bg-gray-200 rounded-full h-2.5">
@@ -328,14 +383,14 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 <CheckCircle2 className="w-10 h-10 text-green-600" />
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold">¡Verificación Exitosa!</h3>
+                <h3 className="text-lg font-semibold">Verification Successful!</h3>
                 <p className="text-sm text-gray-500 mt-2">
-                  Tu imagen ha sido capturada correctamente.<br />
-                  La verificación se completará en nuestros servidores y te notificaremos por email cuando esté lista.
+                  Your image has been captured correctly.<br />
+                  The verification will be completed on our servers and we will notify you by email when it's ready.
                 </p>
               </div>
               <Button onClick={() => onOpenChange(false)} className="mt-4 bg-green-500 hover:bg-green-600">
-                Entendido
+                Understood
               </Button>
             </div>
           </div>
@@ -349,26 +404,26 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
                 <AlertCircle className="w-10 h-10 text-red-600" />
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold">Ha ocurrido un error</h3>
+                <h3 className="text-lg font-semibold">An error has occurred</h3>
                 <p className="text-sm text-gray-500 mt-2">
-                  No pudimos acceder a tu cámara. Por favor, verifica los permisos de tu navegador y asegúrate de que la cámara no esté siendo utilizada por otra aplicación.
+                  We couldn't access your camera. Please check your browser permissions and make sure the camera is not being used by another application.
                 </p>
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-left">
-                  <p className="font-medium mb-2">Para solucionar este problema:</p>
+                  <p className="font-medium mb-2">To solve this problem:</p>
                   <ol className="list-decimal pl-5 space-y-1">
-                    <li>Verifica que tu cámara esté conectada y funcionando</li>
-                    <li>Asegúrate de que has dado permisos de cámara a este sitio web</li>
-                    <li>Cierra otras aplicaciones que puedan estar usando la cámara</li>
-                    <li>Actualiza o cambia de navegador si el problema persiste</li>
+                    <li>Check that your camera is connected and working</li>
+                    <li>Make sure you have given camera permissions to this website</li>
+                    <li>Close other applications that may be using the camera</li>
+                    <li>Update or change browsers if the problem persists</li>
                   </ol>
                 </div>
               </div>
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => onOpenChange(false)} className="mt-4">
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button onClick={handleRetry} className="mt-4">
-                  Intentar nuevamente
+                  Try again
                 </Button>
               </div>
             </div>
@@ -381,9 +436,9 @@ const FacialVerificationModal = ({ open, onOpenChange }: FacialVerificationModal
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Verificación Facial</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Facial Verification</DialogTitle>
           <DialogDescription className="text-base">
-            Para garantizar la seguridad de tu cuenta, necesitamos realizar una verificación facial
+            To ensure the security of your account, we need to perform a facial verification
           </DialogDescription>
         </DialogHeader>
 
