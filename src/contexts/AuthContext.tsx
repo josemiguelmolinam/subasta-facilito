@@ -3,6 +3,7 @@ import { UserProfile } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { WelcomeModal } from "@/components/auth/WelcomeModal";
+import { LogoutModal } from "@/components/auth/LogoutModal";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -129,13 +131,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     setIsLoading(true);
     try {
+      // Show the logout modal first
+      setShowLogoutModal(true);
+      
+      // Clear user data
       setUser(null);
       localStorage.removeItem('user');
-      toast({
-        title: "Sesión cerrada",
-        description: "Has cerrado sesión correctamente",
-      });
-      navigate('/login');
+      
+      // The actual navigation happens in the modal after the animation
     } catch (error) {
       console.error("Error de logout:", error);
       toast({
@@ -143,6 +146,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Error",
         description: "Hubo un problema al cerrar sesión",
       });
+      setShowLogoutModal(false); // Hide modal on error
       throw error;
     } finally {
       setIsLoading(false);
@@ -315,6 +319,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           isOpen={showWelcomeModal}
           onClose={() => setShowWelcomeModal(false)}
           userName={user.name}
+        />
+      )}
+      {showLogoutModal && (
+        <LogoutModal
+          isOpen={showLogoutModal}
+          onClose={() => setShowLogoutModal(false)}
         />
       )}
     </AuthContext.Provider>

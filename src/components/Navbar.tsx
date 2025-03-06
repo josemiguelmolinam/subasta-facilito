@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { LogIn, Gavel, User, Settings, MessageSquare, Bell, LogOut } from "lucide-react";
 import { MobileNav } from "./MobileNav";
@@ -36,12 +35,15 @@ export const Navbar = () => {
     });
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <>
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-auction-soft">
         <div className="ml-4 container mx-auto px-4">
           <div className="flex items-center justify-between h-24">
-            {/* Logo Mejorado */}
             <div className="flex items-center">
               <a href="/" className="flex items-center space-x-2 group relative">
                 <div className="relative">
@@ -61,14 +63,11 @@ export const Navbar = () => {
               </a>
             </div>
 
-            {/* Contenido del Navbar */}
             <div className="flex items-center w-full justify-center md:justify-between">
-              {/* SearchBar */}
               <div className="hidden md:block w-[600px] ml-[350px]">
                 <SearchBar />
               </div>
 
-              {/* Botones */}
               <div className="flex items-center space-x-12">
                 {!user ? (
                   <>
@@ -99,7 +98,6 @@ export const Navbar = () => {
                       Subastalo
                     </Button>
 
-                    {/* Menú de perfil mejorado */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -118,7 +116,6 @@ export const Navbar = () => {
                                 <User className="h-5 w-5 text-white" />
                               </AvatarFallback>
                             </Avatar>
-                            {/* Indicador de notificaciones - Removida la clase animate-pulse */}
                             <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-500 ring-2 ring-white" />
                           </div>
                         </Button>
@@ -169,7 +166,7 @@ export const Navbar = () => {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
                           className="cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors"
-                          onClick={() => logout()}
+                          onClick={handleLogout}
                         >
                           <LogOut className="mr-2 h-4 w-4" />
                           <span>Cerrar sesión</span>
