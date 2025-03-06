@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         success: "bg-green-600 text-white hover:bg-green-700",
         payment: "bg-auction-primary text-white hover:bg-auction-secondary transition-all duration-300 transform hover:scale-[1.02]",
+        processing: "bg-auction-dark text-white hover:bg-auction-primary/90 transition-all duration-300 shadow-lg",
       },
       size: {
         default: "h-10 px-4 py-2",
