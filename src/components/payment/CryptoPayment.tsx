@@ -11,7 +11,7 @@ export const CryptoPayment = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <img src={bitcoinIcon} alt="Bitcoin" className="h-16 mx-auto mb-4 animate-float" />
+      <img src={bitcoinIcon} alt="Bitcoin" className="h-16 mx-auto mb-4 animate-pulse" />
       <p className="text-purple-700 font-medium">
         Próximamente disponible
       </p>
