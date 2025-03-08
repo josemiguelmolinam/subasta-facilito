@@ -12,12 +12,14 @@ import { PaymentFormHeader } from './PaymentFormHeader';
 import { PaymentFormCard } from './PaymentFormCard';
 import { PaymentButton } from './PaymentButton';
 import { processPayment } from './paymentService';
+import { WalletPayment } from './WalletPayment';
 
 interface PaymentFormProps {
   orderId: string;
+  paymentMethod: string;
 }
 
-export const PaymentForm = ({ orderId }: PaymentFormProps) => {
+export const PaymentForm = ({ orderId, paymentMethod }: PaymentFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { total } = useCart();
@@ -43,7 +45,7 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
   }, [user, navigate, toast]);
 
   useEffect(() => {
-    if (!elements) return;
+    if (!elements || paymentMethod !== 'credit-card') return;
 
     const cardElement = elements.getElement('card');
     if (!cardElement) return;
@@ -59,7 +61,7 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
     return () => {
       cardElement.off('change', handleChange);
     };
-  }, [elements]);
+  }, [elements, paymentMethod]);
 
   const handleNameChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setCardData((prev) => ({ ...prev, name: evt.target.value }));
@@ -68,6 +70,15 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
+
+    if (paymentMethod === 'wallet-pay') {
+      toast({
+        title: "Pago con Wallet",
+        description: "Esta funcionalidad estará disponible próximamente.",
+      });
+      setIsProcessing(false);
+      return;
+    }
 
     if (!stripe || !elements) {
       toast({
@@ -133,15 +144,19 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
           <PaymentFormHeader />
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <PaymentFormCard 
-                cardName={cardData.name}
-                handleNameChange={handleNameChange}
-              />
+              {paymentMethod === 'credit-card' ? (
+                <PaymentFormCard 
+                  cardName={cardData.name}
+                  handleNameChange={handleNameChange}
+                />
+              ) : (
+                <WalletPayment />
+              )}
               
               <PaymentButton 
                 isProcessing={isProcessing}
                 isSuccess={isSuccess}
-                isDisabled={total * 1.21 <= 0}
+                isDisabled={total <= 0}
               />
             </form>
           </CardContent>

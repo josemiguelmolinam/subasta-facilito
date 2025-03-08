@@ -9,7 +9,8 @@ import { formatCurrency } from '@/lib/utils/currency';
 import visaIcon from '@/assets/visa.svg';
 import mastercardIcon from '@/assets/mastercard.svg';
 import amexIcon from '@/assets/amex.svg';
-import paypalIcon from '@/assets/paypal.svg';
+import applePayIcon from '@/assets/apple-pay.svg';
+import googlePayIcon from '@/assets/google-pay.svg';
 
 interface CartItem {
   auction: {
@@ -24,11 +25,14 @@ interface CartItem {
 interface OrderSummaryProps {
   items: CartItem[];
   total: number;
+  processingFee: number;
   variants: any;
   fadeInUp: any;
 }
 
-export const OrderSummary = ({ items, total, variants, fadeInUp }: OrderSummaryProps) => {
+export const OrderSummary = ({ items, total, processingFee, variants, fadeInUp }: OrderSummaryProps) => {
+  const finalTotal = total + processingFee + (total > 500 ? 0 : 4.95);
+  
   return (
     <Card className="sticky top-4 border-0 shadow-lg overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-auction-primary/10 via-auction-secondary/5 to-transparent">
@@ -41,35 +45,37 @@ export const OrderSummary = ({ items, total, variants, fadeInUp }: OrderSummaryP
           initial="hidden"
           animate="visible"
         >
-          {items.map((item) => (
-            <motion.div
-              key={item.auction.id}
-              className="flex gap-4 pb-4 border-b last:border-0 group"
-              variants={fadeInUp}
-              whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
-            >
-              <div className="relative w-24 h-24 rounded-lg overflow-hidden shadow-md">
-                <img
-                  src={item.auction.imageUrl}
-                  alt={item.auction.title}
-                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors duration-300">
-                  {item.auction.title}
-                </h3>
-                <div className="flex justify-between items-center mt-1">
-                  <p className="text-sm text-gray-500">
-                    Cantidad: {item.quantity}
-                  </p>
-                  <p className="font-medium text-auction-primary mt-1 text-lg">
-                    {formatCurrency(item.auction.currentBid)}
-                  </p>
+          <div className="max-h-64 overflow-y-auto pr-2 space-y-4">
+            {items.map((item) => (
+              <motion.div
+                key={item.auction.id}
+                className="flex gap-4 pb-4 border-b last:border-0 group"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
+              >
+                <div className="relative w-20 h-20 rounded-lg overflow-hidden shadow-md">
+                  <img
+                    src={item.auction.imageUrl}
+                    alt={item.auction.title}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                  />
                 </div>
-              </div>
-            </motion.div>
-          ))}
+                <div className="flex-1">
+                  <h3 className="font-medium text-auction-dark line-clamp-2 group-hover:text-auction-primary transition-colors duration-300">
+                    {item.auction.title}
+                  </h3>
+                  <div className="flex justify-between items-center mt-1">
+                    <p className="text-sm text-gray-500">
+                      Cantidad: {item.quantity}
+                    </p>
+                    <p className="font-medium text-auction-primary mt-1 text-lg">
+                      {formatCurrency(item.auction.currentBid)}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
           <div className="space-y-3 pt-4 bg-gray-50 p-4 rounded-lg">
             <div className="flex justify-between text-gray-600">
@@ -81,13 +87,17 @@ export const OrderSummary = ({ items, total, variants, fadeInUp }: OrderSummaryP
               <span>{formatCurrency(total * 0.21)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
+              <span>Comisión de pago</span>
+              <span>{formatCurrency(processingFee)}</span>
+            </div>
+            <div className="flex justify-between text-gray-600">
               <span>Gastos de envío</span>
               <span>{total > 500 ? 'Gratis' : formatCurrency(4.95)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg pt-3 border-t">
               <span>Total</span>
               <span className="text-auction-primary text-xl">
-                {formatCurrency(total * 1.21 + (total > 500 ? 0 : 4.95))}
+                {formatCurrency(finalTotal)}
               </span>
             </div>
           </div>
@@ -113,7 +123,8 @@ export const OrderSummary = ({ items, total, variants, fadeInUp }: OrderSummaryP
                 <img src={visaIcon} alt="Visa" className="h-6" />
                 <img src={mastercardIcon} alt="Mastercard" className="h-6" />
                 <img src={amexIcon} alt="Amex" className="h-6" />
-                <img src={paypalIcon} alt="PayPal" className="h-6" />
+                <img src={applePayIcon} alt="Apple Pay" className="h-6" />
+                <img src={googlePayIcon} alt="Google Pay" className="h-6" />
               </div>
             </div>
           </div>

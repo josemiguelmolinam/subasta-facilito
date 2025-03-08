@@ -10,9 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 import { PaymentForm } from '@/components/payment/PaymentForm';
 import { OrderSummary } from '@/components/payment/OrderSummary';
-import { PaypalPayment } from '@/components/payment/PaypalPayment';
-import { BankTransferPayment } from '@/components/payment/BankTransferPayment';
-import { CryptoPayment } from '@/components/payment/CryptoPayment';
 import { PaymentSecurity } from '@/components/payment/PaymentSecurity';
 import { PaymentLayout } from '@/components/payment/PaymentLayout';
 import { fadeInUp, staggerContainer } from '@/components/payment/PaymentAnimations';
@@ -37,6 +34,11 @@ const PaymentPage = () => {
     }
   }, [user, navigate]);
 
+  // Cálculo de la comisión por procesamiento de pago (2.9% + 0.30€)
+  const calculateFee = (subtotal) => {
+    return (subtotal * 0.029) + 0.30;
+  };
+
   // Left column content - Payment method selection and forms
   const leftColumnContent = (
     <>
@@ -50,23 +52,12 @@ const PaymentPage = () => {
             setPaymentMethod={setPaymentMethod}
           />
 
-          {paymentMethod === 'credit-card' && (
-            <Elements stripe={stripePromise}>
-              <PaymentForm orderId={orderId} />
-            </Elements>
-          )}
-
-          {paymentMethod === 'paypal' && (
-            <PaypalPayment />
-          )}
-
-          {paymentMethod === 'bank-transfer' && (
-            <BankTransferPayment orderId={orderId} />
-          )}
-
-          {paymentMethod === 'crypto' && (
-            <CryptoPayment />
-          )}
+          <Elements stripe={stripePromise}>
+            <PaymentForm 
+              orderId={orderId} 
+              paymentMethod={paymentMethod} 
+            />
+          </Elements>
         </CardContent>
       </Card>
 
@@ -79,6 +70,7 @@ const PaymentPage = () => {
     <OrderSummary 
       items={items}
       total={total}
+      processingFee={calculateFee(total)}
       variants={staggerContainer}
       fadeInUp={fadeInUp}
     />

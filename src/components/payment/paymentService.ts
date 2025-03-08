@@ -36,28 +36,74 @@ export const processPayment = async ({
 
   if (pmError) throw new Error(pmError.message);
 
-  // For development, simulate a successful response
-  // In production, uncomment and use the API call code
+  // Para desarrollo, simulamos una respuesta exitosa
+  // En producción, descomentar y usar el código de llamada a la API
   
   return {
     success: true,
-    paymentIntentId: `sim_${orderId}`,
+    paymentIntentId: `pi_${Date.now()}`,
   };
   
-  /* In production, use this code instead:
-  const API_URL = import.meta.env.VITE_API_URL || 'https://localhost:3000';
+  /* En producción, usar este código:
   
+  // Opción 1: Checkout Sessions API (más sencillo)
+  const API_URL = import.meta.env.VITE_API_URL || 'https://api.tudominio.com';
+  
+  try {
+    const response = await fetch(`${API_URL}/api/create-checkout-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        paymentMethodId: paymentMethod.id,
+        amount: Math.round(total * 1.21 * 100), // en centavos
+        description: `Pedido #${orderId}`,
+        customerEmail: email,
+        metadata: {
+          orderId,
+          userId
+        }
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al procesar el pago');
+    }
+
+    const { sessionId } = await response.json();
+    
+    // Redirigir al Checkout si es necesario o confirmar directamente
+    const { error } = await stripe.confirmCardPayment(sessionId);
+    
+    if (error) {
+      throw new Error(error.message);
+    }
+    
+    return {
+      success: true,
+      paymentIntentId: sessionId,
+    };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+  
+  // Opción 2: Payment Intents API (más control)
   const response = await fetch(`${API_URL}/api/create-payment-intent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      amount: Math.round(total * 1.21 * 100),
+      amount: Math.round(total * 1.21 * 100), // en centavos
       currency: 'eur',
-      orderId,
-      paymentMethod: paymentMethod.id,
-      userId,
+      payment_method_types: ['card'],
+      payment_method: paymentMethod.id,
+      confirm: true,
+      description: `Pedido #${orderId}`,
+      metadata: {
+        orderId,
+        userId
+      },
+      receipt_email: email,
     }),
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -65,21 +111,13 @@ export const processPayment = async ({
     throw new Error(`Error en PaymentIntent: ${errorText}`);
   }
 
-  const { clientSecret } = await response.json();
+  const { clientSecret, paymentIntentId } = await response.json();
   
   const { error, paymentIntent } = await stripe.confirmCardPayment(
-    clientSecret,
-    {
-      payment_method: paymentMethod.id,
-    }
+    clientSecret
   );
 
   if (error) throw new Error(error.message);
-
-  if (paymentIntent.status === 'requires_action') {
-    const { error: confirmError } = await stripe.confirmCardPayment(clientSecret);
-    if (confirmError) throw new Error(confirmError.message);
-  }
 
   if (
     paymentIntent.status === 'succeeded' ||
