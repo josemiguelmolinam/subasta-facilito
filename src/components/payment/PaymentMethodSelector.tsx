@@ -3,14 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { CreditCard, Wallet } from 'lucide-react';
-
-// Iconos
-import visaIcon from '@/assets/visa.svg';
-import mastercardIcon from '@/assets/mastercard.svg';
-import amexIcon from '@/assets/amex.svg';
-import applePayIcon from '@/assets/apple-pay.svg';
-import googlePayIcon from '@/assets/google-pay.svg';
+import { CreditCard, Wallet, Apple, Smartphone } from 'lucide-react';
 
 interface PaymentMethodSelectorProps {
   paymentMethod: string;
@@ -42,9 +35,7 @@ export const PaymentMethodSelector = ({
           </div>
           <span className="flex-grow font-medium">Tarjeta de Crédito/Débito</span>
           <div className="flex gap-2">
-            <img src={visaIcon} alt="Visa" className="h-7" />
-            <img src={mastercardIcon} alt="Mastercard" className="h-7" />
-            <img src={amexIcon} alt="American Express" className="h-7" />
+            <CreditCard className="h-7 w-7 text-blue-600" />
           </div>
         </Label>
       </motion.div>
@@ -63,8 +54,8 @@ export const PaymentMethodSelector = ({
           </div>
           <span className="flex-grow font-medium">Apple Pay / Google Pay</span>
           <div className="flex gap-2">
-            <img src={applePayIcon} alt="Apple Pay" className="h-8" />
-            <img src={googlePayIcon} alt="Google Pay" className="h-8" />
+            <Apple className="h-7 w-7 text-black" />
+            <Smartphone className="h-7 w-7 text-blue-500" />
           </div>
         </Label>
       </motion.div>

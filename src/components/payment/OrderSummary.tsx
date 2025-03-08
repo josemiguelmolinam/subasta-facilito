@@ -1,16 +1,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lock, CheckCircle2 } from 'lucide-react';
+import { Lock, CheckCircle2, CreditCard, Wallet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
-
-// Iconos
-import visaIcon from '@/assets/visa.svg';
-import mastercardIcon from '@/assets/mastercard.svg';
-import amexIcon from '@/assets/amex.svg';
-import applePayIcon from '@/assets/apple-pay.svg';
-import googlePayIcon from '@/assets/google-pay.svg';
 
 interface CartItem {
   auction: {
@@ -120,11 +113,8 @@ export const OrderSummary = ({ items, total, processingFee, variants, fadeInUp }
             <div className="flex justify-between items-center pt-4 border-t">
               <span className="text-sm text-gray-500">Aceptamos</span>
               <div className="flex space-x-2">
-                <img src={visaIcon} alt="Visa" className="h-6" />
-                <img src={mastercardIcon} alt="Mastercard" className="h-6" />
-                <img src={amexIcon} alt="Amex" className="h-6" />
-                <img src={applePayIcon} alt="Apple Pay" className="h-6" />
-                <img src={googlePayIcon} alt="Google Pay" className="h-6" />
+                <CreditCard className="h-6 w-6 text-gray-700" />
+                <Wallet className="h-6 w-6 text-gray-700" />
               </div>
             </div>
           </div>

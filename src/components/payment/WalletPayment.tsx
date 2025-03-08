@@ -2,8 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import applePayIcon from '@/assets/apple-pay.svg';
-import googlePayIcon from '@/assets/google-pay.svg';
+import { Apple, Smartphone } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 export const WalletPayment = () => {
@@ -29,14 +28,14 @@ export const WalletPayment = () => {
           onClick={() => handleWalletPayment('apple')}
           className="bg-black hover:bg-gray-800 text-white px-6 py-6 rounded-xl flex items-center justify-center space-x-2 w-full"
         >
-          <img src={applePayIcon} alt="Apple Pay" className="h-8" />
+          <Apple className="h-8 w-8 text-white" />
         </Button>
         
         <Button 
           onClick={() => handleWalletPayment('google')}
           className="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-6 py-6 rounded-xl flex items-center justify-center space-x-2 w-full"
         >
-          <img src={googlePayIcon} alt="Google Pay" className="h-8" />
+          <Smartphone className="h-8 w-8 text-blue-500" />
         </Button>
       </div>
       

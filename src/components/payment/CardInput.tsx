@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { CardElement } from '@stripe/react-stripe-js';
-import { Shield } from 'lucide-react';
+import { Shield, CreditCard, Visa, Mastercard } from 'lucide-react';
 
 interface CardInputProps {
   className?: string;
@@ -33,9 +33,7 @@ export const CardInput = ({ className }: CardInputProps) => {
           />
         </div>
         <div className="absolute right-3 bottom-4 flex gap-2">
-          <img src="/src/assets/visa.svg" alt="Visa" className="h-5" />
-          <img src="/src/assets/mastercard.svg" alt="Mastercard" className="h-5" />
-          <img src="/src/assets/amex.svg" alt="Amex" className="h-5" />
+          <CreditCard className="h-5 w-5 text-gray-500" />
         </div>
       </div>
 
