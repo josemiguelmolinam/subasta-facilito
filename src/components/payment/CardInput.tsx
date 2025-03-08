@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { CardElement } from '@stripe/react-stripe-js';
-import { Shield, CreditCard, Visa, Mastercard } from 'lucide-react';
+import { Shield, CreditCard } from 'lucide-react';
 
 interface CardInputProps {
   className?: string;
