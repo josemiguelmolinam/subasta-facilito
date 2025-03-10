@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { 
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
+  Table, TableBody, TableHead, TableHeader, TableRow 
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package } from "lucide-react";
@@ -45,44 +45,10 @@ export const MySalesList = ({
     }
   };
 
-  const handleSubmitTracking = (saleId: string) => {
-    if (!trackingForm.trackingNumber || !trackingForm.carrier) {
-      toast({
-        title: "Información incompleta",
-        description: "Por favor ingresa el número de seguimiento y la compañía transportista",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    onUpdateTracking(saleId, trackingForm.trackingNumber, trackingForm.carrier);
-    toast({
-      title: "Información de envío actualizada",
-      description: "Los datos de seguimiento han sido actualizados"
-    });
-  };
-
   const handleTrackingChange = (field: 'trackingNumber' | 'carrier', value: string) => {
     setTrackingForm({
       ...trackingForm,
       [field]: value
-    });
-  };
-
-  const handleMarkShipped = (saleId: string) => {
-    if (!trackingForm.trackingNumber || !trackingForm.carrier) {
-      toast({
-        title: "Información incompleta",
-        description: "Por favor ingresa el número de seguimiento y la compañía transportista",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    onMarkShipped(saleId);
-    toast({
-      title: "Producto enviado",
-      description: "Has marcado el producto como enviado"
     });
   };
 
@@ -129,8 +95,6 @@ export const MySalesList = ({
                           sale={sale}
                           trackingForm={trackingForm}
                           onTrackingChange={handleTrackingChange}
-                          onSubmitTracking={handleSubmitTracking}
-                          onMarkShipped={handleMarkShipped}
                           onMarkDelivered={onMarkDelivered}
                           onCancelSale={onCancelSale}
                         />

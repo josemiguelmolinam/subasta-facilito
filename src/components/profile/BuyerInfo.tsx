@@ -9,6 +9,15 @@ interface BuyerInfoProps {
   buyer: Sale['buyer'];
 }
 
+// Función para hashear el nombre del comprador
+const hashName = (name: string): string => {
+  if (!name) return '****';
+  const firstChar = name.charAt(0);
+  const lastChar = name.charAt(name.length - 1);
+  const middleHash = '*'.repeat(Math.min(4, name.length - 2));
+  return `${firstChar}${middleHash}${lastChar}`;
+};
+
 export const BuyerInfo = ({ buyer }: BuyerInfoProps) => {
   const { toast } = useToast();
   
@@ -17,11 +26,7 @@ export const BuyerInfo = ({ buyer }: BuyerInfoProps) => {
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Nombre:</span>
-          <span className="font-medium">{buyer.name}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Email:</span>
-          <span className="font-medium">{buyer.email}</span>
+          <span className="font-medium">{hashName(buyer.name)}</span>
         </div>
       </div>
       

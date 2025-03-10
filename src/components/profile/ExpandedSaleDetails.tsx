@@ -14,8 +14,6 @@ interface ExpandedSaleDetailsProps {
     carrier: string;
   };
   onTrackingChange: (field: 'trackingNumber' | 'carrier', value: string) => void;
-  onSubmitTracking: (saleId: string) => void;
-  onMarkShipped: (saleId: string) => void;
   onMarkDelivered: (saleId: string) => void;
   onCancelSale: (saleId: string) => void;
 }
@@ -24,8 +22,6 @@ export const ExpandedSaleDetails = ({
   sale,
   trackingForm,
   onTrackingChange,
-  onSubmitTracking,
-  onMarkShipped,
   onMarkDelivered,
   onCancelSale
 }: ExpandedSaleDetailsProps) => {
@@ -44,8 +40,6 @@ export const ExpandedSaleDetails = ({
               sale={sale}
               trackingForm={trackingForm}
               onTrackingChange={onTrackingChange}
-              onSubmitTracking={onSubmitTracking}
-              onMarkShipped={onMarkShipped}
             />
           )}
           

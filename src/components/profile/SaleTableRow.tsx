@@ -8,6 +8,15 @@ import { formatDate } from "@/lib/utils/date";
 import { Sale } from "@/types/sales";
 import { getStatusBadge, getStatusIcon, getPaymentStatusBadge } from "./SaleStatusDisplay";
 
+// Función para hashear el nombre del comprador
+const hashName = (name: string): string => {
+  if (!name) return '****';
+  const firstChar = name.charAt(0);
+  const lastChar = name.charAt(name.length - 1);
+  const middleHash = '*'.repeat(Math.min(4, name.length - 2));
+  return `${firstChar}${middleHash}${lastChar}`;
+};
+
 interface SaleTableRowProps {
   sale: Sale;
   isExpanded: boolean;
@@ -41,7 +50,7 @@ export const SaleTableRow = ({ sale, isExpanded, onToggleExpand }: SaleTableRowP
         </div>
       </TableCell>
       <TableCell>
-        <div className="text-sm">{sale.buyer.name}</div>
+        <div className="text-sm">{hashName(sale.buyer.name)}</div>
       </TableCell>
       <TableCell>
         <div className="font-medium text-auction-primary">
