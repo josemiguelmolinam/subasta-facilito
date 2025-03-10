@@ -6,7 +6,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { 
   Package, Truck, Clock, CheckCircle2, AlertCircle, 
-  ChevronDown, ChevronUp, XCircle, PackageCheck 
+  ChevronDown, ChevronUp, XCircle, PackageCheck,
+  User, MessageCircle
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDate } from "@/lib/utils/date";
@@ -21,7 +22,7 @@ interface Buyer {
   email: string;
 }
 
-interface Sale {
+export interface Sale {
   id: string;
   title: string;
   image: string;

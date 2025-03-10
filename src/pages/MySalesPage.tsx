@@ -1,20 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { MySalesList } from '@/components/profile/MySalesList';
+import { MySalesList, Sale } from '@/components/profile/MySalesList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 // Mock data for demonstration
-const mockSales = [
+const mockSales: Sale[] = [
   {
     id: "sale1",
     title: "iPhone 15 Pro Max - 256GB",
     image: "https://images.unsplash.com/photo-1633053699034-459674171bec?q=80&w=500",
     price: 1199.99,
     saleDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
-    status: 'pending' as const,
+    status: 'pending',
     buyer: {
       id: "buyer1",
       name: "Carlos Méndez",
@@ -28,7 +27,7 @@ const mockSales = [
     image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=500",
     price: 1799.99,
     saleDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 14 days ago
-    status: 'shipped' as const,
+    status: 'shipped',
     buyer: {
       id: "buyer2",
       name: "Laura Fernández",
@@ -47,7 +46,7 @@ const mockSales = [
     image: "https://images.unsplash.com/photo-1614634224242-3bfcbf1f3f41?q=80&w=500",
     price: 899.99,
     saleDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-    status: 'delivered' as const,
+    status: 'delivered',
     buyer: {
       id: "buyer3",
       name: "Miguel Ángel",
@@ -66,7 +65,7 @@ const mockSales = [
     image: "https://images.unsplash.com/photo-1635016372614-52ee1837e8d6?q=80&w=500",
     price: 599.99,
     saleDate: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000), // 45 days ago
-    status: 'completed' as const,
+    status: 'completed',
     buyer: {
       id: "buyer4",
       name: "Sandra López",
@@ -85,7 +84,7 @@ const MySalesPage = () => {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [sales, setSales] = useState(mockSales);
+  const [sales, setSales] = useState<Sale[]>(mockSales);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -122,7 +121,7 @@ const MySalesPage = () => {
       if (sale.id === saleId) {
         return {
           ...sale,
-          status: 'shipped' as const,
+          status: 'shipped',
           shipping: {
             ...(sale.shipping || {}),
             trackingNumber: sale.shipping?.trackingNumber || '',
@@ -146,8 +145,14 @@ const MySalesPage = () => {
       if (sale.id === saleId) {
         return {
           ...sale,
-          status: 'delivered' as const,
-          paymentReleased: true
+          status: 'delivered',
+          paymentReleased: true,
+          shipping: {
+            ...(sale.shipping || {}),
+            trackingNumber: sale.shipping?.trackingNumber || '',
+            carrier: sale.shipping?.carrier || '',
+            estimatedDelivery: sale.shipping?.estimatedDelivery || new Date()
+          }
         };
       }
       return sale;
@@ -165,7 +170,13 @@ const MySalesPage = () => {
       if (sale.id === saleId) {
         return {
           ...sale,
-          status: 'cancelled' as const
+          status: 'cancelled',
+          shipping: {
+            ...(sale.shipping || {}),
+            trackingNumber: sale.shipping?.trackingNumber || '',
+            carrier: sale.shipping?.carrier || '',
+            estimatedDelivery: sale.shipping?.estimatedDelivery || new Date()
+          }
         };
       }
       return sale;
