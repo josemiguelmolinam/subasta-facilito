@@ -57,11 +57,14 @@ export const ExpandedSaleDetails = ({
           
           <BuyerInfo buyer={sale.buyer} />
           
-          <SaleActions
-            sale={sale}
-            onMarkDelivered={onMarkDelivered}
-            onCancelSale={onCancelSale}
-          />
+          {/* Only show SaleActions for non-iPhone sales */}
+          {!sale.title.includes('iPhone 15 Pro Max') && (
+            <SaleActions
+              sale={sale}
+              onMarkDelivered={onMarkDelivered}
+              onCancelSale={onCancelSale}
+            />
+          )}
         </div>
       </div>
     </div>

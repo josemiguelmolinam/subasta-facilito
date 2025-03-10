@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { PackageCheck, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import { Sale } from "@/types/sales";
 
 interface SaleActionsProps {
@@ -13,16 +13,7 @@ interface SaleActionsProps {
 export const SaleActions = ({ sale, onMarkDelivered, onCancelSale }: SaleActionsProps) => {
   return (
     <div className="pt-2 space-y-3">
-      {sale.status === 'shipped' && (
-        <Button 
-          variant="processing"
-          className="w-full"
-          onClick={() => onMarkDelivered(sale.id)}
-        >
-          <PackageCheck className="h-4 w-4 mr-2" />
-          Confirmar entrega
-        </Button>
-      )}
+      {/* Removed the "Confirmar Entrega" button for sales with status 'shipped' */}
       
       {sale.status === 'pending' && (
         <Button 
