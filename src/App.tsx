@@ -40,6 +40,7 @@ import AuctionWinnerCelebration from './pages/AuctionWinnerCelebration';
 import PurchaseConfirmationPage from './pages/PurchaseConfirmationPage';
 import Premium from './pages/Premium';
 import VerificationDemo from './pages/VerificationDemo';
+import MySalesPage from './pages/MySalesPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,6 +90,7 @@ const App = () => {
                     <Route path='/purchase-confirmation' element={<PurchaseConfirmationPage />} />
                     <Route path='/order-success' element={<OrderSuccessPage />} />
                     <Route path='/my-purchases' element={<MyPurchases />} />
+                    <Route path='/my-sales' element={<MySalesPage />} />
                     <Route path='/shipment/:id' element={<ShipmentManagement />} />
                     <Route path='/auction-winner/:id' element={<AuctionWinnerCelebration />} />
                     <Route path='/premium' element={<Premium />} />

@@ -1,37 +1,16 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Gavel, CreditCard, Bell, Settings } from "lucide-react";
+import { 
+  Package, Heart, Calendar, Settings, 
+  CreditCard, ShoppingCart, Gift, 
+  Truck, FileText, ArrowUpRight, 
+  Store
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const QuickActions = () => {
   const navigate = useNavigate();
-
-  const actions = [
-    {
-      title: "Mis Subastas",
-      icon: Gavel,
-      onClick: () => navigate("/auctions"),
-      color: "bg-auction-primary"
-    },
-    {
-      title: "Pagos",
-      icon: CreditCard,
-      onClick: () => navigate("/payments"),
-      color: "bg-auction-secondary"
-    },
-    {
-      title: "Notificaciones",
-      icon: Bell,
-      onClick: () => navigate("/notifications"),
-      color: "bg-auction-tertiary"
-    },
-    {
-      title: "Configuración",
-      icon: Settings,
-      onClick: () => navigate("/settings"),
-      color: "bg-auction-dark"
-    }
-  ];
 
   return (
     <Card>
@@ -39,20 +18,78 @@ export const QuickActions = () => {
         <CardTitle>Acciones Rápidas</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {actions.map((action) => (
-            <Button
-              key={action.title}
-              variant="outline"
-              className="h-24 flex flex-col items-center justify-center gap-2 hover:bg-gray-50"
-              onClick={action.onClick}
-            >
-              <div className={`p-2 rounded-full ${action.color}`}>
-                <action.icon className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-sm font-medium">{action.title}</span>
-            </Button>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/my-purchases')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <Package className="h-5 w-5" />
+            <span>Mis Compras</span>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/my-sales')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <Store className="h-5 w-5" />
+            <span>Mis Ventas</span>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/wishlist')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <Heart className="h-5 w-5" />
+            <span>Lista de deseos</span>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/profile/edit')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <Settings className="h-5 w-5" />
+            <span>Ajustes</span>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/payment')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <CreditCard className="h-5 w-5" />
+            <span>Métodos de pago</span>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/cart')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            <span>Carrito</span>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/auctions/create')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <Gift className="h-5 w-5" />
+            <span>Crear subasta</span>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/shipment/123')}
+            className="flex flex-col h-24 gap-1 hover:bg-auction-soft hover:text-auction-primary transition-colors"
+          >
+            <Truck className="h-5 w-5" />
+            <span>Ver envíos</span>
+          </Button>
         </div>
       </CardContent>
     </Card>
