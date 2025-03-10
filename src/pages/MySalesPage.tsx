@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { MySalesList, Sale } from '@/components/profile/MySalesList';
+import { MySalesList } from '@/components/profile/MySalesList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { Sale } from '@/types/sales';
 
 // Mock data for demonstration
 const mockSales: Sale[] = [
