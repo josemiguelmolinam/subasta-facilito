@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { XCircle } from "lucide-react";
+import { XCircle, Check } from "lucide-react";
 import { Sale } from "@/types/sales";
 
 interface SaleActionsProps {
@@ -13,7 +13,21 @@ interface SaleActionsProps {
 export const SaleActions = ({ sale, onMarkDelivered, onCancelSale }: SaleActionsProps) => {
   return (
     <div className="pt-2 space-y-3">
-      {/* Removed the "Confirmar Entrega" button for sales with status 'shipped' */}
+      {/* Added back the "Confirmar Entrega" button for sales with status 'shipped' */}
+      {sale.status === 'shipped' && (
+        <Button 
+          variant="default"
+          className="w-full bg-green-600 hover:bg-green-700"
+          onClick={() => {
+            if (confirm('¿Confirmas que el producto ha sido entregado correctamente?')) {
+              onMarkDelivered(sale.id);
+            }
+          }}
+        >
+          <Check className="h-4 w-4 mr-2" />
+          Confirmar Entrega
+        </Button>
+      )}
       
       {sale.status === 'pending' && (
         <Button 
