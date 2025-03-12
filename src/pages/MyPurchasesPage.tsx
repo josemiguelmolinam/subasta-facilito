@@ -6,8 +6,30 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
+// Define the Purchase type locally to ensure we're using the correct status values
+interface Purchase {
+  id: string;
+  title: string;
+  image: string;
+  purchaseDate: Date;
+  price: number;
+  status: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'completed';
+  paymentMethod: 'credit_card' | 'paypal' | 'transfer';
+  paymentReleased: boolean;
+  seller: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  shipping?: {
+    trackingNumber?: string;
+    carrier?: string;
+    estimatedDelivery?: Date;
+  };
+}
+
 // Mock data service para simular la carga de compras desde una API
-const fetchPurchases = async () => {
+const fetchPurchases = async (): Promise<Purchase[]> => {
   // Simulamos una carga de datos
   await new Promise(resolve => setTimeout(resolve, 1000));
   
@@ -18,7 +40,7 @@ const fetchPurchases = async () => {
       image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80",
       purchaseDate: new Date('2023-11-15'),
       price: 1299.99,
-      status: 'delivered',
+      status: 'delivered', // Using a valid status from the enum
       paymentMethod: 'credit_card',
       paymentReleased: false,
       seller: {
@@ -38,7 +60,7 @@ const fetchPurchases = async () => {
       image: "https://images.unsplash.com/photo-1629131726692-1accd0c53ce0?auto=format&fit=crop&q=80",
       purchaseDate: new Date('2023-10-20'),
       price: 2499.99,
-      status: 'shipped',
+      status: 'shipped', // Using a valid status from the enum
       paymentMethod: 'paypal',
       paymentReleased: false,
       seller: {
@@ -58,7 +80,7 @@ const fetchPurchases = async () => {
       image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&q=80",
       purchaseDate: new Date('2023-10-05'),
       price: 279.99,
-      status: 'completed',
+      status: 'completed', // Using a valid status from the enum
       paymentMethod: 'transfer',
       paymentReleased: true,
       seller: {

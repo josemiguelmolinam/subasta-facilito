@@ -1,16 +1,28 @@
+
 import React, { useState } from 'react';
 import { 
-  Truck, User, Download, CreditCard, MessageCircle, ShieldCheck, CheckCircle,
-  Wallet, Building2
-} from "lucide-react";
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+  Button,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
   DialogFooter
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { formatDate } from "@/lib/utils/date";
+} from "@/components/ui/";
+import { 
+  Package, 
+  User, 
+  Download, 
+  MessageCircle, 
+  CheckCircle2, 
+  CreditCard,
+  CalendarClock,
+  Building2
+} from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
+import { formatDate } from "@/lib/utils/date";
+import { useToast } from "@/hooks/use-toast";
 
 interface Purchase {
   id: string;
@@ -38,243 +50,205 @@ interface MyPurchaseDetailsProps {
   onReleasePayment: (purchaseId: string) => void;
 }
 
-// Función para hashear el nombre del vendedor
-const hashName = (name: string): string => {
-  if (!name) return '****';
-  const firstChar = name.charAt(0);
-  const lastChar = name.charAt(name.length - 1);
-  const middleHash = '*'.repeat(Math.min(4, name.length - 2));
-  return `${firstChar}${middleHash}${lastChar}`;
-};
-
-// Función para obtener el ícono del método de pago
-const getPaymentMethodIcon = (method: Purchase['paymentMethod']) => {
-  switch (method) {
-    case 'paypal':
-      return <Wallet className="h-4 w-4 text-blue-500" />;
-    case 'transfer':
-      return <Building2 className="h-4 w-4 text-green-500" />;
-    case 'credit_card':
-    default:
-      return <CreditCard className="h-4 w-4 text-gray-700" />;
-  }
-};
-
 // Función para obtener el texto del método de pago
-const getPaymentMethodText = (method: Purchase['paymentMethod']) => {
+const getPaymentMethodText = (method: string) => {
   switch (method) {
+    case 'credit_card':
+      return 'Tarjeta de crédito';
     case 'paypal':
       return 'PayPal';
     case 'transfer':
-      return 'Transferencia Bancaria';
-    case 'credit_card':
+      return 'Transferencia bancaria';
     default:
-      return 'Tarjeta de Crédito';
+      return 'Desconocido';
   }
 };
 
 export const MyPurchaseDetails = ({ purchase, onReleasePayment }: MyPurchaseDetailsProps) => {
   const { toast } = useToast();
-  const [isVerificationOpen, setIsVerificationOpen] = useState(false);
-  
+  const [isReleaseDialogOpen, setIsReleaseDialogOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
   const handleDownloadInvoice = () => {
+    console.log('Descargando factura para compra:', purchase.id);
     toast({
       title: "Descargando factura",
       description: "Tu factura se descargará en breve"
     });
   };
-  
+
   const handleContactSeller = () => {
+    console.log('Contactando vendedor:', purchase.seller.email);
     toast({
-      title: "Contactando al vendedor",
-      description: "Te redirigiremos al chat con el vendedor"
+      title: "Contactar vendedor",
+      description: `Contactando a ${purchase.seller.name}...`
     });
   };
-  
-  const handleVerifyAndReleasePayment = () => {
-    onReleasePayment(purchase.id);
-    setIsVerificationOpen(false);
-    toast({
-      title: "Pago liberado",
-      description: "El pago ha sido liberado al vendedor"
-    });
+
+  const handleVerifyAndRelease = () => {
+    if (isVerified) {
+      onReleasePayment(purchase.id);
+      setIsReleaseDialogOpen(false);
+      setIsVerified(false);
+    } else {
+      toast({
+        title: "Verificación necesaria",
+        description: "Por favor, verifica que has recibido el producto correctamente",
+        variant: "destructive"
+      });
+    }
   };
-  
+
   return (
     <div className="p-4 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Información de envío */}
         <div className="space-y-4">
           <h4 className="font-semibold text-auction-dark flex items-center gap-2">
-            <Truck className="h-4 w-4 text-auction-primary" /> 
+            <Package className="h-4 w-4 text-auction-primary" /> 
             Información de Envío
           </h4>
           
-          <div className="border rounded-lg p-4 bg-white">
-            <div className="space-y-2">
-              {purchase.shipping?.trackingNumber ? (
-                <>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Número de seguimiento:</span>
-                    <span className="font-medium">{purchase.shipping.trackingNumber}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Transportista:</span>
-                    <span className="font-medium">{purchase.shipping.carrier}</span>
-                  </div>
-                  {purchase.shipping.estimatedDelivery && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Entrega estimada:</span>
-                      <span className="font-medium">
-                        {formatDate(purchase.shipping.estimatedDelivery)}
-                      </span>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-center text-gray-500 py-2">
-                  Información de envío pendiente
+          <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+            {purchase.shipping ? (
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">Número de seguimiento:</span>
+                  <span className="text-sm font-medium">{purchase.shipping.trackingNumber}</span>
                 </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Información de pago */}
-          <h4 className="font-semibold text-auction-dark flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-auction-primary" /> 
-            Detalles del Pago
-          </h4>
-          
-          <div className="border rounded-lg p-4 bg-white">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Método de pago:</span>
-                <span className="font-medium flex items-center gap-2">
-                  {getPaymentMethodIcon(purchase.paymentMethod)}
-                  {getPaymentMethodText(purchase.paymentMethod)}
-                </span>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">Transportista:</span>
+                  <span className="text-sm font-medium">{purchase.shipping.carrier}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">Entrega estimada:</span>
+                  <span className="text-sm font-medium">
+                    {purchase.shipping.estimatedDelivery 
+                      ? formatDate(purchase.shipping.estimatedDelivery) 
+                      : 'No disponible'}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Fecha de compra:</span>
-                <span className="font-medium">{formatDate(purchase.purchaseDate)}</span>
+            ) : (
+              <div className="text-center py-2">
+                <p className="text-sm text-gray-500">No hay información de envío disponible</p>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Total pagado:</span>
-                <span className="font-medium text-auction-primary">{formatCurrency(purchase.price)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Estado del pago:</span>
-                <span className={`font-medium ${purchase.paymentReleased ? 'text-green-600' : 'text-orange-500'}`}>
-                  {purchase.paymentReleased ? 'Liberado' : 'Pendiente de liberación'}
-                </span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
         
-        {/* Información del vendedor y acciones */}
+        {/* Información de pago y vendedor */}
         <div className="space-y-4">
           <h4 className="font-semibold text-auction-dark flex items-center gap-2">
-            <User className="h-4 w-4 text-auction-primary" /> 
+            <Building2 className="h-4 w-4 text-auction-primary" /> 
             Información del Vendedor
           </h4>
           
-          <div className="border rounded-lg p-4 bg-white space-y-3">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Vendedor:</span>
-                <span className="font-medium">{hashName(purchase.seller.name)}</span>
+          <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-500">Vendedor:</span>
+                <span className="text-sm font-medium">{purchase.seller.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-500">Fecha de compra:</span>
+                <span className="text-sm font-medium">{formatDate(purchase.purchaseDate)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-500">Método de pago:</span>
+                <span className="text-sm font-medium">{getPaymentMethodText(purchase.paymentMethod)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-500">Total:</span>
+                <span className="text-sm font-medium text-auction-primary">{formatCurrency(purchase.price)}</span>
               </div>
             </div>
-            
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="w-full"
-              onClick={handleContactSeller}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Contactar vendedor
-            </Button>
-          </div>
-          
-          {/* Acciones de compra */}
-          <h4 className="font-semibold text-auction-dark flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-auction-primary" /> 
-            Acciones
-          </h4>
-          
-          <div className="space-y-3">
-            <Button 
-              variant="outline"
-              className="w-full"
-              onClick={handleDownloadInvoice}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Descargar factura
-            </Button>
-            
-            {!purchase.paymentReleased && purchase.status === 'delivered' && (
-              <Button 
-                variant="success"
-                className="w-full"
-                onClick={() => setIsVerificationOpen(true)}
-              >
-                <ShieldCheck className="h-4 w-4 mr-2" />
-                Verificar y liberar pago
-              </Button>
-            )}
           </div>
         </div>
       </div>
       
-      {/* Modal de verificación */}
-      <Dialog open={isVerificationOpen} onOpenChange={setIsVerificationOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Verificación del producto</DialogTitle>
-            <DialogDescription>
-              Por favor, confirma que has recibido el producto en perfectas condiciones 
-              antes de liberar el pago al vendedor.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium">El producto está en buenas condiciones</p>
-                <p className="text-sm text-gray-500">He revisado el producto y está tal como se describía</p>
+      {/* Acciones */}
+      <div className="flex flex-wrap gap-3 pt-2">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={handleDownloadInvoice}
+          className="flex-1"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Descargar factura
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={handleContactSeller}
+          className="flex-1"
+        >
+          <MessageCircle className="h-4 w-4 mr-2" />
+          Contactar vendedor
+        </Button>
+        
+        {!purchase.paymentReleased && purchase.status === 'delivered' && (
+          <Dialog open={isReleaseDialogOpen} onOpenChange={setIsReleaseDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                variant="default" 
+                size="sm"
+                className="flex-1 bg-green-600 hover:bg-green-700"
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                Liberar pago
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirmación de liberación de pago</DialogTitle>
+                <DialogDescription>
+                  Antes de liberar el pago al vendedor, por favor verifica que:
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4 py-4">
+                <div className="flex items-start gap-2">
+                  <input 
+                    type="checkbox" 
+                    id="verify-product" 
+                    className="mt-1"
+                    checked={isVerified}
+                    onChange={(e) => setIsVerified(e.target.checked)}
+                  />
+                  <label htmlFor="verify-product" className="text-sm">
+                    He recibido el producto en buenas condiciones y corresponde con la descripción del anuncio.
+                    Entiendo que al liberar el pago, acepto el producto como se describe y termina el proceso de compra.
+                  </label>
+                </div>
+                
+                <div className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">
+                  <p className="flex items-center gap-2">
+                    <CalendarClock className="h-4 w-4" />
+                    Si no liberas el pago, se liberará automáticamente a los 14 días de la entrega confirmada.
+                  </p>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium">El producto funciona correctamente</p>
-                <p className="text-sm text-gray-500">He probado el producto y funciona como se esperaba</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium">Confirmo la liberación del pago</p>
-                <p className="text-sm text-gray-500">Entiendo que esta acción no se puede deshacer</p>
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsVerificationOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleVerifyAndReleasePayment}>
-              Liberar pago
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsReleaseDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button 
+                  onClick={handleVerifyAndRelease}
+                  disabled={!isVerified}
+                  className={!isVerified ? 'opacity-50' : ''}
+                >
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  Confirmar y liberar pago
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 };
