@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,6 +13,7 @@ import { PaymentFormCard } from './PaymentFormCard';
 import { PaymentButton } from './PaymentButton';
 import { processPayment } from './paymentService';
 import { WalletPayment } from './WalletPayment';
+import { PaypalPayment } from './PaypalPayment';
 
 interface PaymentFormProps {
   orderId: string;
@@ -80,6 +81,17 @@ export const PaymentForm = ({ orderId, paymentMethod }: PaymentFormProps) => {
       return;
     }
 
+    if (paymentMethod === 'paypal') {
+      toast({
+        title: "Pago con PayPal",
+        description: "Redirigiendo a PayPal para completar el pago...",
+      });
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsProcessing(false);
+      navigate(`/confirm-purchase/${orderId}`);
+      return;
+    }
+
     if (!stripe || !elements) {
       toast({
         variant: 'destructive',
@@ -132,6 +144,13 @@ export const PaymentForm = ({ orderId, paymentMethod }: PaymentFormProps) => {
     }
   };
 
+  // Animated variants for content transitions
+  const contentVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+  };
+
   return (
     <>
       <PaymentProcessing isProcessing={isProcessing} />
@@ -141,22 +160,39 @@ export const PaymentForm = ({ orderId, paymentMethod }: PaymentFormProps) => {
         transition={{ duration: 0.5 }}
       >
         <Card className="border border-gray-200 shadow-lg overflow-hidden">
-          <PaymentFormHeader />
+          <PaymentFormHeader paymentMethod={paymentMethod} />
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {paymentMethod === 'credit-card' ? (
-                <PaymentFormCard 
-                  cardName={cardData.name}
-                  handleNameChange={handleNameChange}
-                />
-              ) : (
-                <WalletPayment />
-              )}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={paymentMethod}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={contentVariants}
+                >
+                  {paymentMethod === 'credit-card' && (
+                    <PaymentFormCard 
+                      cardName={cardData.name}
+                      handleNameChange={handleNameChange}
+                    />
+                  )}
+                  
+                  {paymentMethod === 'wallet-pay' && (
+                    <WalletPayment />
+                  )}
+                  
+                  {paymentMethod === 'paypal' && (
+                    <PaypalPayment />
+                  )}
+                </motion.div>
+              </AnimatePresence>
               
               <PaymentButton 
                 isProcessing={isProcessing}
                 isSuccess={isSuccess}
                 isDisabled={total <= 0}
+                paymentMethod={paymentMethod}
               />
             </form>
           </CardContent>
