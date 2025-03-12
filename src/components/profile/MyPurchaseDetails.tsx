@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
 import { 
-  Button,
+  Button 
+} from "@/components/ui/button";
+import {
   Dialog,
   DialogTrigger,
   DialogContent,
@@ -9,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter
-} from "@/components/ui/";
+} from "@/components/ui/dialog";
 import { 
   Package, 
   User, 
