@@ -3,7 +3,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { ProductCard } from "./ProductCard";
+import { ProductCard } from "./product/ProductCard";
 import Autoplay from 'embla-carousel-autoplay';
 
 export const LatestAuctions = () => {

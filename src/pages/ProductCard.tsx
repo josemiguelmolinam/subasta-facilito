@@ -2,7 +2,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { ProductCard as ProductCardComponent } from "@/components/ProductCard";
+import { ProductCard as ProductCardComponent } from "@/components/product/ProductCard";
 
 // This would typically come from your API
 const fetchProduct = async (id: string) => {
