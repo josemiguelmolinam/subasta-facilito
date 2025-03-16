@@ -28,7 +28,7 @@ export interface Auction {
   endDate: Date;
   sellerId: string;
   categoryId: string;
-  status: 'active' | 'ended' | 'cancelled' | 'featured';
+  status: 'active' | 'ended' | 'cancelled' | 'featured' | 'sold';
   createdAt: Date;
   seller?: Seller;
   specifications?: {
@@ -44,6 +44,9 @@ export interface Auction {
   shippingPayer?: string;
   transport?: string;
   images?: File[];
+  buyerId?: string;
+  finalPrice?: number;
+  soldDate?: Date;
   shippingDetails?: {
     originCity: string;
     destinationCity: string;

@@ -46,7 +46,9 @@ export const MobileAuctionView = ({
   handleContactSeller 
 }: MobileAuctionViewProps) => (
   <div className="space-y-6">
-    {isSold && <SoldBanner finalPrice={auction.finalPrice} soldDate={auction.soldDate} />}
+    {isSold && auction.finalPrice && auction.soldDate && (
+      <SoldBanner finalPrice={auction.finalPrice} soldDate={auction.soldDate} />
+    )}
     
     <ImageCarousel images={auction.images} isSold={isSold} title={auction.title} />
     
@@ -99,7 +101,9 @@ export const MobileAuctionView = ({
         </div>
       )}
       
-      {isSold && <BuyerInfo buyer={auction.buyer} />}
+      {isSold && auction.buyer && (
+        <BuyerInfo buyer={auction.buyer} />
+      )}
       
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between border-b pb-3">
@@ -179,7 +183,7 @@ export const MobileAuctionView = ({
               {Object.entries(auction.specifications).map(([key, value]) => (
                 <div key={key} className="flex justify-between py-2 border-b">
                   <span className="text-gray-500 capitalize">{key}</span>
-                  <span className="font-medium">{value}</span>
+                  <span className="font-medium">{String(value)}</span>
                 </div>
               ))}
             </div>

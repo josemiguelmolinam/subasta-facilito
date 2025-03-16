@@ -86,7 +86,7 @@ export const AuctionProvider = ({ children }: { children: React.ReactNode }) => 
           auction.id === id 
             ? { 
                 ...auction, 
-                status: 'sold',
+                status: 'sold' as const,
                 buyerId,
                 finalPrice,
                 soldDate: new Date()

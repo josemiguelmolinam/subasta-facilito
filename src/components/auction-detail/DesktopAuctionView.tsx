@@ -55,7 +55,9 @@ export const DesktopAuctionView = ({
 }: DesktopAuctionViewProps) => (
   <div className="grid grid-cols-1 md:grid-cols-5 gap-8 pt-8">
     <div className="col-span-3">
-      {isSold && <SoldBanner finalPrice={auction.finalPrice} soldDate={auction.soldDate} />}
+      {isSold && auction.finalPrice && auction.soldDate && (
+        <SoldBanner finalPrice={auction.finalPrice} soldDate={auction.soldDate} />
+      )}
       
       <ImageCarousel images={auction.images} isSold={isSold} title={auction.title} />
       
@@ -79,7 +81,7 @@ export const DesktopAuctionView = ({
                 {Object.entries(auction.specifications).map(([key, value]) => (
                   <div key={key} className="flex justify-between p-3 bg-gray-50 rounded-md">
                     <span className="text-gray-500 capitalize">{key}</span>
-                    <span className="font-medium">{value}</span>
+                    <span className="font-medium">{String(value)}</span>
                   </div>
                 ))}
               </div>
@@ -173,7 +175,7 @@ export const DesktopAuctionView = ({
               </Badge>
             </div>
             <p className="text-sm text-gray-600 mb-3">
-              Este artículo fue vendido el {auction.soldDate.toLocaleDateString('es-ES', {
+              Este artículo fue vendido el {auction.soldDate && auction.soldDate.toLocaleDateString('es-ES', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
@@ -222,7 +224,7 @@ export const DesktopAuctionView = ({
             </Button>
           </div>
         ) : (
-          <BuyerInfo buyer={auction.buyer} />
+          auction.buyer && <BuyerInfo buyer={auction.buyer} />
         )}
         
         <div className="flex items-center justify-between pt-2">

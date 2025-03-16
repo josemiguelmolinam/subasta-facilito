@@ -13,7 +13,7 @@ export interface Sale {
   image: string;
   price: number;
   saleDate: Date;
-  status: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'completed';
+  status: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'completed' | 'sold';
   buyer: Buyer;
   shipping?: {
     trackingNumber?: string;
