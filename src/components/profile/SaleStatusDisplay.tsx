@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { 
   Package, Truck, Clock, CheckCircle2, 
-  XCircle, AlertCircle
+  XCircle, AlertCircle, Award, ShoppingBag
 } from "lucide-react";
 import { Sale } from "@/types/sales";
 
@@ -19,6 +19,8 @@ export const getStatusBadge = (status: Sale['status']) => {
       return <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Completado</Badge>;
     case 'cancelled':
       return <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">Cancelado</Badge>;
+    case 'sold':
+      return <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">Vendido</Badge>;
     default:
       return <Badge variant="outline">Desconocido</Badge>;
   }
@@ -36,6 +38,8 @@ export const getStatusIcon = (status: Sale['status']) => {
       return <CheckCircle2 className="h-5 w-5 text-green-500" />;
     case 'cancelled':
       return <XCircle className="h-5 w-5 text-red-500" />;
+    case 'sold':
+      return <ShoppingBag className="h-5 w-5 text-purple-500" />;
     default:
       return <AlertCircle className="h-5 w-5 text-gray-500" />;
   }

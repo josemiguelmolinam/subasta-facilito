@@ -21,7 +21,12 @@ import {
   Calendar,
   Shield,
   Share2,
-  MessageCircle
+  MessageCircle,
+  Award,
+  Check,
+  CheckCircle,
+  ShoppingBag,
+  Trophy
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -67,26 +72,43 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuctionChat } from "@/components/chat/AuctionChat";
+import Image from "@/components/ui/image";
 
-const ImageCarousel = ({ images }: { images: string[] }) => {
+const ImageCarousel = ({ images, isSold }: { images: string[]; isSold?: boolean }) => {
   return (
-    <Carousel className="w-full">
-      <CarouselContent>
-        {images.map((image, index) => (
-          <CarouselItem key={index}>
-            <div className="p-1 h-[300px] sm:h-[400px] md:h-[500px]">
-              <img 
-                src={image} 
-                alt={`Product image ${index + 1}`} 
-                className="w-full h-full object-contain rounded-md"
-              />
+    <div className="relative">
+      <Carousel className="w-full">
+        <CarouselContent>
+          {images.map((image, index) => (
+            <CarouselItem key={index}>
+              <div className="p-1 h-[300px] sm:h-[400px] md:h-[500px]">
+                <Image 
+                  src={image} 
+                  alt={`Product image ${index + 1}`} 
+                  className="w-full h-full object-contain rounded-md"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+      
+      {isSold && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-[2px]"></div>
+          <div className="relative transform -rotate-12 animate-fade-in">
+            <div className="flex flex-col items-center">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-3xl md:text-5xl font-bold py-4 px-8 rounded-lg shadow-xl border-2 border-white">
+                VENDIDO
+              </div>
+              <Trophy className="h-16 w-16 text-yellow-400 mt-4 animate-bounce" />
             </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -185,6 +207,7 @@ const AuctionDetail = () => {
       "https://images.unsplash.com/photo-1632661674596-df8be070a5c7?auto=format&fit=crop&q=80",
     ],
     currentBid: 950,
+    finalPrice: 1150, // Precio final de venta
     buyNowPrice: 1199,
     totalBids: 15,
     endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 2),
@@ -201,6 +224,14 @@ const AuctionDetail = () => {
       verified: true,
       memberSince: "23 de Enero de 2023, 15:13"
     },
+    buyer: {
+      id: "2",
+      name: "Ana Martínez",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ana",
+      rating: 4.9,
+    },
+    status: "sold", // Nuevo estado: vendido
+    soldDate: new Date(Date.now() - 1000 * 60 * 60 * 24), // Vendido hace 1 día
     specifications: {
       marca: "Apple",
       modelo: "iPhone 15 Pro Max",
@@ -238,6 +269,7 @@ const AuctionDetail = () => {
     ]
   };
 
+  const isSold = auction.status === "sold";
   const timeLeft = formatTimeLeft(auction.endDate);
 
   const handleContactSeller = () => {
@@ -255,6 +287,49 @@ const AuctionDetail = () => {
   const handleBuyNow = () => {
     navigate(`/checkout/${auction.id}`);
   };
+
+  const SoldBanner = () => (
+    <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-lg shadow-md mb-6 animate-fade-in">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-white p-2 rounded-full">
+            <ShoppingBag className="h-6 w-6 text-purple-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">¡Artículo Vendido!</h3>
+            <p className="text-sm text-purple-100">
+              Este artículo fue vendido el {auction.soldDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </p>
+          </div>
+        </div>
+        <Badge className="bg-white text-purple-800 border-0">
+          {formatCurrency(auction.finalPrice)}
+        </Badge>
+      </div>
+    </div>
+  );
+
+  const BuyerInfo = () => (
+    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6 animate-fade-in">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarImage src={auction.buyer.avatar} />
+            <AvatarFallback>{auction.buyer.name[0]}</AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="text-sm text-purple-600">Comprador</p>
+            <p className="font-semibold">{auction.buyer.name}</p>
+            <div className="flex items-center">
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+              <span className="ml-1 text-sm">{auction.buyer.rating}</span>
+            </div>
+          </div>
+        </div>
+        <Trophy className="h-10 w-10 text-yellow-500" />
+      </div>
+    </div>
+  );
 
   const ProtectionInfo = () => (
     <Dialog open={showProtectionInfo} onOpenChange={setShowProtectionInfo}>
@@ -279,7 +354,9 @@ const AuctionDetail = () => {
 
   const MobileLayout = () => (
     <div className="space-y-6">
-      <ImageCarousel images={auction.images} />
+      {isSold && <SoldBanner />}
+      
+      <ImageCarousel images={auction.images} isSold={isSold} />
       
       <div className="space-y-4">
         <div className="space-y-2">
@@ -289,31 +366,48 @@ const AuctionDetail = () => {
           <h1 className="text-2xl font-bold">{auction.title}</h1>
           
           <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-500">Puja actual</p>
-              <p className="text-xl font-bold">{formatCurrency(auction.currentBid)}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Compra inmediata</p>
-              <p className="text-xl font-bold">{formatCurrency(auction.buyNowPrice)}</p>
-            </div>
+            {isSold ? (
+              <div>
+                <p className="text-sm text-gray-500">Precio final</p>
+                <p className="text-xl font-bold text-purple-700">{formatCurrency(auction.finalPrice)}</p>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <p className="text-sm text-gray-500">Puja actual</p>
+                  <p className="text-xl font-bold">{formatCurrency(auction.currentBid)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Compra inmediata</p>
+                  <p className="text-xl font-bold">{formatCurrency(auction.buyNowPrice)}</p>
+                </div>
+              </>
+            )}
           </div>
           
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Hammer className="w-4 h-4" />
             <span>{auction.totalBids} pujas</span>
-            <span className="mx-2">•</span>
-            <Clock className="w-4 h-4" />
-            <span>{timeLeft}</span>
+            {!isSold && (
+              <>
+                <span className="mx-2">•</span>
+                <Clock className="w-4 h-4" />
+                <span>{timeLeft}</span>
+              </>
+            )}
           </div>
         </div>
         
-        <div className="flex flex-col gap-3 my-4">
-          <Button onClick={handlePlaceBid}>Realizar puja</Button>
-          <Button variant="outline" onClick={handleBuyNow}>
-            Comprar ahora por {formatCurrency(auction.buyNowPrice)}
-          </Button>
-        </div>
+        {!isSold && (
+          <div className="flex flex-col gap-3 my-4">
+            <Button onClick={handlePlaceBid}>Realizar puja</Button>
+            <Button variant="outline" onClick={handleBuyNow}>
+              Comprar ahora por {formatCurrency(auction.buyNowPrice)}
+            </Button>
+          </div>
+        )}
+        
+        {isSold && <BuyerInfo />}
         
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between border-b pb-3">
@@ -476,7 +570,9 @@ const AuctionDetail = () => {
   const DesktopLayout = () => (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-8 pt-8">
       <div className="col-span-3">
-        <ImageCarousel images={auction.images} />
+        {isSold && <SoldBanner />}
+        
+        <ImageCarousel images={auction.images} isSold={isSold} />
         
         <div className="mt-8 space-y-6">
           <Tabs defaultValue="details">
@@ -580,38 +676,69 @@ const AuctionDetail = () => {
             <h1 className="text-2xl font-bold">{auction.title}</h1>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 py-3 border-t border-b">
-            <div>
-              <p className="text-sm text-gray-500">Puja actual</p>
-              <p className="text-2xl font-bold">{formatCurrency(auction.currentBid)}</p>
+          {isSold ? (
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 animate-fade-in">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold text-purple-800 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5" />
+                  Subasta Finalizada
+                </h3>
+                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                  Vendido
+                </Badge>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Este artículo fue vendido el {auction.soldDate.toLocaleDateString('es-ES', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </p>
+              <div className="flex justify-between items-center p-3 bg-white rounded-md border border-purple-100">
+                <span className="text-gray-700">Precio final de venta:</span>
+                <span className="text-2xl font-bold text-purple-700">{formatCurrency(auction.finalPrice)}</span>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Compra inmediata</p>
-              <p className="text-2xl font-bold">{formatCurrency(auction.buyNowPrice)}</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 py-3 border-t border-b">
+              <div>
+                <p className="text-sm text-gray-500">Puja actual</p>
+                <p className="text-2xl font-bold">{formatCurrency(auction.currentBid)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Compra inmediata</p>
+                <p className="text-2xl font-bold">{formatCurrency(auction.buyNowPrice)}</p>
+              </div>
             </div>
-          </div>
+          )}
           
           <div className="flex items-center justify-between text-sm text-gray-500">
             <div className="flex items-center gap-1">
               <Hammer className="w-4 h-4" />
               <span>{auction.totalBids} pujas</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{timeLeft}</span>
-            </div>
+            {!isSold && (
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{timeLeft}</span>
+              </div>
+            )}
             <div className="flex items-center gap-1">
               <Eye className="w-4 h-4" />
               <span>56 vistas</span>
             </div>
           </div>
           
-          <div className="flex flex-col gap-3 pt-2">
-            <Button size="lg" onClick={handlePlaceBid}>Realizar puja</Button>
-            <Button variant="outline" size="lg" onClick={handleBuyNow}>
-              Comprar ahora por {formatCurrency(auction.buyNowPrice)}
-            </Button>
-          </div>
+          {!isSold ? (
+            <div className="flex flex-col gap-3 pt-2">
+              <Button size="lg" onClick={handlePlaceBid}>Realizar puja</Button>
+              <Button variant="outline" size="lg" onClick={handleBuyNow}>
+                Comprar ahora por {formatCurrency(auction.buyNowPrice)}
+              </Button>
+            </div>
+          ) : (
+            <BuyerInfo />
+          )}
           
           <div className="flex items-center justify-between pt-2">
             <WishlistButton auctionId={auction.id} />
@@ -644,7 +771,6 @@ const AuctionDetail = () => {
             )}
           </div>
           
-          {/* Botón de chat justo debajo de "Verificado" */}
           <Button 
             variant="outline" 
             className="w-full gap-2"

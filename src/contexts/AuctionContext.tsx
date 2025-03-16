@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from "react";
 import { Auction } from "@/types";
 
@@ -9,6 +10,7 @@ interface AuctionContextType {
   createAuction: (auction: Omit<Auction, "id" | "createdAt">) => Promise<void>;
   updateAuction: (id: string, auction: Partial<Auction>) => Promise<void>;
   deleteAuction: (id: string) => Promise<void>;
+  markAuctionAsSold: (id: string, buyerId: string, finalPrice: number) => Promise<void>;
 }
 
 const AuctionContext = createContext<AuctionContextType | undefined>(undefined);
@@ -70,6 +72,36 @@ export const AuctionProvider = ({ children }: { children: React.ReactNode }) => 
     }
   };
 
+  // Nuevo método para marcar una subasta como vendida
+  const markAuctionAsSold = async (id: string, buyerId: string, finalPrice: number) => {
+    setLoading(true);
+    try {
+      // Aquí iría la lógica para marcar una subasta como vendida
+      console.log("Marking auction as sold...", { id, buyerId, finalPrice });
+      
+      // En un caso real, aquí actualizaríamos la base de datos
+      // Por ahora, solo simulamos una actualización local
+      setAuctions(prevAuctions => 
+        prevAuctions.map(auction => 
+          auction.id === id 
+            ? { 
+                ...auction, 
+                status: 'sold',
+                buyerId,
+                finalPrice,
+                soldDate: new Date()
+              } 
+            : auction
+        )
+      );
+    } catch (error) {
+      console.error("Error marking auction as sold:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuctionContext.Provider
       value={{
@@ -80,6 +112,7 @@ export const AuctionProvider = ({ children }: { children: React.ReactNode }) => 
         createAuction,
         updateAuction,
         deleteAuction,
+        markAuctionAsSold,
       }}
     >
       {children}
