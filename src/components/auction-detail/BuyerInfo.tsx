@@ -2,6 +2,7 @@
 import React from "react";
 import { Star, Trophy } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { hashName } from "@/lib/utils/privacy";
 
 interface BuyerInfoProps {
   buyer: {
@@ -22,7 +23,7 @@ export const BuyerInfo = ({ buyer }: BuyerInfoProps) => (
         </Avatar>
         <div>
           <p className="text-sm text-purple-600">Comprador</p>
-          <p className="font-semibold">{buyer.name}</p>
+          <p className="font-semibold">{hashName(buyer.name)}</p>
           <div className="flex items-center">
             <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
             <span className="ml-1 text-sm">{buyer.rating}</span>

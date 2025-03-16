@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,7 +32,7 @@ import { SoldBanner } from "./SoldBanner";
 import { BuyerInfo } from "./BuyerInfo";
 
 interface DesktopAuctionViewProps {
-  auction: any; // Using any for brevity
+  auction: any;
   isSold: boolean;
   timeLeft: string;
   handlePlaceBid: () => void;
@@ -55,8 +54,8 @@ export const DesktopAuctionView = ({
 }: DesktopAuctionViewProps) => (
   <div className="grid grid-cols-1 md:grid-cols-5 gap-8 pt-8">
     <div className="col-span-3">
-      {isSold && auction.finalPrice && auction.soldDate && (
-        <SoldBanner finalPrice={auction.finalPrice} soldDate={auction.soldDate} />
+      {isSold && auction.soldDate && (
+        <SoldBanner soldDate={auction.soldDate} />
       )}
       
       <ImageCarousel images={auction.images} isSold={isSold} title={auction.title} />
@@ -181,10 +180,6 @@ export const DesktopAuctionView = ({
                 year: 'numeric'
               })}
             </p>
-            <div className="flex justify-between items-center p-3 bg-white rounded-md border border-purple-100">
-              <span className="text-gray-700">Precio final de venta:</span>
-              <span className="text-2xl font-bold text-purple-700">{formatCurrency(auction.finalPrice)}</span>
-            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 py-3 border-t border-b">
@@ -241,7 +236,7 @@ export const DesktopAuctionView = ({
               startingPrice: auction.startingPrice,
               endDate: auction.endDate,
               sellerId: auction.seller.id,
-              categoryId: "smartphones", // This might need to be more dynamic
+              categoryId: "smartphones",
               status: isSold ? "sold" : "active",
               createdAt: new Date(),
             }}

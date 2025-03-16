@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,7 +28,7 @@ import { SoldBanner } from "./SoldBanner";
 import { BuyerInfo } from "./BuyerInfo";
 
 interface MobileAuctionViewProps {
-  auction: any; // Using any for brevity
+  auction: any;
   isSold: boolean;
   timeLeft: string;
   handlePlaceBid: () => void;
@@ -46,8 +45,8 @@ export const MobileAuctionView = ({
   handleContactSeller 
 }: MobileAuctionViewProps) => (
   <div className="space-y-6">
-    {isSold && auction.finalPrice && auction.soldDate && (
-      <SoldBanner finalPrice={auction.finalPrice} soldDate={auction.soldDate} />
+    {isSold && auction.soldDate && (
+      <SoldBanner soldDate={auction.soldDate} />
     )}
     
     <ImageCarousel images={auction.images} isSold={isSold} title={auction.title} />
@@ -62,8 +61,7 @@ export const MobileAuctionView = ({
         <div className="flex justify-between items-center">
           {isSold ? (
             <div>
-              <p className="text-sm text-gray-500">Precio final</p>
-              <p className="text-xl font-bold text-purple-700">{formatCurrency(auction.finalPrice)}</p>
+              <p className="text-sm text-gray-500">Subasta finalizada</p>
             </div>
           ) : (
             <>
@@ -153,7 +151,7 @@ export const MobileAuctionView = ({
               startingPrice: auction.startingPrice,
               endDate: auction.endDate,
               sellerId: auction.seller.id,
-              categoryId: "smartphones", // This might need to be more dynamic
+              categoryId: "smartphones",
               status: isSold ? "sold" : "active",
               createdAt: new Date(),
             }}
